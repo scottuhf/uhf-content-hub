@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Find The Face</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.tool-nav {
+  display: flex; align-items: center; gap: 18px;
+  padding: 12px 24px; background: #0a1929;
+  border-bottom: 1px solid #1a3a5c;
+  margin: -24px -24px 24px -24px;
+}
+.back-btn {
+  font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: #339AE9; text-decoration: none;
+  padding: 6px 14px; border: 1px solid #1a4a73; border-radius: 4px;
+  transition: background 0.2s, color 0.2s;
+}
+.back-btn:hover { background: #1a3a5c; color: #fff; }
+.tool-nav-title {
+  font-family: 'Oswald', sans-serif; font-size: 15px; letter-spacing: 2px;
+  text-transform: uppercase; color: #5a8ab0;
+}
+.tool-nav-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+  background: rgba(237,10,115,0.15); color: #ED0A73;
+}
+.reel-game-badge {
+  background: rgba(255,107,53,0.15); color: #FF6B35;
+}
+
+body {
+  background: #060e18; color: #ccc;
+  font-family: 'Roboto', sans-serif;
+  padding: 24px; min-height: 100vh;
+}
+h1 {
+  font-family: 'Oswald', sans-serif; color: #ED0A73;
+  font-size: 22px; letter-spacing: 2px;
+  margin-bottom: 4px; text-transform: uppercase;
+}
+.tool-sub {
+  font-size: 12px; color: #5a8ab0; letter-spacing: 1px; margin-bottom: 24px;
+}
+
+.form-wrap {
+  background: #0d1f33; border: 1px solid #1a3a5c;
+  border-radius: 8px; padding: 24px;
+  max-width: 860px; margin-bottom: 32px;
+}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #5a8ab0; }
+input[type="text"], input[type="number"] {
+  background: #060e18; border: 1px solid #1a3a5c; border-radius: 4px;
+  color: #eee; padding: 8px 10px; font-size: 13px;
+  font-family: 'Roboto', sans-serif; outline: none; transition: border-color 0.2s;
+  width: 100%;
+}
+input:focus { border-color: #339AE9; }
+
+.section-title {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+  color: #ED0A73; margin: 20px 0 12px; font-weight: 600;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(237,10,115,0.2);
+}
+
+/* ── FACE SLOTS ── */
+.face-slot {
+  display: grid; grid-template-columns: 88px 1fr; gap: 14px;
+  background: #060e18; border: 1px solid #1a3a5c; border-radius: 6px;
+  padding: 14px; margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.face-slot.target-slot { border-color: rgba(237,10,115,0.4); }
+.face-slot.target-slot:focus-within { border-color: #ED0A73; }
+.face-slot:not(.target-slot):focus-within { border-color: #339AE9; }
+
+.face-thumb-wrap {
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.face-thumb {
+  width: 80px; height: 80px; border-radius: 50%;
+  overflow: hidden; flex-shrink: 0;
+  background: #0d1f33;
+  border: 2px solid #1a3a5c;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s;
+}
+.target-slot .face-thumb { border-color: rgba(237,10,115,0.5); }
+.face-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.face-thumb .thumb-placeholder {
+  font-size: 24px; opacity: 0.3;
+}
+.face-slot-tag {
+  font-size: 9px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 2px 6px; border-radius: 3px;
+}
+.tag-target   { background: rgba(237,10,115,0.15); color: #ED0A73; }
+.tag-distract { background: rgba(51,154,233,0.1); color: #5a8ab0; }
+
+.face-fields { display: flex; flex-direction: column; gap: 8px; }
+.face-label-row { display: grid; grid-template-columns: 1fr 80px; gap: 8px; }
+.url-row { display: flex; gap: 6px; }
+.url-row input { flex: 1; min-width: 0; }
+.browse-btn {
+  font-family: 'Oswald', sans-serif; font-size: 11px; letter-spacing: 1px;
+  text-transform: uppercase; padding: 0 12px;
+  background: #1a3a5c; color: #5a8ab0; border: 1px solid #1a4a73;
+  border-radius: 4px; cursor: pointer; white-space: nowrap;
+  display: inline-flex; align-items: center;
+  transition: background 0.2s, color 0.2s;
+}
+.browse-btn:hover { background: #1a4a73; color: #fff; }
+
+/* ── RANGE SLIDER ── */
+input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 4px;
+  background: #1a3a5c; border-radius: 2px;
+  outline: none; cursor: pointer;
+  border: none; padding: 0; margin-top: 6px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #ED0A73; cursor: pointer;
+  box-shadow: 0 0 8px rgba(237,10,115,0.45);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px; border-radius: 50%;
+  background: #ED0A73; cursor: pointer; border: none;
+}
+.dur-label-val { font-family: 'Oswald', sans-serif; color: #ED0A73; font-weight: 700; }
+
+/* ── REVEAL TOGGLE ROW ── */
+.reveal-row {
+  display: flex; align-items: flex-start; gap: 12px; margin-top: 14px;
+}
+.checkbox-wrap {
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+  padding: 9px 14px; background: #060e18;
+  border: 1px solid #1a3a5c; border-radius: 4px;
+  white-space: nowrap; transition: border-color 0.2s; flex-shrink: 0;
+}
+.checkbox-wrap:hover { border-color: #ED0A73; }
+.checkbox-wrap input[type="checkbox"] { width: 14px; height: 14px; accent-color: #ED0A73; cursor: pointer; }
+.checkbox-label { font-size: 12px; color: #ccc; letter-spacing: 0.3px; }
+#reveal-options { flex: 1; }
+#reveal-options.hidden { display: none; }
+
+/* ── DIFFICULTY ── */
+.diff-row {
+  display: flex; gap: 8px; margin-top: 14px;
+}
+.diff-btn {
+  flex: 1; padding: 9px 8px; text-align: center;
+  font-family: 'Oswald', sans-serif; font-size: 12px;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  background: #060e18; border: 1px solid #1a3a5c;
+  color: #3a5a78; border-radius: 4px; cursor: pointer;
+  transition: all 0.15s;
+}
+.diff-btn:hover { color: #ccc; border-color: #2a5a8c; }
+.diff-btn.active[data-diff="easy"]       { border-color: #5a8ab0; color: #5a8ab0; background: rgba(90,138,176,0.1); }
+.diff-btn.active[data-diff="medium"]     { border-color: #339AE9; color: #339AE9; background: rgba(51,154,233,0.12); }
+.diff-btn.active[data-diff="hard"]       { border-color: #ED0A73; color: #ED0A73; background: rgba(237,10,115,0.1); }
+.diff-btn.active[data-diff="impossible"] { border-color: #ED0A73; color: #ED0A73; background: rgba(237,10,115,0.18); box-shadow: 0 0 12px rgba(237,10,115,0.2); }
+
+/* ── BUTTONS ── */
+.btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; align-items: center; }
+button {
+  font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px;
+  text-transform: uppercase; padding: 10px 18px; border: none;
+  border-radius: 4px; cursor: pointer; transition: opacity 0.2s;
+}
+button:hover { opacity: 0.85; }
+#btn-generate { background: #ED0A73; color: #fff; font-weight: 700; }
+.btn-vid { background: #1a0514; color: #ED0A73; border: 1px solid #ED0A73; }
+.btn-png { background: transparent; color: #339AE9; border: 1px solid #339AE9; }
+.btn-divider { width: 1px; background: #1a3a5c; align-self: stretch; margin: 0 4px; }
+.recording-badge {
+  display: none; background: #ED0A73; color: white;
+  font-size: 11px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;
+  padding: 4px 10px; border-radius: 4px; animation: blink 1s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+/* ── PREVIEW ── */
+.previews { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+.preview-panel { display: flex; flex-direction: column; gap: 10px; }
+.preview-label {
+  font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 2px;
+  color: #5a8ab0; text-transform: uppercase;
+}
+.canvas-scaler-rl {
+  transform-origin: top left; transform: scale(0.35);
+  display: inline-block; width: 378px; height: 672px;
+}
+.canvas-scaler-rl > div { width: 1080px; height: 1920px; }
+#graphic-rl {
+  position: relative; overflow: hidden; flex-shrink: 0;
+  background: #061525; width: 1080px; height: 1920px;
+}
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<nav class="tool-nav">
+  <a href="index.html" class="back-btn">&#8592; Hub</a>
+  <span class="tool-nav-title">Find The Face</span>
+  <span class="tool-nav-badge reel-game-badge">Reel Game</span>
+</nav>
+
+<h1>Find The Face</h1>
+<p class="tool-sub">Chaos content. Float a crowd of faces — hide one. Let them find it.</p>
+
+<div class="form-wrap">
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Headline — Top Line ("FIND THE")</label>
+      <input type="text" id="f-find-prefix" value="FIND THE">
+    </div>
+    <div class="form-group">
+      <label>Headline — Subject ("SLEEPER")</label>
+      <input type="text" id="f-find-label" value="SLEEPER">
+    </div>
+    <div class="form-group">
+      <label>Context Line (below headline)</label>
+      <input type="text" id="f-context" value="Can you spot him?">
+    </div>
+    <div class="form-group">
+      <label>Head Size (px radius)</label>
+      <input type="number" id="f-head-size" value="72" min="40" max="120" step="4">
+    </div>
+    <div class="form-group">
+      <label>Duration — <span class="dur-label-val" id="dur-display">10</span>s</label>
+      <input type="range" id="f-duration" min="5" max="30" step="1" value="10">
+    </div>
+  </div>
+
+  <div class="reveal-row">
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="f-do-reveal" checked>
+      <span class="checkbox-label">Reveal at end</span>
+    </label>
+    <div id="reveal-options" class="form-group">
+      <label>Reveal Text</label>
+      <input type="text" id="f-reveal-text" value="THERE HE IS!">
+    </div>
+  </div>
+
+  <div class="section-title">&#9632; Difficulty</div>
+  <div class="diff-row">
+    <button class="diff-btn active" data-diff="easy">Easy</button>
+    <button class="diff-btn" data-diff="medium">Medium</button>
+    <button class="diff-btn" data-diff="hard">Hard</button>
+    <button class="diff-btn" data-diff="impossible">Impossible</button>
+  </div>
+  <input type="hidden" id="f-difficulty" value="easy">
+
+  <!-- TARGET FACE -->
+  <div class="section-title">&#9654; Target Face — The One To Find (×1)</div>
+  <div class="face-slot target-slot" id="slot-target">
+    <div class="face-thumb-wrap">
+      <div class="face-thumb" id="target-thumb">
+        <span class="thumb-placeholder">&#128100;</span>
+      </div>
+      <span class="face-slot-tag tag-target">Target</span>
+    </div>
+    <div class="face-fields">
+      <div class="form-group">
+        <label>Player / Person Name</label>
+        <input type="text" id="target-name" placeholder="e.g. Lamar Jackson" value="Lamar Jackson">
+      </div>
+      <div class="form-group">
+        <label>Image URL or Upload</label>
+        <div class="url-row">
+          <input type="text" id="target-url" placeholder="Paste URL or upload..."
+            value="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3916387.png">
+          <label class="browse-btn">Browse<input type="file" id="target-file" accept="image/*" hidden></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DISTRACTOR FACES -->
+  <div class="section-title">&#9632; Distractor Faces — The Crowd</div>
+
+  <div class="face-slot" id="slot-d1">
+    <div class="face-thumb-wrap">
+      <div class="face-thumb" id="d1-thumb"><span class="thumb-placeholder">&#128100;</span></div>
+      <span class="face-slot-tag tag-distract">Crowd 1</span>
+    </div>
+    <div class="face-fields">
+      <div class="face-label-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="d1-name" value="Patrick Mahomes">
+        </div>
+        <div class="form-group">
+          <label>Count</label>
+          <input type="number" id="d1-count" value="30" min="1" max="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Image URL or Upload</label>
+        <div class="url-row">
+          <input type="text" id="d1-url" placeholder="Paste URL or upload..."
+            value="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3139477.png">
+          <label class="browse-btn">Browse<input type="file" id="d1-file" accept="image/*" hidden></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="face-slot" id="slot-d2">
+    <div class="face-thumb-wrap">
+      <div class="face-thumb" id="d2-thumb"><span class="thumb-placeholder">&#128100;</span></div>
+      <span class="face-slot-tag tag-distract">Crowd 2</span>
+    </div>
+    <div class="face-fields">
+      <div class="face-label-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="d2-name" value="Josh Allen">
+        </div>
+        <div class="form-group">
+          <label>Count</label>
+          <input type="number" id="d2-count" value="30" min="0" max="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Image URL or Upload</label>
+        <div class="url-row">
+          <input type="text" id="d2-url" placeholder="Paste URL or upload..."
+            value="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3918298.png">
+          <label class="browse-btn">Browse<input type="file" id="d2-file" accept="image/*" hidden></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="face-slot" id="slot-d3">
+    <div class="face-thumb-wrap">
+      <div class="face-thumb" id="d3-thumb"><span class="thumb-placeholder">&#128100;</span></div>
+      <span class="face-slot-tag tag-distract">Crowd 3</span>
+    </div>
+    <div class="face-fields">
+      <div class="face-label-row">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" id="d3-name" value="Joe Burrow">
+        </div>
+        <div class="form-group">
+          <label>Count</label>
+          <input type="number" id="d3-count" value="30" min="0" max="60">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Image URL or Upload</label>
+        <div class="url-row">
+          <input type="text" id="d3-url" placeholder="Paste URL or upload..."
+            value="https://a.espncdn.com/combiner/i?img=/i/headshots/nfl/players/full/3915511.png">
+          <label class="browse-btn">Browse<input type="file" id="d3-file" accept="image/*" hidden></label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button id="btn-generate">&#9654; Generate</button>
+    <div class="btn-divider"></div>
+    <button class="btn-vid" id="btn-vid">&#9654; Export Video</button>
+    <span id="rec-badge" class="recording-badge">&#9679; REC</span>
+    <div class="btn-divider"></div>
+    <button class="btn-png" id="btn-png">PNG (Reveal Frame)</button>
+  </div>
+</div>
+
+<div class="previews">
+  <div class="preview-panel">
+    <div class="preview-label">9:16 Reel Game (1080×1920)</div>
+    <div class="canvas-scaler-rl"><div id="graphic-rl"></div></div>
+  </div>
+</div>
+
+<script>
+// ─── PALETTE ──────────────────────────────────────────────────────────────────
+const PINK       = '#ED0A73';
+const BLUE       = '#339AE9';
+const BLUE_DARK  = '#061525';
+const BLUE_MID   = '#0d2a47';
+const BLUE_DIM   = '#1a4a73';
+const BLUE_MUTED = '#5a8ab0';
+const WHITE      = '#FFFFFF';
+
+const W = 1080, H = 1920;
+
+// Fixed timing anchors (seconds)
+const T_INTRO    = 0.0;
+const T_SPAWN    = 0.6;
+const T_BOUNCE   = 1.8;
+const REVEAL_DUR = 2.5;  // how long the reveal animation plays
+
+// ─── DIFFICULTY CONFIG ────────────────────────────────────────────────────────
+// Each level tweaks: target size relative to distractors, movement speed (cycles
+// & amplitude), and z-order depth (how buried the target is under the crowd).
+const DIFF_CFG = {
+  easy: {
+    label: 'EASY',
+    color: '#5a8ab0',
+    targetScale:  1.00,         // same size as distractors — easy to spot
+    distSizeVar:  [0.82, 1.18], // crowd has varied sizes
+    nRange:       [1, 2],       // slow, gentle movement (1–2 cycles)
+    xAmpRange:    [40,  130],   // small swings
+    yAmpRange:    [50,  160],
+    speedRange:   [0.8, 2.0],
+    zDepth:       'shuffle',    // target anywhere in the stack
+  },
+  medium: {
+    label: 'MEDIUM',
+    color: '#339AE9',
+    targetScale:  0.70,         // noticeably smaller
+    distSizeVar:  [0.88, 1.14],
+    nRange:       [1, 3],       // moderate cycles
+    xAmpRange:    [110, 270],
+    yAmpRange:    [140, 340],
+    speedRange:   [1.8, 3.5],
+    zDepth:       'back40',     // target in lower 40% — often behind heads
+  },
+  hard: {
+    label: 'HARD',
+    color: '#ED0A73',
+    targetScale:  0.50,         // half size — hard to notice
+    distSizeVar:  [0.92, 1.08], // crowd more uniform so target blends in
+    nRange:       [2, 4],       // fast paths
+    xAmpRange:    [170, 340],
+    yAmpRange:    [210, 430],
+    speedRange:   [3.0, 5.5],
+    zDepth:       'back20',     // deep in the stack most of the time
+  },
+  impossible: {
+    label: 'IMPOSSIBLE',
+    color: '#ED0A73',
+    targetScale:  0.34,         // tiny — nearly indistinguishable
+    distSizeVar:  [0.96, 1.04], // crowd is almost uniform size
+    nRange:       [3, 5],       // complex paths
+    xAmpRange:    [220, 420],
+    yAmpRange:    [280, 520],
+    speedRange:   [5.0, 9.0],
+    zDepth:       'bottom',     // always buried under the entire crowd
+  },
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let headsState  = null;
+let loadedImgs  = {};
+let animFrameId = null;
+let animStart   = null;
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function rand(a, b) { return a + Math.random() * (b - a); }
+function randInt(a, b) { return Math.floor(rand(a, b + 1)); }
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+function easeOut(t) { return 1 - Math.pow(1 - clamp(t, 0, 1), 3); }
+function easeInOut(t) { t = clamp(t, 0, 1); return t < 0.5 ? 2*t*t : -1+(4-2*t)*t; }
+function tween(t, s, d) { return clamp((t - s) / d, 0, 1); }
+function easeOutBack(t) {
+  t = clamp(t, 0, 1);
+  const s = 1.70158;
+  return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2);
+}
+
+// Text shadow helpers — keep offset tight so it reads clean, not dramatic
+function shadowDark(ctx)  {
+  ctx.shadowColor   = 'rgba(0,0,0,0.55)';
+  ctx.shadowBlur    = 4;
+  ctx.shadowOffsetX = 1;
+  ctx.shadowOffsetY = 1.5;
+}
+function shadowClear(ctx) {
+  ctx.shadowColor   = 'transparent';
+  ctx.shadowBlur    = 0;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 0;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+// ─── IMAGE LOADING ────────────────────────────────────────────────────────────
+function loadImage(url) {
+  return new Promise(resolve => {
+    if (!url) return resolve(null);
+    if (loadedImgs[url]) return resolve(loadedImgs[url]);
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload  = () => { loadedImgs[url] = img; resolve(img); };
+    img.onerror = () => resolve(null);
+    img.src = url;
+  });
+}
+
+// ─── FACE SLOT SETUP (URL + File Upload) ─────────────────────────────────────
+['target','d1','d2','d3'].forEach(id => {
+  const urlEl  = document.getElementById(`${id}-url`);
+  const fileEl = document.getElementById(`${id}-file`);
+  const thumb  = document.getElementById(`${id}-thumb`);
+
+  function applyUrl(url) {
+    if (!url) return;
+    loadImage(url).then(img => {
+      if (!img) return;
+      thumb.innerHTML = '';
+      const i = document.createElement('img');
+      i.src = url;
+      thumb.appendChild(i);
+    });
+  }
+
+  urlEl.addEventListener('change', () => applyUrl(urlEl.value.trim()));
+  urlEl.addEventListener('blur',   () => applyUrl(urlEl.value.trim()));
+  fileEl.addEventListener('change', e => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      urlEl.value = ev.target.result;
+      applyUrl(ev.target.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Load defaults on page load
+  if (urlEl.value.trim()) {
+    loadImage(urlEl.value.trim()).then(img => {
+      if (!img) return;
+      thumb.innerHTML = '';
+      const i = document.createElement('img');
+      i.src = urlEl.value.trim();
+      thumb.appendChild(i);
+    });
+  }
+});
+
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+function getData() {
+  const get = id => document.getElementById(id);
+  return {
+    findPrefix:  get('f-find-prefix').value.toUpperCase().trim(),
+    findLabel:   get('f-find-label').value.toUpperCase().trim(),
+    context:     get('f-context').value.trim(),
+    revealText:  get('f-reveal-text').value.toUpperCase().trim(),
+    headR:       parseInt(get('f-head-size').value) || 72,
+    duration:    parseInt(get('f-duration').value) || 10,
+    doReveal:    get('f-do-reveal').checked,
+    difficulty:  get('f-difficulty').value || 'easy',
+    slots: [
+      { id: 'target', url: get('target-url').value.trim(), name: get('target-name').value.trim(), count: 1,  isTarget: true  },
+      { id: 'd1',     url: get('d1-url').value.trim(),     name: get('d1-name').value.trim(),     count: parseInt(get('d1-count').value)||0, isTarget: false },
+      { id: 'd2',     url: get('d2-url').value.trim(),     name: get('d2-name').value.trim(),     count: parseInt(get('d2-count').value)||0, isTarget: false },
+      { id: 'd3',     url: get('d3-url').value.trim(),     name: get('d3-name').value.trim(),     count: parseInt(get('d3-count').value)||0, isTarget: false },
+    ].filter(s => s.url && s.count > 0),
+  };
+}
+
+// ─── HEADS INIT ───────────────────────────────────────────────────────────────
+function initHeads(data) {
+  const baseR = data.headR;
+  const dur   = data.duration;
+  const diff  = DIFF_CFG[data.difficulty] || DIFF_CFG.easy;
+  const heads = [];
+
+  data.slots.forEach(slot => {
+    const img = loadedImgs[slot.url] || null;
+    for (let i = 0; i < slot.count; i++) {
+      // Target gets difficulty-scaled radius; distractors use crowd variation
+      const sizeVar = slot.isTarget
+        ? diff.targetScale
+        : rand(diff.distSizeVar[0], diff.distSizeVar[1]);
+      const r = baseR * sizeVar;
+
+      if (!data.doReveal) {
+        // ── LOOP MODE: sine-wave motion ──────────────────────────────────────
+        const nX = randInt(diff.nRange[0], diff.nRange[1]);
+        const nY = randInt(diff.nRange[0], diff.nRange[1]);
+        const xFreq = (2 * Math.PI * nX) / dur;
+        const yFreq = (2 * Math.PI * nY) / dur;
+        const xPhase = rand(0, Math.PI * 2);
+        const yPhase = rand(0, Math.PI * 2);
+        const xAmp  = rand(diff.xAmpRange[0], diff.xAmpRange[1]);
+        const yAmp  = rand(diff.yAmpRange[0], diff.yAmpRange[1]);
+        const xBase = clamp(rand(0, W), r + xAmp + 10, W - r - xAmp - 10);
+        const yBase = clamp(rand(0, H), r + yAmp + 10, H - r - yAmp - 10);
+        const wobbleFreq = (2 * Math.PI * randInt(2, 5)) / dur;
+
+        heads.push({
+          img, isTarget: slot.isTarget, instant: true, r,
+          x: xBase + xAmp * Math.sin(xPhase),
+          y: yBase + yAmp * Math.sin(yPhase),
+          xBase, yBase, xAmp, yAmp, xPhase, yPhase, xFreq, yFreq,
+          wobblePhase: rand(0, Math.PI * 2), wobbleFreq,
+          rotOff: rand(-0.18, 0.18),
+        });
+      } else {
+        // ── REVEAL MODE: physics bounce ──────────────────────────────────────
+        const speed = rand(diff.speedRange[0], diff.speedRange[1]);
+        const angle = rand(0, Math.PI * 2);
+        heads.push({
+          img, isTarget: slot.isTarget, instant: false, r,
+          x: rand(r + 20, W - r - 20),
+          y: rand(r + 20, H - r - 20),
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          wobblePhase: rand(0, Math.PI * 2),
+          wobbleFreq:  rand(0.8, 1.6),
+          spawnDelay:  rand(0, T_BOUNCE - T_SPAWN - 0.4),
+          rotOff: rand(-0.18, 0.18),
+        });
+      }
+    }
+  });
+
+  // Full shuffle first
+  for (let i = heads.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [heads[i], heads[j]] = [heads[j], heads[i]];
+  }
+
+  // Apply z-depth: pull target out and reinsert at difficulty-appropriate depth.
+  // Lower index = drawn first = behind more heads = harder to see.
+  const tIdx = heads.findIndex(h => h.isTarget);
+  if (tIdx !== -1) {
+    const [target] = heads.splice(tIdx, 1);
+    const n = heads.length;
+    let insertAt;
+    switch (diff.zDepth) {
+      case 'back40':  insertAt = randInt(0, Math.floor(n * 0.40)); break;
+      case 'back20':  insertAt = randInt(0, Math.floor(n * 0.20)); break;
+      case 'bottom':  insertAt = 0; break;
+      default:        insertAt = randInt(0, n); break; // shuffle
+    }
+    heads.splice(insertAt, 0, target);
+  }
+
+  return heads;
+}
+
+function stepPhysics(heads) {
+  heads.forEach(h => {
+    h.x += h.vx;
+    h.y += h.vy;
+    if (h.x - h.r < 0)  { h.x = h.r;     h.vx =  Math.abs(h.vx); }
+    if (h.x + h.r > W)  { h.x = W - h.r; h.vx = -Math.abs(h.vx); }
+    if (h.y - h.r < 0)  { h.y = h.r;     h.vy =  Math.abs(h.vy); }
+    if (h.y + h.r > H)  { h.y = H - h.r; h.vy = -Math.abs(h.vy); }
+  });
+}
+
+// Sine-wave positions — only called in loop mode.
+// Because xFreq = 2π×n/duration, pos(0) == pos(duration) exactly.
+function updateSinePositions(heads, t) {
+  heads.forEach(h => {
+    if (h.xFreq === undefined) return;
+    h.x = h.xBase + h.xAmp * Math.sin(h.xPhase + h.xFreq * t);
+    h.y = h.yBase + h.yAmp * Math.sin(h.yPhase + h.yFreq * t);
+  });
+}
+
+// ─── CANVAS SETUP ─────────────────────────────────────────────────────────────
+function makeCanvas(id) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  el.style.width = W + 'px'; el.style.height = H + 'px';
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  c.style.width = W + 'px'; c.style.height = H + 'px';
+  el.appendChild(c);
+  return c.getContext('2d');
+}
+
+// ─── DRAW: HEAD ───────────────────────────────────────────────────────────────
+function drawHead(ctx, h, t, revealP) {
+  // Loop mode: heads are always fully visible (no pop-in) so the loop seam is invisible
+  const spawnP = h.instant ? 1 : easeOutBack(tween(t, T_SPAWN + h.spawnDelay, 0.45));
+  if (spawnP <= 0) return;
+
+  const wobble = Math.sin(h.wobblePhase + t * h.wobbleFreq) * 0.12;
+  const r = h.r * spawnP;
+
+  ctx.save();
+  ctx.translate(h.x, h.y);
+  ctx.rotate(h.rotOff + wobble);
+
+  // During reveal: dim non-target heads
+  let alpha = 1;
+  if (revealP > 0 && !h.isTarget) {
+    alpha = 1 - revealP * 0.65;
+  }
+  ctx.globalAlpha = alpha;
+
+  // Drop shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.55)';
+  ctx.shadowBlur  = 14;
+  ctx.shadowOffsetX = 3;
+  ctx.shadowOffsetY = 4;
+
+  // Clip to circle + draw image
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.clip();
+
+  if (h.img) {
+    // Center-crop to square so portrait/landscape headshots both fill the circle cleanly
+    const iw = h.img.naturalWidth, ih = h.img.naturalHeight;
+    const side = Math.min(iw, ih);
+    const sx = (iw - side) / 2, sy = (ih - side) / 2;
+    ctx.drawImage(h.img, sx, sy, side, side, -r, -r, r * 2, r * 2);
+  } else {
+    // Placeholder circle
+    ctx.fillStyle = BLUE_MID;
+    ctx.fill();
+    ctx.fillStyle = BLUE_MUTED;
+    ctx.font = `bold ${r * 0.6}px Roboto`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('?', 0, 0);
+  }
+
+  ctx.restore();
+}
+
+// ─── DRAW: REVEAL PULSE ───────────────────────────────────────────────────────
+function drawReveal(ctx, target, revealP, revealText) {
+  if (!target || revealP <= 0) return;
+
+  const pulseA = Math.sin(revealP * Math.PI * 5) * 0.5 + 0.5;
+  const expandR = target.r + 14 + pulseA * 22;
+
+  // Spotlight gradient behind target
+  ctx.save();
+  const spot = ctx.createRadialGradient(target.x, target.y, target.r * 0.5, target.x, target.y, target.r * 5);
+  spot.addColorStop(0, `rgba(237,10,115,${0.18 * revealP})`);
+  spot.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = spot;
+  ctx.fillRect(0, 0, W, H);
+  ctx.restore();
+
+  // Pulsing outer ring
+  ctx.save();
+  ctx.globalAlpha = revealP * (0.5 + pulseA * 0.5);
+  ctx.strokeStyle = PINK;
+  ctx.lineWidth = 4;
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, expandR, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Inner solid ring
+  ctx.globalAlpha = revealP;
+  ctx.lineWidth = 2.5;
+  ctx.strokeStyle = WHITE;
+  ctx.beginPath();
+  ctx.arc(target.x, target.y, target.r + 5, 0, Math.PI * 2);
+  ctx.stroke();
+  ctx.restore();
+
+  // Reveal text badge below target
+  const textY = target.y + target.r + 58;
+  const textAlpha = easeOut(tween(revealP, 0.3, 0.5));
+  if (textAlpha > 0) {
+    ctx.save();
+    ctx.globalAlpha = textAlpha;
+    ctx.font = `700 52px Oswald`;
+    const tw = ctx.measureText(revealText).width;
+    const pillW = tw + 60; const pillH = 72;
+    const pillX = target.x - pillW / 2;
+
+    // Pink pill
+    ctx.fillStyle = PINK;
+    roundRect(ctx, pillX, textY, pillW, pillH, pillH / 2);
+    ctx.fill();
+
+    shadowDark(ctx);
+    ctx.fillStyle = WHITE;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(revealText, target.x, textY + pillH / 2 + 4);
+    ctx.textBaseline = 'alphabetic';
+    shadowClear(ctx);
+    ctx.restore();
+  }
+
+  // Arrow pointing to target
+  const arrowAlpha = easeOut(tween(revealP, 0.2, 0.4));
+  if (arrowAlpha > 0) {
+    ctx.save();
+    ctx.globalAlpha = arrowAlpha;
+    ctx.fillStyle = PINK;
+    // Small triangle arrow above target
+    const ax = target.x, ay = target.y - target.r - 28;
+    ctx.beginPath();
+    ctx.moveTo(ax, ay + 22);
+    ctx.lineTo(ax - 16, ay - 4);
+    ctx.lineTo(ax + 16, ay - 4);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+// ─── DRAW: HEADER OVERLAY ─────────────────────────────────────────────────────
+function drawHeader(ctx, data, headerAlpha) {
+  // Tight gradient — only covers the text stack, not the heads area
+  const topGrad = ctx.createLinearGradient(0, 0, 0, 400);
+  topGrad.addColorStop(0,   `rgba(6,21,37,${0.88 * headerAlpha})`);
+  topGrad.addColorStop(0.7, `rgba(6,21,37,${0.22 * headerAlpha})`);
+  topGrad.addColorStop(1,    'rgba(6,21,37,0)');
+  ctx.fillStyle = topGrad;
+  ctx.fillRect(0, 0, W, 400);
+
+  ctx.save();
+  ctx.globalAlpha = headerAlpha;
+
+  // Pink top stripe (no shadow on shape fills)
+  ctx.fillStyle = PINK;
+  ctx.fillRect(0, 0, W, 4);
+
+  shadowDark(ctx);
+
+  // Top line (e.g. "FIND THE")
+  ctx.font = '600 36px Oswald';
+  ctx.fillStyle = PINK;
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '5px';
+  ctx.fillText(data.findPrefix, W / 2, 260);
+
+  // Big player name
+  ctx.font = '700 110px Oswald';
+  ctx.fillStyle = WHITE;
+  ctx.letterSpacing = '0px';
+  ctx.fillText(data.findLabel, W / 2, 370);
+
+  // Difficulty line — sits just below the big name, two-tone: "Difficulty: HARD"
+  const diff = DIFF_CFG[data.difficulty] || DIFF_CFG.easy;
+  ctx.letterSpacing = '2px';
+  ctx.font = '500 28px Oswald';
+  const prefW = ctx.measureText('Difficulty: ').width;
+  ctx.font = '700 28px Oswald';
+  const lblW = ctx.measureText(diff.label).width;
+  const lineX = W / 2 - (prefW + lblW) / 2;
+  ctx.textAlign = 'left';
+  ctx.font = '500 28px Oswald';
+  ctx.fillStyle = BLUE;
+  ctx.fillText('Difficulty: ', lineX, 420);
+  ctx.font = '700 28px Oswald';
+  ctx.fillStyle = BLUE;
+  ctx.fillText(diff.label, lineX + prefW, 420);
+  ctx.textAlign = 'center';
+  shadowClear(ctx);
+
+  ctx.restore();
+}
+
+// ─── DRAW: LOWER THIRD ────────────────────────────────────────────────────────
+// Context line (pink) + brand handle, just enough gradient behind them.
+function drawLowerThird(ctx, data, alpha) {
+  const ANCHOR = Math.round(H * 2 / 3); // 1280 — top of lower third
+  const CONTEXT_Y = ANCHOR + 10;        // "Can you spot him?"
+  const HANDLE_Y  = ANCHOR + 72;        // "@upperhandfantasy"
+
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.textAlign = 'center';
+  ctx.letterSpacing = '0px';
+
+  shadowDark(ctx);
+
+  // Context line in pink
+  if (data.context) {
+    ctx.font = 'italic 600 36px Roboto';
+    ctx.fillStyle = PINK;
+    ctx.fillText(data.context, W / 2, CONTEXT_Y);
+  }
+
+  // Brand handle
+  ctx.font = '500 26px Roboto';
+  ctx.fillStyle = BLUE;
+  ctx.fillText('@upperhandfantasy', W / 2, HANDLE_Y);
+
+  shadowClear(ctx);
+
+  ctx.restore();
+}
+
+// ─── DRAW: DIFFICULTY BADGE ───────────────────────────────────────────────────
+function drawDifficultyBadge(ctx, difficulty, t, alpha) {
+  const diff = DIFF_CFG[difficulty] || DIFF_CFG.easy;
+  const isImpossible = difficulty === 'impossible';
+
+  // Impossible badge pulses
+  const pulse = isImpossible ? (Math.sin(t * 3.5) * 0.4 + 0.6) : 1;
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  ctx.font = '700 22px Oswald';
+  ctx.letterSpacing = '3px';
+  const tw = ctx.measureText(diff.label).width;
+  const pillW = tw + 34, pillH = 38;
+  const px = W - pillW - 40, py = 28;
+
+  // Dark backing
+  ctx.fillStyle = 'rgba(6,21,37,0.72)';
+  roundRect(ctx, px, py, pillW, pillH, 4);
+  ctx.fill();
+
+  // Left accent bar
+  ctx.globalAlpha = alpha * pulse;
+  ctx.fillStyle = diff.color;
+  roundRect(ctx, px, py, 4, pillH, 2);
+  ctx.fill();
+
+  // Glow on impossible
+  if (isImpossible) {
+    ctx.shadowColor = diff.color;
+    ctx.shadowBlur = 18 * pulse;
+    ctx.strokeStyle = diff.color;
+    ctx.lineWidth = 1;
+    roundRect(ctx, px, py, pillW, pillH, 4);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  ctx.globalAlpha = alpha * pulse;
+  ctx.fillStyle = diff.color;
+  ctx.textAlign = 'left';
+  ctx.fillText(diff.label, px + 14, py + pillH * 0.71);
+
+  ctx.restore();
+}
+
+// ─── DRAW: COUNTDOWN ──────────────────────────────────────────────────────────
+// Positioned just below the context line in the header (~y=548)
+function drawCountdown(ctx, t, tReveal) {
+  const secsLeft = Math.ceil(tReveal - t);
+  if (secsLeft <= 0 || secsLeft > 99) return;
+  const fadeIn  = easeOut(tween(t, T_BOUNCE, 0.4));
+  const fadeOut = 1 - easeOut(tween(t, tReveal - 0.4, 0.4));
+  const alpha   = fadeIn * fadeOut;
+  if (alpha <= 0) return;
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  const label = `Revealing in: ${secsLeft}s`;
+  ctx.font = '600 28px Oswald';
+  const tw = ctx.measureText(label).width;
+  const pillW = tw + 44, pillH = 46;
+  const px = (W - pillW) / 2, py = 530;
+
+  ctx.fillStyle = 'rgba(6,21,37,0.75)';
+  roundRect(ctx, px, py, pillW, pillH, pillH / 2);
+  ctx.fill();
+
+  ctx.strokeStyle = BLUE;
+  ctx.lineWidth = 1.5;
+  roundRect(ctx, px, py, pillW, pillH, pillH / 2);
+  ctx.stroke();
+
+  shadowDark(ctx);
+  ctx.fillStyle = BLUE;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(label, W / 2, py + pillH / 2);
+  ctx.textBaseline = 'alphabetic';
+  shadowClear(ctx);
+  ctx.restore();
+}
+
+// ─── FULL FRAME ───────────────────────────────────────────────────────────────
+function drawFrame(ctx, data, heads, t) {
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = BLUE_DARK;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle background gradient for depth
+  const bgGrad = ctx.createRadialGradient(W/2, H/2, 0, W/2, H/2, H * 0.8);
+  bgGrad.addColorStop(0, 'rgba(13,42,71,0.4)');
+  bgGrad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = bgGrad;
+  ctx.fillRect(0, 0, W, H);
+
+  const tReveal = data.duration - REVEAL_DUR;
+  const revealP = data.doReveal ? easeOut(tween(t, tReveal, 0.8)) : 0;
+  const target  = heads.find(h => h.isTarget);
+
+  // Dark overlay on non-target area during reveal
+  if (revealP > 0) {
+    ctx.save();
+    ctx.fillStyle = `rgba(4,12,22,${revealP * 0.45})`;
+    ctx.fillRect(0, 0, W, H);
+    ctx.restore();
+  }
+
+  // During bounce: draw in shuffled order so target naturally moves behind/ahead of crowd.
+  // During reveal: bring target to front so spotlight is unobscured.
+  const drawOrder = revealP > 0
+    ? [...heads.filter(h => !h.isTarget), target].filter(Boolean)
+    : heads;
+  drawOrder.forEach(h => drawHead(ctx, h, t, revealP));
+
+  // Reveal effects
+  if (revealP > 0 && target) drawReveal(ctx, target, revealP, data.revealText);
+
+  // Countdown (only when reveal is on and before reveal starts)
+  if (data.doReveal && revealP <= 0) drawCountdown(ctx, t, tReveal);
+
+  // Header / lower-third / difficulty overlays
+  // Loop mode: fully opaque from frame 0 so start and end frames are identical
+  const headerAlpha = data.doReveal ? easeOut(tween(t, T_INTRO, 0.7)) : 1;
+  const lowerAlpha  = data.doReveal ? easeOut(tween(t, T_INTRO + 0.3, 0.7)) : 1;
+  drawHeader(ctx, data, headerAlpha);
+  drawLowerThird(ctx, data, lowerAlpha);
+}
+
+// ─── ANIMATION LOOP ───────────────────────────────────────────────────────────
+function runAnimation(ctx, data, heads, onDone) {
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  animStart = performance.now();
+
+  function frame(now) {
+    const t = (now - animStart) / 1000;
+
+    if (!data.doReveal) {
+      // ── LOOP MODE ──────────────────────────────────────────────────────────
+      // Sine-wave positions repeat perfectly at t = duration, so we just let
+      // time run. For preview (onDone = null) this continues forever.
+      // For video export (onDone provided) we stop after one full pass.
+      updateSinePositions(heads, t);
+      drawFrame(ctx, data, heads, t);
+      if (onDone && t >= data.duration) {
+        onDone();
+      } else {
+        animFrameId = requestAnimationFrame(frame);
+      }
+    } else {
+      // ── REVEAL MODE ────────────────────────────────────────────────────────
+      if (t < data.duration) {
+        stepPhysics(heads);
+        drawFrame(ctx, data, heads, t);
+        animFrameId = requestAnimationFrame(frame);
+      } else {
+        drawFrame(ctx, data, heads, data.duration);
+        if (onDone) onDone();
+      }
+    }
+  }
+  animFrameId = requestAnimationFrame(frame);
+}
+
+// ─── GENERATE ─────────────────────────────────────────────────────────────────
+async function generate() {
+  const data = getData();
+
+  // Load all images
+  await Promise.all(data.slots.map(s => loadImage(s.url)));
+
+  headsState = initHeads(data);
+
+  const ctx = makeCanvas('graphic-rl');
+  runAnimation(ctx, data, headsState, null);
+}
+
+// ─── PNG EXPORT ───────────────────────────────────────────────────────────────
+async function downloadPNG() {
+  const data  = getData();
+  await Promise.all(data.slots.map(s => loadImage(s.url)));
+  const heads = headsState || initHeads(data);
+  const ctx   = makeCanvas('graphic-rl');
+  const canvas = document.querySelector('#graphic-rl canvas');
+  // If reveal: export reveal frame; otherwise export mid-bounce frame
+  const t = data.doReveal ? data.duration : data.duration * 0.5;
+  drawFrame(ctx, data, heads, t);
+  const filename = data.doReveal ? 'find-the-face-reveal.png' : 'find-the-face.png';
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+// ─── VIDEO EXPORT ─────────────────────────────────────────────────────────────
+async function downloadVideo() {
+  const badge = document.getElementById('rec-badge');
+  const data  = getData();
+  await Promise.all(data.slots.map(s => loadImage(s.url)));
+  const heads = initHeads(data); // fresh shuffle for recording
+
+  const ctx    = makeCanvas('graphic-rl');
+  const canvas = document.querySelector('#graphic-rl canvas');
+
+  const mimes = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'];
+  const mime  = mimes.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+  const ext   = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+
+  const chunks  = [];
+  const stream  = canvas.captureStream(60);
+  const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 12_000_000 });
+
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    badge.style.display = 'none';
+    const blob = new Blob(chunks, { type: mime });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = `find-the-face.${ext}`;
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+    showFFmpegModal(filename, 60);
+    // Restart preview loop
+    generate();
+  };
+
+  badge.style.display = 'inline-block';
+  recorder.start();
+  runAnimation(ctx, data, heads, () => setTimeout(() => recorder.stop(), 400));
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+document.getElementById('btn-generate').addEventListener('click', generate);
+document.getElementById('btn-vid').addEventListener('click', downloadVideo);
+document.getElementById('btn-png').addEventListener('click', downloadPNG);
+
+// Duration slider — live label update
+document.getElementById('f-duration').addEventListener('input', e => {
+  document.getElementById('dur-display').textContent = e.target.value;
+});
+
+// Reveal checkbox — show/hide reveal options
+document.getElementById('f-do-reveal').addEventListener('change', e => {
+  document.getElementById('reveal-options').classList.toggle('hidden', !e.target.checked);
+});
+
+// Difficulty buttons
+document.querySelectorAll('.diff-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('f-difficulty').value = btn.dataset.diff;
+  });
+});
+
+window.addEventListener('load', () => setTimeout(generate, 500));
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

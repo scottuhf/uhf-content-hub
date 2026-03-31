@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upper Hand Fantasy — Content Games Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --orange:     #FF6B35;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --bg-card-cs: #090f1a;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── TOP BORDER ── */
+body::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--pink);
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 4px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(6, 21, 37, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  gap: 24px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid var(--border-dim);
+  padding-left: 20px;
+  height: 100%;
+}
+.nav-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-tab.active {
+  color: var(--pink);
+  background: rgba(237,10,115,0.1);
+  border-color: rgba(237,10,115,0.3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-dim);
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-text {
+  display: flex; flex-direction: column; line-height: 1;
+}
+.logo-top {
+  font-family: 'Oswald', sans-serif;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 20px;
+}
+.header-tag {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── MAIN ── */
+.main {
+  padding: 120px 40px 60px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 60px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.6s ease forwards;
+}
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 52px; font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 14px;
+}
+.hero-title span { color: var(--pink); }
+.hero-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 520px;
+  line-height: 1.6;
+}
+
+/* ── SECTION ── */
+.section {
+  margin-bottom: 48px;
+}
+.section-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+.section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.section-line {
+  flex: 1; height: 1px;
+  background: var(--border-dim);
+}
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.5s ease forwards;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card:hover {
+  transform: translateY(-4px) scale(1.015);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+}
+.card.active:hover  { border-color: var(--pink); box-shadow: 0 12px 40px rgba(237,10,115,0.18); }
+.card.blue:hover    { border-color: var(--blue); box-shadow: 0 12px 40px rgba(51,154,233,0.18); }
+.card.locked {
+  background: var(--bg-card-cs);
+  cursor: default;
+  opacity: 0;
+  transform: translateY(24px);
+}
+.card.locked:hover  { transform: translateY(0); box-shadow: none; border-color: var(--border-dim); }
+
+/* Card top accent bar */
+.card-bar {
+  height: 3px;
+  width: 100%;
+  background: var(--border-dim);
+  transition: background 0.22s;
+}
+.card.active .card-bar  { background: var(--pink); }
+.card.blue   .card-bar  { background: var(--blue); }
+
+/* Card preview area */
+.card-preview {
+  height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-dim);
+}
+.card-preview-bg {
+  position: absolute; inset: 0;
+  opacity: 0.06;
+  background-size: 28px 28px;
+  background-image:
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+}
+
+/* Lock / coming soon */
+.lock-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.lock-icon svg { width: 20px; height: 20px; fill: var(--text-dim); }
+
+/* Card body */
+.card-body {
+  padding: 18px 20px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.card-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+.badge-live { background: rgba(237,10,115,0.15); color: var(--pink); }
+.badge-blue { background: rgba(51,154,233,0.12); color: var(--blue); }
+.badge-lock { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+/* WIP card + badge */
+.badge-wip { background: rgba(245,166,35,0.15); color: #F5A623; }
+.card.wip:hover { border-color: #F5A623; box-shadow: 0 12px 40px rgba(245,166,35,0.14); }
+.card.wip .card-bar { background: #F5A623; }
+.card.wip .card-arrow { color: #F5A623; }
+.card.reel.wip:hover { border-color: #F5A623; }
+.card.reel.wip .card-bar { background: #F5A623; }
+.card.reel.wip .card-arrow { color: #F5A623; }
+.badge-dot  {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: currentColor;
+}
+
+.card-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.15;
+}
+.card.locked .card-name { color: var(--text-dim); }
+
+.card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  flex: 1;
+}
+.card.locked .card-desc { color: var(--text-dim); }
+
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-dim);
+}
+.card-formats {
+  display: flex; gap: 6px;
+}
+.format-tag {
+  font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-muted);
+}
+.card-arrow {
+  font-size: 18px;
+  color: var(--pink);
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.card.blue .card-arrow  { color: var(--blue); }
+.card:hover .card-arrow { transform: translateX(4px); }
+.card.locked .card-arrow { display: none; }
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: flex;
+  gap: 40px;
+  margin-top: 56px;
+  padding: 28px 36px;
+  background: #0a1929;
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease 0.7s forwards;
+}
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.stat-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--pink);
+  line-height: 1;
+}
+.stat-num.blue { color: var(--blue); }
+.stat-lbl {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.stat-divider {
+  width: 1px; background: var(--border-dim);
+  align-self: stretch;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* stagger delays */
+.hero           { animation-delay: 0.05s; }
+.section-header { animation-delay: 0.15s; }
+.card:nth-child(1)  { animation-delay: 0.20s; }
+.card:nth-child(2)  { animation-delay: 0.28s; }
+.card:nth-child(3)  { animation-delay: 0.36s; }
+.card:nth-child(4)  { animation-delay: 0.44s; }
+.card:nth-child(5)  { animation-delay: 0.52s; }
+.card:nth-child(6)  { animation-delay: 0.60s; }
+.card:nth-child(7)  { animation-delay: 0.68s; }
+.card:nth-child(8)  { animation-delay: 0.76s; }
+.card:nth-child(9)  { animation-delay: 0.84s; }
+.card:nth-child(10) { animation-delay: 0.92s; }
+.card:nth-child(11) { animation-delay: 1.00s; }
+
+/* Reel Games section gets its own stagger sequence */
+.section-reels .section-header   { animation-delay: 0.50s; }
+.section-reels .card:nth-child(1) { animation-delay: 0.56s; }
+.section-reels .card:nth-child(2) { animation-delay: 0.64s; }
+.section-reels .card:nth-child(3) { animation-delay: 0.72s; }
+.section-reels .card:nth-child(4) { animation-delay: 0.80s; }
+.section-reels .card:nth-child(5) { animation-delay: 0.88s; }
+.section-reels .card:nth-child(6) { animation-delay: 0.96s; }
+.section-reels .card:nth-child(7) { animation-delay: 1.04s; }
+.section-reels .card:nth-child(8) { animation-delay: 1.12s; }
+.section-reels .card:nth-child(9) { animation-delay: 1.20s; }
+
+/* YouTube Games section stagger */
+.section-youtube .section-header   { animation-delay: 1.30s; }
+.section-youtube .card:nth-child(1) { animation-delay: 1.36s; }
+.section-youtube .card:nth-child(2) { animation-delay: 1.44s; }
+.section-youtube .card:nth-child(3) { animation-delay: 1.52s; }
+.section-youtube .card:nth-child(4) { animation-delay: 1.60s; }
+
+/* ── REEL GAMES SECTION ── */
+.section-reels {
+  margin-top: 8px;
+  padding-top: 52px;
+  border-top: 1px solid var(--border-dim);
+  position: relative;
+}
+.section-reels::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 80px; height: 1px;
+  background: var(--orange);
+}
+
+/* Section header extras */
+.reel-header-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.reel-header-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.reel-section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+.reel-section-tag {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(255,107,53,0.12);
+  color: var(--orange);
+}
+.reel-section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease 0.55s forwards;
+}
+.reel-section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, rgba(255,107,53,0.35), var(--border-dim) 30%, transparent);
+}
+
+/* Reel card variant */
+.card.reel:hover      { border-color: var(--orange); box-shadow: 0 12px 40px rgba(255,107,53,0.16); }
+.card.reel .card-bar  { background: var(--orange); }
+.card.reel .card-arrow { color: var(--orange); }
+
+/* Reel badge */
+.badge-reel { background: rgba(255,107,53,0.15); color: var(--orange); }
+
+/* Reel preview area — taller, more visual room */
+.card.reel .card-preview { height: 160px; }
+
+/* Reel coming-soon cards — slightly warmer tint */
+.card.reel.locked { background: #0d100a; }
+.card.reel.locked:hover { border-color: rgba(255,107,53,0.12); }
+.card.reel.locked .lock-icon { border-color: rgba(255,107,53,0.15); }
+.card.reel.locked .lock-icon svg { fill: rgba(255,107,53,0.25); }
+
+/* ── YOUTUBE GAMES SECTION ── */
+.section-youtube {
+  margin-top: 8px;
+  padding-top: 52px;
+  border-top: 1px solid var(--border-dim);
+  position: relative;
+}
+.section-youtube::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 0;
+  width: 80px; height: 1px;
+  background: var(--blue);
+}
+.yt-header-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.yt-header-line {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.yt-section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+.yt-section-tag {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 3px;
+  background: rgba(51,154,233,0.12);
+  color: var(--blue);
+}
+.yt-section-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  letter-spacing: 0.2px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease 1.35s forwards;
+}
+.yt-section-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(to right, rgba(51,154,233,0.35), var(--border-dim) 30%, transparent);
+}
+
+/* Blue card locked variant */
+.card.blue.locked { background: #090d14; }
+.card.blue.locked:hover { border-color: rgba(51,154,233,0.12); }
+.card.blue.locked .lock-icon { border-color: rgba(51,154,233,0.15); }
+.card.blue.locked .lock-icon svg { fill: rgba(51,154,233,0.25); }
+</style>
+</head>
+<body>
+
+<!-- TOP BORDER handled by CSS ::before -->
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-mark">
+      <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/8558213/6a3c83e6313d4b649d48148158a8804b/eyJoIjozNjAsInciOjM2MH0%3D/1.jpeg?token-hash=fORyWgkKV7uzcJEahyyHUn27tPrt2FmCGHiDuYRJBOg%3D&token-time=1774828800" alt="Upper Hand Fantasy">
+    </div>
+    <div class="logo-text">
+      <span class="logo-top">Upper Hand Fantasy</span>
+      <span class="logo-sub">Content Games Hub</span>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="../UHF%20Database/index.html" class="nav-tab">&#8592; Content Hub</a>
+    <a href="index.html" class="nav-tab">Graphic Hub</a>
+    <a href="games-hub.html" class="nav-tab active">Games Hub</a>
+  </nav>
+  <div class="header-right">
+    <span class="header-tag">@upperhandfantasy</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Content Games Hub</div>
+    <h1 class="hero-title">Stop the <span>Scroll.</span></h1>
+    <p class="hero-desc">Short-form interactive games and engagement formats built for sports content creators.</p>
+  </div>
+
+  <!-- REEL GAMES -->
+  <div class="section section-reels">
+    <div class="section-header" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div class="reel-header-line">
+        <div class="reel-header-wrap">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="reel-section-title">Reel Games</span>
+            <span class="reel-section-tag">Short Form</span>
+          </div>
+        </div>
+        <div class="reel-section-line"></div>
+      </div>
+      <p class="reel-section-desc">The fun side of the upper hand. Short-form quick games built to stop the scroll — no spreadsheets required.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- FIND THE FACE — LIVE -->
+      <a href="find-the-face.html" class="card reel">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="position:relative;width:160px;height:130px;overflow:hidden;">
+            <!-- crowd faces (blue) -->
+            <div style="position:absolute;left:8px;top:10px;width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#0d2a47,#339AE9);border:1.5px solid rgba(51,154,233,0.4);overflow:hidden;"><div style="width:100%;height:100%;background:#1a4a73;border-radius:50%;"></div></div>
+            <div style="position:absolute;left:44px;top:4px;width:28px;height:28px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:78px;top:12px;width:30px;height:30px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:114px;top:6px;width:26px;height:26px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:14px;top:52px;width:30px;height:30px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:54px;top:46px;width:28px;height:28px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:100px;top:50px;width:32px;height:32px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:136px;top:44px;width:26px;height:26px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:20px;top:92px;width:28px;height:28px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:62px;top:88px;width:30px;height:30px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <div style="position:absolute;left:108px;top:94px;width:26px;height:26px;border-radius:50%;background:#1a3a5c;border:1.5px solid rgba(51,154,233,0.3);"></div>
+            <!-- THE target face — pink glow -->
+            <div style="position:absolute;left:82px;top:52px;width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#5c0430,#ED0A73);border:2px solid #ED0A73;box-shadow:0 0 12px rgba(237,10,115,0.6);z-index:2;"></div>
+            <!-- FIND THE label -->
+            <div style="position:absolute;top:3px;left:0;right:0;text-align:center;font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#FF6B35;letter-spacing:2px;text-transform:uppercase;">FIND THE</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-reel"><span class="badge-dot"></span> Live</div>
+          <div class="card-name">Find The<br>Face</div>
+          <div class="card-desc">Float a chaotic crowd of faces — hide one target among them. Paste image URLs or upload your own. Ends with a pink reveal pulse. Built for engagement.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- HIGHER OR LOWER — LIVE -->
+      <a href="higher-or-lower.html" class="card reel">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;align-items:center;gap:0;width:160px;height:110px;">
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#0d2a47;border:2px solid #339AE9;"></div>
+              <div style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:#339AE9;">1,847</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;gap:6px;padding:0 6px;">
+              <div style="font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:#339AE9;border:1px solid #339AE9;border-radius:4px;padding:2px 6px;">&#8593;</div>
+              <div style="width:1px;height:16px;background:#1a3a5c;"></div>
+              <div style="font-family:'Oswald',sans-serif;font-size:13px;font-weight:700;color:#ED0A73;border:1px solid #ED0A73;border-radius:4px;padding:2px 6px;">&#8595;</div>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;">
+              <div style="width:34px;height:34px;border-radius:50%;background:#0d2a47;border:2px solid #ED0A73;"></div>
+              <div style="font-family:'Oswald',sans-serif;font-size:26px;font-weight:700;color:#2d4a63;">?</div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-reel"><span class="badge-dot"></span> Live</div>
+          <div class="card-name">Higher or<br>Lower</div>
+          <div class="card-desc">Player A's stat is shown. Player B's is hidden. Higher or lower? Question post drives comments, Reveal post delivers the answer with a slam animation.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">1:1</span>
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- WIP DIVIDER -->
+      <div style="grid-column:1/-1;display:flex;align-items:center;gap:12px;padding:4px 0 8px;">
+        <span style="font-size:9px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:#F5A623;white-space:nowrap;">Work In Progress</span>
+        <div style="flex:1;height:1px;background:rgba(245,166,35,0.18);"></div>
+      </div>
+
+      <!-- MYSTERY PLAYER — WIP -->
+      <a href="mystery-player.html" class="card reel wip">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <div style="width:58px;height:58px;border-radius:50%;background:#0a1525;border:3px solid #ED0A73;display:flex;align-items:center;justify-content:center;box-shadow:0 0 16px rgba(237,10,115,0.3);">
+              <span style="font-family:'Oswald',sans-serif;font-size:28px;font-weight:700;color:rgba(51,154,233,0.5);">?</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:5px;width:120px;">
+              <div style="height:11px;border-radius:3px;background:#0d2a47;border-left:3px solid #339AE9;"></div>
+              <div style="height:11px;border-radius:3px;background:rgba(13,42,71,0.5);border-left:3px solid rgba(51,154,233,0.4);"></div>
+              <div style="height:11px;border-radius:3px;background:#0d2a47;border-left:3px solid rgba(51,154,233,0.3);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip"><span class="badge-dot"></span> WIP</div>
+          <div class="card-name">Mystery<br>Player</div>
+          <div class="card-desc">Who Am I? Show a silhouette with animated clues in Question mode, then punch in the full reveal. Classic guess-the-player engagement format.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">1:1</span>
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- NAME THAT STAT — WIP -->
+      <a href="name-that-stat.html" class="card reel wip">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-family:'Oswald',sans-serif;font-size:40px;font-weight:700;color:#fff;line-height:1;text-shadow:0 0 20px rgba(255,255,255,0.15);">2,005</div>
+            <div style="display:flex;flex-direction:column;gap:4px;width:140px;">
+              <div style="height:20px;border-radius:5px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;padding:0 7px;gap:5px;">
+                <div style="width:11px;height:11px;border-radius:50%;background:#339AE9;flex-shrink:0;"></div>
+                <div style="height:5px;border-radius:2px;background:#1a3a5c;flex:1;"></div>
+              </div>
+              <div style="height:20px;border-radius:5px;background:rgba(237,10,115,0.18);border:1.5px solid #ED0A73;display:flex;align-items:center;padding:0 7px;gap:5px;">
+                <div style="width:11px;height:11px;border-radius:50%;background:#ED0A73;flex-shrink:0;"></div>
+                <div style="height:5px;border-radius:2px;background:rgba(237,10,115,0.3);flex:1;"></div>
+              </div>
+              <div style="height:20px;border-radius:5px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;padding:0 7px;gap:5px;">
+                <div style="width:11px;height:11px;border-radius:50%;background:#2d4a63;flex-shrink:0;"></div>
+                <div style="height:5px;border-radius:2px;background:#1a3a5c;flex:1;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip"><span class="badge-dot"></span> WIP</div>
+          <div class="card-name">Name That<br>Stat</div>
+          <div class="card-desc">Flash a giant number — four choices, one answer. Question mode is the tease, Reveal mode lights up the correct stat. High-engagement multiple choice format.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">1:1</span>
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- STAT SORT — WIP -->
+      <a href="stat-sort.html" class="card reel wip">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;gap:5px;width:150px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(237,10,115,0.2);border:1.5px solid #ED0A73;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#ED0A73;">1</span></div>
+              <div style="flex:1;height:10px;border-radius:3px;background:rgba(237,10,115,0.25);"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:rgba(51,154,233,0.2);border:1.5px solid #339AE9;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#339AE9;">2</span></div>
+              <div style="flex:1;height:10px;border-radius:3px;background:rgba(51,154,233,0.2);width:80%;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:#0d2a47;border:1.5px solid #1a3a5c;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#5a8ab0;">3</span></div>
+              <div style="flex:1;height:10px;border-radius:3px;background:#1a3a5c;width:60%;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:#0d2a47;border:1.5px solid #1a3a5c;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#5a8ab0;">4</span></div>
+              <div style="flex:1;height:10px;border-radius:3px;background:#1a3a5c;width:45%;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip"><span class="badge-dot"></span> WIP</div>
+          <div class="card-name">Stat<br>Sort</div>
+          <div class="card-desc">Scrambled mode challenges viewers to rank 4–6 players by any stat. Sorted mode reveals the correct order with animated bars dropping into place.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">1:1</span>
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">PNG</span>
+              <span class="format-tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- HOT TAKE DROP — COMING SOON -->
+      <div class="card reel locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:8px;">
+            <div style="font-size:36px;line-height:1;filter:drop-shadow(0 0 12px rgba(255,107,53,0.6));">🔥</div>
+            <div style="font-family:'Oswald',sans-serif;font-size:22px;font-weight:700;color:#FF6B35;letter-spacing:2px;">HOT TAKE</div>
+            <div style="width:80px;height:2px;border-radius:1px;background:linear-gradient(to right,transparent,#FF6B35,transparent);"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Hot Take<br>Drop</div>
+          <div class="card-desc">Enter any spicy fantasy take and generate a fire-animated scroll-stopper reel. Text-first, personality-driven, built for the timeline.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">Video</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- W OR L VERDICT — COMING SOON -->
+      <div class="card reel locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;gap:18px;align-items:center;">
+            <div style="width:64px;height:64px;border-radius:10px;background:rgba(34,197,94,0.12);border:1.5px solid rgba(34,197,94,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+              <span style="font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;color:#22C55E;line-height:1;">W</span>
+              <span style="font-size:7px;letter-spacing:2px;color:rgba(34,197,94,0.6);text-transform:uppercase;">Winner</span>
+            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:12px;color:#2d4a63;letter-spacing:2px;">or</div>
+            <div style="width:64px;height:64px;border-radius:10px;background:rgba(239,68,68,0.12);border:1.5px solid rgba(239,68,68,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;">
+              <span style="font-family:'Oswald',sans-serif;font-size:30px;font-weight:700;color:#EF4444;line-height:1;">L</span>
+              <span style="font-size:7px;letter-spacing:2px;color:rgba(239,68,68,0.6);text-transform:uppercase;">Loser</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">W or L<br>Verdict</div>
+          <div class="card-desc">The most opinionated graphic on the internet. Drop a verdict on any player, trade, or fantasy move — animated and shareable. No in between.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">1:1</span>
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">Video</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOLD PREDICTION — COMING SOON -->
+      <div class="card reel locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div style="font-size:30px;line-height:1;filter:drop-shadow(0 0 10px rgba(255,214,0,0.5));">&#9889;</div>
+            <div style="font-family:'Oswald',sans-serif;font-size:11px;font-weight:700;letter-spacing:3px;color:#5a8ab0;text-transform:uppercase;">Bold Prediction</div>
+            <div style="font-family:'Oswald',sans-serif;font-size:18px;font-weight:700;color:#fff;text-align:center;line-height:1.2;max-width:140px;">1,400 YARDS<br>THIS SEASON</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Bold<br>Prediction</div>
+          <div class="card-desc">Lock in a lightning-animated bold call before gameday. Dramatic reveal, timestamp baked in. Built for the takes that age well — or very badly.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">Video</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TIER DROP — COMING SOON -->
+      <div class="card reel locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;gap:4px;width:160px;">
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;color:#FF6B35;width:16px;">S</span>
+              <div style="flex:1;height:18px;border-radius:3px;background:rgba(255,107,53,0.18);border:1px solid rgba(255,107,53,0.35);display:flex;align-items:center;padding:0 6px;">
+                <span style="font-size:9px;color:rgba(255,107,53,0.7);letter-spacing:1px;">CeeDee · Chase</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;color:#ED0A73;width:16px;">A</span>
+              <div style="flex:1;height:18px;border-radius:3px;background:rgba(237,10,115,0.1);border:1px solid rgba(237,10,115,0.25);display:flex;align-items:center;padding:0 6px;">
+                <span style="font-size:9px;color:rgba(237,10,115,0.6);letter-spacing:1px;">Jefferson · Hill</span>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;color:#339AE9;width:16px;">B</span>
+              <div style="flex:1;height:18px;border-radius:3px;background:rgba(51,154,233,0.08);border:1px solid rgba(51,154,233,0.2);display:flex;align-items:center;padding:0 6px;">
+                <span style="font-size:9px;color:rgba(51,154,233,0.55);letter-spacing:1px;">Kupp · Higgins</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Tier<br>Drop</div>
+          <div class="card-desc">Players drop into tiers one by one — S through C — with animated reveals timed for maximum engagement. The reel format tier lists were made for.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">9:16</span>
+              <span class="format-tag">Video</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- YOUTUBE GAMES -->
+  <div class="section section-youtube">
+    <div class="section-header" style="flex-direction:column;align-items:flex-start;gap:6px;">
+      <div class="yt-header-line">
+        <div class="yt-header-wrap">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span class="yt-section-title">YouTube Games</span>
+            <span class="yt-section-tag">Long Form</span>
+          </div>
+        </div>
+        <div class="yt-section-line"></div>
+      </div>
+      <p class="yt-section-desc">Long-form interactive games designed for YouTube audience engagement.</p>
+    </div>
+
+    <div class="grid">
+
+      <!-- GUESS THE DRAFT PICK — WIP -->
+      <a href="guess-the-draft-pick.html" class="card blue wip">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <!-- Draft board mockup -->
+          <div style="display:flex;flex-direction:column;gap:4px;width:170px;">
+            <!-- Header row -->
+            <div style="display:flex;gap:3px;">
+              <div style="width:28px;height:14px;border-radius:2px;background:#0a1929;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:7px;color:#2d4a63;letter-spacing:0.5px;">RND</span>
+              </div>
+              <div style="flex:1;height:14px;border-radius:2px;background:#0a1929;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:7px;color:#2d4a63;letter-spacing:1px;">PICK</span>
+              </div>
+              <div style="flex:1;height:14px;border-radius:2px;background:#0a1929;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:7px;color:#2d4a63;letter-spacing:1px;">TEAM</span>
+              </div>
+            </div>
+            <!-- Row 1 — revealed -->
+            <div style="display:flex;gap:3px;">
+              <div style="width:28px;height:18px;border-radius:2px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#339AE9;">1</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:rgba(51,154,233,0.12);border:1.5px solid #339AE9;display:flex;align-items:center;padding:0 5px;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#339AE9;">1st Overall</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;color:#5a8ab0;">NE</span>
+              </div>
+            </div>
+            <!-- Row 2 — revealed -->
+            <div style="display:flex;gap:3px;">
+              <div style="width:28px;height:18px;border-radius:2px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#5a8ab0;">2</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:#0d2a47;border:1px solid rgba(51,154,233,0.3);display:flex;align-items:center;padding:0 5px;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#5a8ab0;">2nd Overall</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;color:#5a8ab0;">CLE</span>
+              </div>
+            </div>
+            <!-- Row 3 — hidden -->
+            <div style="display:flex;gap:3px;">
+              <div style="width:28px;height:18px;border-radius:2px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:9px;font-weight:700;color:#5a8ab0;">3</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:#061525;border:1px dashed #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:16px;font-weight:700;color:#1a3a5c;">?</span>
+              </div>
+              <div style="flex:1;height:18px;border-radius:2px;background:#061525;border:1px dashed #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;color:#1a3a5c;">???</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip"><span class="badge-dot"></span> WIP</div>
+          <div class="card-name">Guess the<br>Draft Pick</div>
+          <div class="card-desc">Reveal draft picks one by one with suspense animations. Audience guesses who gets picked where.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">YouTube</span>
+              <span class="format-tag">Live</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- SURVIVOR DRAFT — WIP -->
+      <a href="survivor-draft.html" class="card blue wip">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <!-- Elimination bracket mockup -->
+          <div style="display:flex;gap:8px;align-items:center;width:170px;">
+            <!-- Round 1 -->
+            <div style="display:flex;flex-direction:column;gap:5px;">
+              <div style="width:46px;height:20px;border-radius:3px;background:rgba(51,154,233,0.12);border:1.5px solid #339AE9;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#339AE9;">P1</span>
+              </div>
+              <div style="width:46px;height:20px;border-radius:3px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;text-decoration:line-through;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;color:#2d4a63;">P2</span>
+              </div>
+              <div style="width:46px;height:20px;border-radius:3px;background:rgba(51,154,233,0.12);border:1.5px solid #339AE9;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#339AE9;">P3</span>
+              </div>
+              <div style="width:46px;height:20px;border-radius:3px;background:#0d2a47;border:1px solid #1a3a5c;display:flex;align-items:center;justify-content:center;text-decoration:line-through;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;color:#2d4a63;">P4</span>
+              </div>
+            </div>
+            <!-- Connector -->
+            <div style="display:flex;flex-direction:column;gap:20px;align-items:center;">
+              <div style="width:10px;height:1px;background:#1a3a5c;"></div>
+              <div style="width:10px;height:1px;background:#1a3a5c;"></div>
+            </div>
+            <!-- Round 2 -->
+            <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
+              <div style="width:46px;height:20px;border-radius:3px;background:rgba(51,154,233,0.12);border:1.5px solid #339AE9;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#339AE9;">P1</span>
+              </div>
+              <div style="width:46px;height:20px;border-radius:3px;background:#061525;border:1px dashed #1a3a5c;display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:12px;font-weight:700;color:#1a3a5c;">?</span>
+              </div>
+            </div>
+            <!-- Connector -->
+            <div style="width:10px;height:1px;background:#1a3a5c;align-self:center;"></div>
+            <!-- Final -->
+            <div style="width:22px;height:22px;border-radius:50%;background:rgba(237,10,115,0.15);border:2px solid #ED0A73;display:flex;align-items:center;justify-content:center;align-self:center;">
+              <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#ED0A73;">WIN</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip"><span class="badge-dot"></span> WIP</div>
+          <div class="card-name">Survivor<br>Draft</div>
+          <div class="card-desc">Players vote off one fantasy player per round until one remains. Built for community-driven content.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">YouTube</span>
+              <span class="format-tag">Community</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- FANTASY TRADE MACHINE — COMING SOON -->
+      <div class="card blue locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div class="lock-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 10h-1V7A5 5 0 005 7v3H4a2 2 0 00-2 2v8a2 2 0 002 2h16a2 2 0 002-2v-8a2 2 0 00-2-2zm-6 7a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-7H9V7a3 3 0 016 0v3z"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Fantasy Trade<br>Machine</div>
+          <div class="card-desc">Live-style trade builder game where viewers propose and vote on deals.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">YouTube</span>
+              <span class="format-tag">Live</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- UNDERDOG OR OVERDOG — COMING SOON -->
+      <div class="card blue locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div class="lock-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 10h-1V7A5 5 0 005 7v3H4a2 2 0 00-2 2v8a2 2 0 002 2h16a2 2 0 002-2v-8a2 2 0 00-2-2zm-6 7a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm3-7H9V7a3 3 0 016 0v3z"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Underdog or<br>Overdog</div>
+          <div class="card-desc">Rapid-fire tier judgment game — swipe left or right on player props and fantasy projections.</div>
+          <div class="card-footer">
+            <div class="card-formats">
+              <span class="format-tag">YouTube</span>
+              <span class="format-tag">Interactive</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">2</span>
+      <span class="stat-lbl">Live Games</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" style="color:#F5A623;">3</span>
+      <span class="stat-lbl">Reel WIP</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num blue">4</span>
+      <span class="stat-lbl">YouTube Games</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num" style="color:var(--text-dim);">Coming Soon</span>
+      <span class="stat-lbl">More Formats</span>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

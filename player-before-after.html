@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Before / After — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(6,21,37,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 100;
+}
+.nav-back {
+  display: flex; align-items: center; gap: 7px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--white); }
+.nav-back svg { width: 15px; height: 15px; }
+.nav-sep { width: 1px; height: 20px; background: var(--border-dim); }
+.nav-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+
+.main {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  min-height: calc(100vh - 56px);
+}
+
+.form-panel {
+  border-right: 1px solid var(--border-dim);
+  padding: 26px 22px 40px;
+  overflow-y: auto;
+  background: rgba(13,42,71,0.18);
+}
+
+.sec-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 9px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  letter-spacing: 0.03em;
+}
+.form-group input {
+  width: 100%;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus { border-color: var(--blue); }
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border-dim);
+  margin: 18px 0;
+}
+
+.btn-row { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 22px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px; border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.04em;
+}
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+.btn-primary { background: var(--pink); color: var(--white); }
+.btn-primary:hover { background: #c8086a; }
+.btn-export {
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.35);
+  color: var(--blue);
+}
+.btn-export:hover { background: rgba(51,154,233,0.2); }
+.exp-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-top: 14px;
+}
+.rec-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.rec-idle { background: rgba(90,138,176,0.08); color: var(--text-dim); border: 1px solid var(--border-dim); }
+.rec-live { background: rgba(237,10,115,0.12); color: var(--pink); border: 1px solid rgba(237,10,115,0.3); }
+
+.preview-panel {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  overflow-y: auto;
+}
+.preview-hdr {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.canvas-row {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.canvas-wrap { display: flex; flex-direction: column; gap: 8px; }
+.canvas-lbl {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.canvas-outer {
+  transform-origin: top left;
+  position: relative;
+}
+.canvas-outer canvas {
+  display: block;
+  border-radius: 8px;
+  border: 1px solid var(--border-dim);
+}
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-back" href="index.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 3L5 8l5 5"/></svg>
+    Hub
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-title">Before / After Comparison</span>
+</nav>
+
+<div class="main">
+
+  <aside class="form-panel">
+    <div class="sec-label">Player Info</div>
+
+    <div class="form-group">
+      <label>Player Name</label>
+      <input type="text" id="f-name" value="SAQUON BARKLEY">
+    </div>
+    <div class="form-group">
+      <label>Position</label>
+      <input type="text" id="f-pos" value="RB">
+    </div>
+    <div class="form-group">
+      <label>Photo URL</label>
+      <input type="text" id="f-photo" value="https://a.espncdn.com/i/headshots/nfl/players/full/3054211.png">
+    </div>
+
+    <hr class="divider">
+    <div class="sec-label">Situation</div>
+
+    <div class="form-group">
+      <label>Old Team</label>
+      <input type="text" id="f-old-team" value="NYG">
+    </div>
+    <div class="form-group">
+      <label>New Team</label>
+      <input type="text" id="f-new-team" value="PHI">
+    </div>
+    <div class="form-group">
+      <label>Event Label</label>
+      <input type="text" id="f-event" value="FREE AGENT SIGNING">
+    </div>
+
+    <hr class="divider">
+    <div class="sec-label">Stats</div>
+
+    <div class="form-group">
+      <label>Stat Label</label>
+      <input type="text" id="f-stat-label" value="PPR PTS / GAME">
+    </div>
+    <div class="form-group">
+      <label>Before Value</label>
+      <input type="text" id="f-before" value="18.2">
+    </div>
+    <div class="form-group">
+      <label>After Value</label>
+      <input type="text" id="f-after" value="23.5">
+    </div>
+    <div class="form-group">
+      <label>Change Label (delta badge)</label>
+      <input type="text" id="f-change" value="+5.3 PPR POINTS PER GAME">
+    </div>
+
+    <hr class="divider">
+    <div class="sec-label">Attribution</div>
+    <div class="form-group">
+      <label>Footer Text</label>
+      <input type="text" id="f-attr" value="@upperhandfantasy">
+    </div>
+
+    <div class="exp-label">Export</div>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="btn-regen">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13.5 8A5.5 5.5 0 112.5 5.5"/><path d="M2.5 2v3.5H6"/></svg>
+        Regenerate
+      </button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-export" id="btn-dl-sq">PNG 1:1</button>
+      <button class="btn btn-export" id="btn-dl-rl">PNG 9:16</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-export" id="btn-vid-sq">
+        <span id="rec-sq" class="rec-badge rec-idle">REC</span> Video 1:1
+      </button>
+      <button class="btn btn-export" id="btn-vid-rl">
+        <span id="rec-rl" class="rec-badge rec-idle">REC</span> Video 9:16
+      </button>
+    </div>
+  </aside>
+
+  <section class="preview-panel">
+    <div>
+      <div class="preview-hdr">Preview</div>
+      <div class="canvas-row">
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">1:1 Square</div>
+          <div class="canvas-outer" id="sq-outer">
+            <canvas id="squareCanvas" width="1080" height="1080"></canvas>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">9:16 Reels</div>
+          <div class="canvas-outer" id="rl-outer">
+            <canvas id="reelsCanvas" width="1080" height="1920"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ── CONSTANTS ──────────────────────────────────────────────────────────────────
+const PINK        = '#ED0A73';
+const BLUE        = '#339AE9';
+const WHITE       = '#FFFFFF';
+const BG          = '#061525';
+const BG_CARD     = '#0d2a47';
+const BORDER_DIM  = '#1a3a5c';
+const TEXT_MUTED  = '#5a8ab0';
+const TEXT_DIM    = '#2d4a63';
+const TOTAL       = 220;
+
+// ── IMAGE CACHE ────────────────────────────────────────────────────────────────
+const imgCache = {};
+function loadImg(url, cb) {
+  if (!url) { cb(null); return; }
+  if (imgCache[url]) { cb(imgCache[url]); return; }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => { imgCache[url] = img; cb(img); };
+  img.onerror = () => { imgCache[url] = null; cb(null); };
+  img.src = url;
+}
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function easeOut(t) { return 1 - Math.pow(1 - Math.min(Math.max(t, 0), 1), 3); }
+function tween(f, start, dur) { return easeOut(Math.min(1, Math.max(0, (f - start) / dur))); }
+
+function countUp(raw, progress) {
+  const s = String(raw).trim();
+  const m = s.match(/^([^0-9\-]*)(-?[0-9]+(?:\.[0-9]+)?)(.*)$/);
+  if (!m) return s;
+  const [, pre, numStr, suf] = m;
+  const num = parseFloat(numStr);
+  const cur = num * easeOut(progress);
+  const dec = numStr.includes('.') ? numStr.split('.')[1].length : 0;
+  return pre + cur.toFixed(dec) + suf;
+}
+
+function fitText(ctx, text, maxW, size, weight, family) {
+  ctx.font = `${weight} ${size}px ${family}`;
+  while (ctx.measureText(text).width > maxW && size > 16) {
+    size -= 2;
+    ctx.font = `${weight} ${size}px ${family}`;
+  }
+  return size;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+function drawPhoto(ctx, img, x, y, w, h, borderW, borderColor) {
+  ctx.save();
+  ctx.fillStyle = borderColor;
+  ctx.fillRect(x - borderW, y - borderW, w + borderW * 2, h + borderW * 2);
+  ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  if (img) {
+    const sc = Math.max(w / img.width, h / img.height);
+    const sw = img.width * sc, sh = img.height * sc;
+    ctx.drawImage(img, x + (w - sw) / 2, y + (h - sh) / 2, sw, sh);
+  } else {
+    ctx.fillStyle = BG_CARD; ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = BORDER_DIM;
+    ctx.font = `700 ${Math.round(w * 0.3)}px Oswald`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('?', x + w / 2, y + h / 2);
+  }
+  ctx.restore();
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let playerImg = null;
+let animId = null;
+
+function getData() {
+  return {
+    name:      document.getElementById('f-name').value,
+    pos:       document.getElementById('f-pos').value,
+    photoUrl:  document.getElementById('f-photo').value,
+    oldTeam:   document.getElementById('f-old-team').value,
+    newTeam:   document.getElementById('f-new-team').value,
+    event:     document.getElementById('f-event').value,
+    statLabel: document.getElementById('f-stat-label').value,
+    before:    document.getElementById('f-before').value,
+    after:     document.getElementById('f-after').value,
+    change:    document.getElementById('f-change').value,
+    attr:      document.getElementById('f-attr').value,
+  };
+}
+
+// ── DRAW SQUARE (1080x1080) ────────────────────────────────────────────────────
+function drawSquare(ctx, data, frame) {
+  const W = 1080, H = 1080;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, H);
+
+  // Radial glows
+  let g = ctx.createRadialGradient(0, 0, 0, 0, 0, 600);
+  g.addColorStop(0, 'rgba(51,154,233,0.08)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  g = ctx.createRadialGradient(W, H, 0, W, H, 600);
+  g.addColorStop(0, 'rgba(237,10,115,0.07)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // Pink top border
+  ctx.fillStyle = PINK;
+  ctx.fillRect(0, 0, W, 6);
+
+  // Blue left accent bar
+  ctx.fillStyle = TEXT_DIM;
+  ctx.fillRect(0, 6, 4, 480);
+
+  // Photo
+  const photoT = tween(frame, 0, 70);
+  const photoOffX = (1 - photoT) * -80;
+  ctx.save();
+  ctx.globalAlpha = photoT;
+  ctx.translate(photoOffX, 0);
+  drawPhoto(ctx, playerImg, 60, 88, 310, 420, 5, PINK);
+  ctx.restore();
+
+  // Player info block
+  const infoT = tween(frame, 15, 70);
+  const infoOffY = (1 - infoT) * 40;
+  ctx.save();
+  ctx.globalAlpha = infoT;
+  ctx.translate(0, infoOffY);
+
+  // Player name
+  ctx.fillStyle = WHITE;
+  fitText(ctx, data.name.toUpperCase(), 610, 66, '700', 'Oswald');
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(data.name.toUpperCase(), 410, 148);
+
+  // Position pill
+  const posText = data.pos.toUpperCase();
+  ctx.font = '600 14px Roboto';
+  const posW = ctx.measureText(posText).width + 20;
+  roundRect(ctx, 412, 168, posW, 26, 6);
+  ctx.fillStyle = 'rgba(51,154,233,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = BLUE;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = BLUE;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillText(posText, 422, 181);
+
+  // Team change
+  ctx.font = '500 26px Roboto';
+  ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.fillText(data.oldTeam.toUpperCase(), 412, 260);
+  const oldW = ctx.measureText(data.oldTeam.toUpperCase()).width;
+  ctx.fillStyle = BLUE;
+  ctx.fillText('  →  ', 412 + oldW, 260);
+  const arrowW = ctx.measureText('  →  ').width;
+  ctx.fillStyle = WHITE;
+  ctx.fillText(data.newTeam.toUpperCase(), 412 + oldW + arrowW, 260);
+
+  // Event label
+  ctx.font = '500 16px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.letterSpacing = '2px';
+  ctx.fillText(data.event.toUpperCase(), 412, 310);
+
+  ctx.restore();
+
+  // Divider line (animated clip)
+  const divT = tween(frame, 55, 40);
+  ctx.save();
+  ctx.globalAlpha = divT;
+  const divDrawW = 960 * divT;
+  ctx.strokeStyle = BORDER_DIM;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(60, 540);
+  ctx.lineTo(60 + divDrawW, 540);
+  ctx.stroke();
+  ctx.restore();
+
+  // BEFORE panel
+  const beforeT = tween(frame, 75, 70);
+  const beforeOffX = (1 - beforeT) * -40;
+  ctx.save();
+  ctx.globalAlpha = beforeT;
+  ctx.translate(beforeOffX, 0);
+  ctx.fillStyle = 'rgba(13,42,71,0.7)';
+  roundRect(ctx, 60, 558, 452, 175, 6);
+  ctx.fill();
+  ctx.strokeStyle = BORDER_DIM;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(60 + 6, 558);
+  ctx.lineTo(60 + 452 - 6, 558);
+  ctx.quadraticCurveTo(60 + 452, 558, 60 + 452, 558 + 6);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(60 + 6, 558);
+  ctx.lineTo(60 + 452 - 6, 558);
+  ctx.strokeStyle = BORDER_DIM; ctx.lineWidth = 3;
+  // top border
+  ctx.save();
+  ctx.fillStyle = BORDER_DIM;
+  ctx.fillRect(60, 558, 452, 3);
+  ctx.restore();
+
+  ctx.font = '700 11px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('BEFORE', 286, 578);
+
+  const bVal = countUp(data.before, beforeT);
+  ctx.fillStyle = TEXT_MUTED;
+  fitText(ctx, bVal, 400, 68, '700', 'Oswald');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(bVal, 286, 658);
+
+  ctx.font = '400 18px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center';
+  ctx.fillText(data.statLabel.toUpperCase(), 286, 690);
+  ctx.restore();
+
+  // Arrow divider
+  ctx.save();
+  ctx.globalAlpha = Math.min(tween(frame, 75, 70), tween(frame, 85, 70));
+  ctx.font = '700 28px Roboto';
+  ctx.fillStyle = BLUE;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('→', 540, 645);
+  ctx.restore();
+
+  // AFTER panel
+  const afterT = tween(frame, 85, 70);
+  const afterOffX = (1 - afterT) * 40;
+  ctx.save();
+  ctx.globalAlpha = afterT;
+  ctx.translate(afterOffX, 0);
+  ctx.fillStyle = 'rgba(13,42,71,0.9)';
+  roundRect(ctx, 568, 558, 452, 175, 6);
+  ctx.fill();
+  ctx.fillStyle = PINK;
+  ctx.fillRect(568, 558, 452, 3);
+
+  ctx.font = '700 11px Roboto';
+  ctx.fillStyle = PINK;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('AFTER', 794, 578);
+
+  const aVal = countUp(data.after, afterT);
+  ctx.fillStyle = PINK;
+  fitText(ctx, aVal, 400, 76, '700', 'Oswald');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(aVal, 794, 662);
+
+  ctx.font = '400 18px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center';
+  ctx.fillText(data.statLabel.toUpperCase(), 794, 690);
+  ctx.restore();
+
+  // Delta badge
+  const deltaT = tween(frame, 135, 50);
+  const deltaScale = deltaT;
+  ctx.save();
+  ctx.globalAlpha = deltaT;
+  ctx.translate(540, 770);
+  ctx.scale(deltaScale, deltaScale);
+  ctx.translate(-540, -770);
+  ctx.font = '700 28px Oswald';
+  const cText = data.change.toUpperCase();
+  const cW = ctx.measureText(cText).width + 44;
+  const cH = 52;
+  const cx = 540 - cW / 2, cy = 760 - cH / 2;
+  roundRect(ctx, cx, cy, cW, cH, 10);
+  ctx.fillStyle = 'rgba(237,10,115,0.15)';
+  ctx.fill();
+  ctx.strokeStyle = PINK;
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+  ctx.fillStyle = PINK;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(cText, 540, 770);
+  ctx.restore();
+
+  // Footer
+  const footT = tween(frame, 165, 45);
+  ctx.save();
+  ctx.globalAlpha = footT * 0.45;
+  ctx.font = '300 19px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(data.attr, 540, 1042);
+  ctx.restore();
+}
+
+// ── DRAW REELS (1080x1920) ─────────────────────────────────────────────────────
+function drawReels(ctx, data, frame) {
+  const W = 1080, H = 1920;
+  ctx.clearRect(0, 0, W, H);
+
+  // Full uniform background
+  ctx.fillStyle = BG;
+  ctx.fillRect(0, 0, W, H);
+
+  // Full-canvas radial glows (end-to-end, no safe zone masking)
+  let g = ctx.createRadialGradient(0, 0, 0, 0, 0, 900);
+  g.addColorStop(0, 'rgba(51,154,233,0.09)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  g = ctx.createRadialGradient(W, H, 0, W, H, 900);
+  g.addColorStop(0, 'rgba(237,10,115,0.08)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+  // Pink top border (8px)
+  ctx.fillStyle = PINK;
+  ctx.fillRect(0, 0, W, 8);
+
+  // Photo - centered
+  const photoT = tween(frame, 0, 70);
+  const photoOffX = (1 - photoT) * -80;
+  const photoX = 370, photoY = 268, photoW = 340, photoH = 450;
+  ctx.save();
+  ctx.globalAlpha = photoT;
+  ctx.translate(photoOffX, 0);
+  drawPhoto(ctx, playerImg, photoX, photoY, photoW, photoH, 6, PINK);
+  ctx.restore();
+
+  // Info block
+  const infoT = tween(frame, 15, 70);
+  const infoOffY = (1 - infoT) * 40;
+  ctx.save();
+  ctx.globalAlpha = infoT;
+  ctx.translate(0, infoOffY);
+
+  // Player name
+  ctx.fillStyle = WHITE;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  fitText(ctx, data.name.toUpperCase(), 900, 76, '700', 'Oswald');
+  ctx.fillText(data.name.toUpperCase(), 540, 780);
+
+  // Position pill
+  const posText = data.pos.toUpperCase();
+  ctx.font = '600 15px Roboto';
+  const posW = ctx.measureText(posText).width + 24;
+  const posX = 540 - posW / 2;
+  roundRect(ctx, posX, 800, posW, 30, 7);
+  ctx.fillStyle = 'rgba(51,154,233,0.15)'; ctx.fill();
+  ctx.strokeStyle = BLUE; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = BLUE;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(posText, 540, 815);
+
+  // Team change
+  ctx.font = '500 28px Roboto';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  const oldT = data.oldTeam.toUpperCase() + '  →  ' + data.newTeam.toUpperCase();
+  // measure each part
+  ctx.font = '500 28px Roboto';
+  const oldW2 = ctx.measureText(data.oldTeam.toUpperCase()).width;
+  const arW = ctx.measureText('  →  ').width;
+  const newW2 = ctx.measureText(data.newTeam.toUpperCase()).width;
+  const totalW = oldW2 + arW + newW2;
+  const startX = 540 - totalW / 2;
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'left';
+  ctx.fillText(data.oldTeam.toUpperCase(), startX, 892);
+  ctx.fillStyle = BLUE;
+  ctx.fillText('  →  ', startX + oldW2, 892);
+  ctx.fillStyle = WHITE;
+  ctx.fillText(data.newTeam.toUpperCase(), startX + oldW2 + arW, 892);
+
+  // Event label
+  ctx.font = '500 18px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center';
+  ctx.fillText(data.event.toUpperCase(), 540, 952);
+
+  ctx.restore();
+
+  // Divider
+  const divT = tween(frame, 55, 40);
+  ctx.save();
+  ctx.globalAlpha = divT;
+  const divW = 920 * divT;
+  ctx.strokeStyle = BORDER_DIM; ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 1008); ctx.lineTo(80 + divW, 1008);
+  ctx.stroke();
+  ctx.restore();
+
+  // BEFORE panel
+  const beforeT = tween(frame, 75, 70);
+  const beforeOffX2 = (1 - beforeT) * -40;
+  ctx.save();
+  ctx.globalAlpha = beforeT;
+  ctx.translate(beforeOffX2, 0);
+  ctx.fillStyle = 'rgba(13,42,71,0.7)';
+  roundRect(ctx, 60, 1026, 452, 196, 6); ctx.fill();
+  ctx.fillStyle = BORDER_DIM; ctx.fillRect(60, 1026, 452, 3);
+
+  ctx.font = '700 11px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('BEFORE', 286, 1048);
+
+  const bVal2 = countUp(data.before, beforeT);
+  ctx.fillStyle = TEXT_MUTED;
+  fitText(ctx, bVal2, 400, 72, '700', 'Oswald');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(bVal2, 286, 1132);
+
+  ctx.font = '400 20px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center';
+  ctx.fillText(data.statLabel.toUpperCase(), 286, 1168);
+  ctx.restore();
+
+  // Arrow
+  ctx.save();
+  ctx.globalAlpha = Math.min(tween(frame, 75, 70), tween(frame, 85, 70));
+  ctx.font = '700 30px Roboto';
+  ctx.fillStyle = BLUE;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('→', 540, 1124);
+  ctx.restore();
+
+  // AFTER panel
+  const afterT2 = tween(frame, 85, 70);
+  const afterOffX2 = (1 - afterT2) * 40;
+  ctx.save();
+  ctx.globalAlpha = afterT2;
+  ctx.translate(afterOffX2, 0);
+  ctx.fillStyle = 'rgba(13,42,71,0.9)';
+  roundRect(ctx, 568, 1026, 452, 196, 6); ctx.fill();
+  ctx.fillStyle = PINK; ctx.fillRect(568, 1026, 452, 3);
+
+  ctx.font = '700 11px Roboto';
+  ctx.fillStyle = PINK;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText('AFTER', 794, 1048);
+
+  const aVal2 = countUp(data.after, afterT2);
+  ctx.fillStyle = PINK;
+  fitText(ctx, aVal2, 400, 80, '700', 'Oswald');
+  ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+  ctx.fillText(aVal2, 794, 1136);
+
+  ctx.font = '400 20px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center';
+  ctx.fillText(data.statLabel.toUpperCase(), 794, 1168);
+  ctx.restore();
+
+  // Delta badge
+  const deltaT2 = tween(frame, 135, 50);
+  ctx.save();
+  ctx.globalAlpha = deltaT2;
+  ctx.translate(540, 1262);
+  ctx.scale(deltaT2, deltaT2);
+  ctx.translate(-540, -1262);
+  ctx.font = '700 32px Oswald';
+  const cText2 = data.change.toUpperCase();
+  const cW2 = ctx.measureText(cText2).width + 48;
+  const cH2 = 60;
+  const cx2 = 540 - cW2 / 2, cy2 = 1262 - cH2 / 2;
+  roundRect(ctx, cx2, cy2, cW2, cH2, 12);
+  ctx.fillStyle = 'rgba(237,10,115,0.15)'; ctx.fill();
+  ctx.strokeStyle = PINK; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = PINK;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(cText2, 540, 1262);
+  ctx.restore();
+
+  // Footer
+  const footT2 = tween(frame, 165, 45);
+  ctx.save();
+  ctx.globalAlpha = footT2 * 0.45;
+  ctx.font = '300 22px Roboto';
+  ctx.fillStyle = TEXT_MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(data.attr, 540, 1858);
+  ctx.restore();
+}
+
+// ── ANIMATION LOOP ─────────────────────────────────────────────────────────────
+function generate() {
+  if (animId) cancelAnimationFrame(animId);
+  const sqCanvas = document.getElementById('squareCanvas');
+  const rlCanvas = document.getElementById('reelsCanvas');
+  const sqCtx = sqCanvas.getContext('2d');
+  const rlCtx = rlCanvas.getContext('2d');
+  const data = getData();
+  let frame = 0;
+
+  function tick() {
+    drawSquare(sqCtx, data, frame);
+    drawReels(rlCtx, data, frame);
+    if (frame < TOTAL) {
+      frame++;
+      animId = requestAnimationFrame(tick);
+    }
+  }
+  animId = requestAnimationFrame(tick);
+}
+
+// ── SCALE CANVASES ─────────────────────────────────────────────────────────────
+function scaleCanvases() {
+  const availW = window.innerWidth - 460;
+  const sqScale = Math.min(0.40, (availW * 0.48) / 1080);
+  const rlScale = sqScale * (1080 / 1920) * 0.88;
+
+  const sqOuter = document.getElementById('sq-outer');
+  sqOuter.style.transform = `scale(${sqScale})`;
+  sqOuter.style.width = '1080px';
+  sqOuter.style.height = '1080px';
+  sqOuter.parentElement.style.width = Math.round(1080 * sqScale) + 'px';
+  sqOuter.parentElement.style.height = Math.round(1080 * sqScale) + 'px';
+
+  const rlOuter = document.getElementById('rl-outer');
+  rlOuter.style.transform = `scale(${rlScale})`;
+  rlOuter.style.width = '1080px';
+  rlOuter.style.height = '1920px';
+  rlOuter.parentElement.style.width = Math.round(1080 * rlScale) + 'px';
+  rlOuter.parentElement.style.height = Math.round(1920 * rlScale) + 'px';
+}
+
+// ── DEBOUNCE ───────────────────────────────────────────────────────────────────
+function scheduleRegen() {
+  clearTimeout(window._rt);
+  window._rt = setTimeout(generate, 300);
+}
+
+// ── VIDEO EXPORT ───────────────────────────────────────────────────────────────
+function exportVideo(canvasId, recBadgeId) {
+  const canvas = document.getElementById(canvasId);
+  const badge = document.getElementById(recBadgeId);
+  const isSquare = canvasId === 'squareCanvas';
+  const sqCtx = document.getElementById('squareCanvas').getContext('2d');
+  const rlCtx = document.getElementById('reelsCanvas').getContext('2d');
+  const data = getData();
+  const mime = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'].find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+  const ext  = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const stream = canvas.captureStream(60);
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25_000_000 });
+  const chunks = [];
+  rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  rec.onstop = () => {
+    const blob = new Blob(chunks, { type: mime });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    const filename = `before-after-${isSquare ? '1x1' : '9x16'}.${ext}`;
+    a.download = filename;
+    a.click();
+    showFFmpegModal(filename, 60);
+    badge.className = 'rec-badge rec-idle';
+    badge.textContent = 'REC';
+  };
+
+  badge.className = 'rec-badge rec-live';
+  badge.textContent = 'REC';
+
+  if (animId) cancelAnimationFrame(animId);
+  let frame = 0;
+  const duration = (TOTAL / 60 + 0.5) * 1000;
+  rec.start();
+
+  function tick() {
+    drawSquare(sqCtx, data, frame);
+    drawReels(rlCtx, data, frame);
+    if (frame < TOTAL) {
+      frame++;
+      requestAnimationFrame(tick);
+    }
+  }
+  requestAnimationFrame(tick);
+  setTimeout(() => rec.stop(), duration);
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  scaleCanvases();
+  window.addEventListener('resize', scaleCanvases);
+
+  // Load initial photo
+  const photoInput = document.getElementById('f-photo');
+  loadImg(photoInput.value, img => {
+    playerImg = img;
+    generate();
+  });
+
+  // Photo URL change
+  photoInput.addEventListener('input', () => {
+    loadImg(photoInput.value, img => {
+      playerImg = img;
+      generate();
+    });
+  });
+
+  // All other inputs
+  document.querySelectorAll('input:not(#f-photo)').forEach(el => {
+    el.addEventListener('input', scheduleRegen);
+  });
+
+  document.getElementById('btn-regen').addEventListener('click', generate);
+
+  document.getElementById('btn-dl-sq').addEventListener('click', () => {
+    const canvas = document.getElementById('squareCanvas');
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'before-after-1x1.png';
+    a.click();
+  });
+  document.getElementById('btn-dl-rl').addEventListener('click', () => {
+    const canvas = document.getElementById('reelsCanvas');
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = 'before-after-9x16.png';
+    a.click();
+  });
+  document.getElementById('btn-vid-sq').addEventListener('click', () => exportVideo('squareCanvas', 'rec-sq'));
+  document.getElementById('btn-vid-rl').addEventListener('click', () => exportVideo('reelsCanvas', 'rec-rl'));
+});
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

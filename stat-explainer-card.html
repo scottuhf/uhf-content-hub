@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stat Explainer Card — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+  --radius:     10px;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(6,21,37,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 100;
+}
+
+.nav-back {
+  display: flex; align-items: center; gap: 7px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--white); }
+.nav-back svg { width: 15px; height: 15px; }
+
+.nav-sep { width: 1px; height: 20px; background: var(--border-dim); }
+
+.nav-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+
+.nav-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 3px;
+  background: rgba(237,10,115,0.15); color: var(--pink);
+}
+
+/* ── LAYOUT ── */
+.main {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 430px 1fr;
+  min-height: calc(100vh - 56px);
+}
+
+/* ── FORM PANEL ── */
+.form-panel {
+  border-right: 1px solid var(--border-dim);
+  padding: 26px 22px 40px;
+  overflow-y: auto;
+  background: rgba(13,42,71,0.18);
+}
+
+.sec-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 9px;
+}
+
+.form-group {
+  margin-bottom: 18px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  letter-spacing: 0.03em;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus { border-color: var(--blue); }
+.form-group textarea { resize: vertical; min-height: 56px; }
+.form-group select option { background: #0d2a47; }
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border-dim);
+  margin: 20px 0;
+}
+
+/* Layout type toggle */
+.type-toggle {
+  display: flex;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 22px;
+}
+.type-toggle button {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  letter-spacing: 0.03em;
+}
+.type-toggle button.active {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* Emoji quick-pick */
+.emoji-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+.emoji-btn {
+  width: 38px; height: 38px;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.18s, transform 0.12s;
+}
+.emoji-btn:hover { border-color: var(--blue); transform: scale(1.1); }
+
+.icon-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+.icon-slot label {
+  display: block;
+  font-size: 11px; color: var(--text-muted);
+  text-align: center; margin-bottom: 4px;
+}
+.icon-slot input {
+  width: 100%;
+  text-align: center;
+  font-size: 22px;
+  padding: 7px 4px;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.icon-slot input:focus { border-color: var(--blue); }
+
+/* Color chips */
+.chip-row { display: flex; gap: 7px; }
+.chip {
+  flex: 1;
+  padding: 7px 0;
+  border-radius: 6px;
+  border: 2px solid transparent;
+  background: rgba(13,42,71,0.75);
+  color: var(--text-muted);
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px; font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.18s;
+}
+.chip.on-pink  { border-color: var(--pink);       color: var(--pink);       background: rgba(237,10,115,0.1); }
+.chip.on-blue  { border-color: var(--blue);       color: var(--blue);       background: rgba(51,154,233,0.1); }
+.chip.on-muted { border-color: var(--text-muted); color: var(--text-muted); background: rgba(90,138,176,0.08); }
+
+/* List item rows */
+.list-rows { display: flex; flex-direction: column; gap: 7px; margin-bottom: 6px; }
+.list-row {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: 7px;
+}
+.list-row input.emo {
+  text-align: center; font-size: 18px;
+  padding: 7px 2px;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  outline: none;
+}
+.list-row input.txt {
+  font-size: 13px;
+  padding: 8px 11px;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.list-row input.txt:focus { border-color: var(--blue); }
+
+/* Buttons */
+.btn-row { display: flex; gap: 9px; flex-wrap: wrap; }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px; border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.04em;
+}
+.btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+.btn-primary { background: var(--pink); color: var(--white); }
+.btn-primary:hover { background: #c8086a; }
+
+.btn-export {
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.35);
+  color: var(--blue);
+}
+.btn-export:hover { background: rgba(51,154,233,0.2); }
+
+.exp-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-top: 14px;
+}
+
+.rec-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.rec-idle { background: rgba(90,138,176,0.08); color: var(--text-dim); border: 1px solid var(--border-dim); }
+.rec-live { background: rgba(237,10,115,0.12); color: var(--pink);    border: 1px solid rgba(237,10,115,0.3); }
+
+/* ── PREVIEW PANEL ── */
+.preview-panel {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  overflow-y: auto;
+}
+
+.preview-hdr {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.canvas-row {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.canvas-wrap { display: flex; flex-direction: column; gap: 8px; }
+
+.canvas-lbl {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.canvas-outer {
+  transform-origin: top left;
+  position: relative;
+}
+
+.canvas-outer canvas {
+  display: block;
+  border-radius: 8px;
+  border: 1px solid var(--border-dim);
+}
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-back" href="index.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 3L5 8l5 5"/></svg>
+    Hub
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-title">Stat Explainer Card</span>
+  <span class="nav-badge">Graphic Tool</span>
+</nav>
+
+<div class="main">
+
+  <!-- ── FORM ── -->
+  <aside class="form-panel">
+
+    <div class="sec-label">Graphic Type</div>
+    <div class="type-toggle" id="typeToggle">
+      <button class="active" onclick="switchType('cascade')">Cascade</button>
+      <button onclick="switchType('list')">List</button>
+    </div>
+
+    <!-- ICONS -->
+    <div class="sec-label">Icons — pick 1 to 3</div>
+    <div class="emoji-grid" id="emojiGrid"></div>
+    <div class="icon-row">
+      <div class="icon-slot">
+        <label>Icon 1</label>
+        <input id="ico1" type="text" maxlength="4" value="🎯">
+      </div>
+      <div class="icon-slot">
+        <label>Icon 2</label>
+        <input id="ico2" type="text" maxlength="4" value="🏈">
+      </div>
+      <div class="icon-slot">
+        <label>Icon 3</label>
+        <input id="ico3" type="text" maxlength="4" value="">
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ── CASCADE FIELDS ── -->
+    <div id="cascadeFields">
+      <div class="sec-label">Source Stat</div>
+      <div class="form-group">
+        <label>Value</label>
+        <input id="srcVal" type="text" value="TOP 5">
+      </div>
+      <div class="form-group">
+        <label>Label</label>
+        <input id="srcLbl" type="text" value="target share rank">
+      </div>
+      <div class="form-group">
+        <label>Color</label>
+        <div class="chip-row">
+          <button class="chip on-muted" onclick="pickColor('srcColor',this,'muted')">Muted</button>
+          <button class="chip"          onclick="pickColor('srcColor',this,'blue')">Blue</button>
+          <button class="chip"          onclick="pickColor('srcColor',this,'pink')">Pink</button>
+        </div>
+        <input type="hidden" id="srcColor" value="muted">
+      </div>
+
+      <hr class="divider">
+
+      <div class="sec-label">Result Stat</div>
+      <div class="form-group">
+        <label>Value</label>
+        <input id="resVal" type="text" value="+2.3">
+      </div>
+      <div class="form-group">
+        <label>Label</label>
+        <input id="resLbl" type="text" value="PPR pts/game upside">
+      </div>
+      <div class="form-group">
+        <label>Color</label>
+        <div class="chip-row">
+          <button class="chip"          onclick="pickColor('resColor',this,'muted')">Muted</button>
+          <button class="chip"          onclick="pickColor('resColor',this,'blue')">Blue</button>
+          <button class="chip on-pink"  onclick="pickColor('resColor',this,'pink')">Pink</button>
+        </div>
+        <input type="hidden" id="resColor" value="pink">
+      </div>
+
+      <div class="form-group">
+        <label>Arrow Direction</label>
+        <select id="arrowDir">
+          <option value="down">↓ Down</option>
+          <option value="up">↑ Up</option>
+          <option value="right">→ Right</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── LIST FIELDS ── -->
+    <div id="listFields" style="display:none">
+      <div class="sec-label">Header</div>
+      <div class="form-group">
+        <input id="listHdr" type="text" value="elite WR profiles show:">
+      </div>
+      <div class="form-group">
+        <label>Header Color</label>
+        <div class="chip-row">
+          <button class="chip on-muted" onclick="setListColor('listHdrColor',this,'#FFFFFF','muted')">White</button>
+          <button class="chip"          onclick="setListColor('listHdrColor',this,'#339AE9','blue')">Blue</button>
+          <button class="chip"          onclick="setListColor('listHdrColor',this,'#ED0A73','pink')">Pink</button>
+        </div>
+        <input type="hidden" id="listHdrColor" value="#FFFFFF">
+      </div>
+
+      <div class="sec-label">Items (icon + text)</div>
+      <div class="form-group">
+        <label>Item Text Color</label>
+        <div class="chip-row">
+          <button class="chip on-muted" onclick="setListColor('listItemColor',this,'#FFFFFF','muted')">White</button>
+          <button class="chip"          onclick="setListColor('listItemColor',this,'#339AE9','blue')">Blue</button>
+          <button class="chip"          onclick="setListColor('listItemColor',this,'#ED0A73','pink')">Pink</button>
+        </div>
+        <input type="hidden" id="listItemColor" value="#FFFFFF">
+      </div>
+      <div class="list-rows" id="listRows">
+        <div class="list-row">
+          <input class="emo" type="text" maxlength="4" value="📊">
+          <input class="txt" type="text" value="25%+ target share">
+        </div>
+        <div class="list-row">
+          <input class="emo" type="text" maxlength="4" value="📏">
+          <input class="txt" type="text" value="10+ air yards per target">
+        </div>
+        <div class="list-row">
+          <input class="emo" type="text" maxlength="4" value="🔴">
+          <input class="txt" type="text" value="4+ red zone looks">
+        </div>
+        <div class="list-row">
+          <input class="emo" type="text" maxlength="4" value="">
+          <input class="txt" type="text" placeholder="optional 4th item">
+        </div>
+        <div class="list-row">
+          <input class="emo" type="text" maxlength="4" value="">
+          <input class="txt" type="text" placeholder="optional 5th item">
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- INSIGHT TEXT -->
+    <div class="sec-label">Insight Text (optional)</div>
+    <div class="form-group">
+      <label>Use [b:word] for blue, [p:word] for pink</label>
+      <textarea id="insightText" rows="2" placeholder="e.g. when [b:WR] leads team in [p:targets]"></textarea>
+    </div>
+
+    <hr class="divider">
+
+    <!-- ATTRIBUTION -->
+    <div class="sec-label">Attribution</div>
+    <div class="form-group">
+      <input id="attribution" type="text" value="@upperhandfantasy">
+    </div>
+
+    <hr class="divider">
+
+    <!-- GENERATE + EXPORT -->
+    <div class="sec-label">Generate &amp; Export</div>
+    <div class="btn-row" style="margin-bottom:18px;">
+      <button class="btn btn-primary" onclick="generate()">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="5,2 14,8 5,14"/></svg>
+        Generate
+      </button>
+    </div>
+
+    <div class="exp-label">1:1 Square</div>
+    <div class="btn-row" style="margin-bottom:16px;">
+      <button class="btn btn-export" onclick="exportPNG('square')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 10l2.5-3.5 2 2.5 1.5-2"/></svg>
+        PNG
+      </button>
+      <button class="btn btn-export" id="recBtn-square" onclick="toggleRecord('square')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="4.5"/></svg>
+        Video
+      </button>
+      <span class="rec-badge rec-idle" id="recBadge-square">IDLE</span>
+    </div>
+
+    <div class="exp-label">9:16 Reels</div>
+    <div class="btn-row">
+      <button class="btn btn-export" onclick="exportPNG('reels')">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="12" height="12" rx="1.5"/><path d="M5 10l2.5-3.5 2 2.5 1.5-2"/></svg>
+        PNG
+      </button>
+      <button class="btn btn-export" id="recBtn-reels" onclick="toggleRecord('reels')">
+        <svg viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="4.5"/></svg>
+        Video
+      </button>
+      <span class="rec-badge rec-idle" id="recBadge-reels">IDLE</span>
+    </div>
+
+  </aside>
+
+  <!-- ── PREVIEW ── -->
+  <div class="preview-panel">
+    <div>
+      <div class="preview-hdr">Live Preview</div>
+      <div class="canvas-row">
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">1:1 — 1080 × 1080</div>
+          <div class="canvas-outer" id="squareOuter">
+            <canvas id="squareCanvas" width="1080" height="1080"></canvas>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">9:16 — 1080 × 1920</div>
+          <div class="canvas-outer" id="reelsOuter">
+            <canvas id="reelsCanvas" width="1080" height="1920"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════════
+   CONSTANTS
+═══════════════════════════════════════════════════════════════════ */
+const C = {
+  PINK:   '#ED0A73',
+  BLUE:   '#339AE9',
+  WHITE:  '#FFFFFF',
+  BG:     '#061525',
+  BORDER: '#1a3a5c',
+  MUTED:  '#5a8ab0',
+  DIM:    '#2d4a63',
+};
+
+const EMOJIS = [
+  '🏈','🎯','⚡','🏆','🔥','📈','💰','⭐','🚀','💥',
+  '🏃','📊','✅','🧠','🎲','🔄','🪖','🔴','💪','📏',
+];
+
+/* ═══════════════════════════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════════════════════════ */
+let gType = 'cascade';
+let rafId = null;
+const recState = { square: { active: false, recorder: null }, reels: { active: false, recorder: null } };
+
+/* ═══════════════════════════════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════════════════════════════ */
+function init() {
+  // Emoji grid
+  const grid = document.getElementById('emojiGrid');
+  EMOJIS.forEach(e => {
+    const btn = document.createElement('button');
+    btn.className = 'emoji-btn';
+    btn.textContent = e;
+    btn.onclick = () => placeEmoji(e);
+    grid.appendChild(btn);
+  });
+
+  scaleCanvases();
+  window.addEventListener('resize', scaleCanvases);
+  generate();
+
+  // Live re-render on any input change
+  document.querySelector('.form-panel').addEventListener('input', () => {
+    clearTimeout(window._rt);
+    window._rt = setTimeout(generate, 220);
+  });
+}
+
+function scaleCanvases() {
+  const availW = Math.max(window.innerWidth - 470, 300);
+  const sq = Math.min(0.40, (availW * 0.48) / 1080);
+  const re = sq * (1080 / 1920) * 0.88;
+
+  applyScale('squareOuter', sq, 1080, 1080);
+  applyScale('reelsOuter',  re, 1080, 1920);
+}
+
+function applyScale(id, s, w, h) {
+  const el = document.getElementById(id);
+  el.style.transform = `scale(${s})`;
+  el.style.transformOrigin = 'top left';
+  el.style.width  = w + 'px';
+  el.style.height = h + 'px';
+  el.parentElement.style.width  = Math.round(w * s) + 'px';
+  el.parentElement.style.height = Math.round(h * s) + 'px';
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   UI HELPERS
+═══════════════════════════════════════════════════════════════════ */
+function switchType(t) {
+  gType = t;
+  document.querySelectorAll('#typeToggle button').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && t === 'cascade') || (i === 1 && t === 'list'));
+  });
+  document.getElementById('cascadeFields').style.display = t === 'cascade' ? '' : 'none';
+  document.getElementById('listFields').style.display    = t === 'list'    ? '' : 'none';
+  generate();
+}
+
+let _nextSlot = 1;
+function placeEmoji(e) {
+  for (let i = 1; i <= 3; i++) {
+    const el = document.getElementById('ico' + i);
+    if (!el.value.trim()) { el.value = e; generate(); return; }
+  }
+  document.getElementById('ico' + _nextSlot).value = e;
+  _nextSlot = (_nextSlot % 3) + 1;
+  generate();
+}
+
+function pickColor(hidId, btn, val) {
+  document.getElementById(hidId).value = val;
+  const siblings = btn.parentElement.querySelectorAll('.chip');
+  siblings.forEach(c => c.className = 'chip');
+  btn.classList.add('on-' + val);
+  generate();
+}
+
+function setListColor(hidId, btn, hex, cls) {
+  document.getElementById(hidId).value = hex;
+  const siblings = btn.parentElement.querySelectorAll('.chip');
+  siblings.forEach(c => c.className = 'chip');
+  btn.classList.add('on-' + cls);
+  generate();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DATA
+═══════════════════════════════════════════════════════════════════ */
+function getData() {
+  const icons = [
+    document.getElementById('ico1').value.trim(),
+    document.getElementById('ico2').value.trim(),
+    document.getElementById('ico3').value.trim(),
+  ].filter(Boolean);
+
+  const base = {
+    type: gType,
+    icons,
+    insightText: document.getElementById('insightText').value,
+    attribution: document.getElementById('attribution').value,
+  };
+
+  if (gType === 'cascade') {
+    return {
+      ...base,
+      srcVal:   document.getElementById('srcVal').value,
+      srcLbl:   document.getElementById('srcLbl').value,
+      srcColor: document.getElementById('srcColor').value,
+      resVal:   document.getElementById('resVal').value,
+      resLbl:   document.getElementById('resLbl').value,
+      resColor: document.getElementById('resColor').value,
+      arrowDir: document.getElementById('arrowDir').value,
+    };
+  } else {
+    const rows = document.querySelectorAll('#listRows .list-row');
+    const items = [];
+    rows.forEach(r => {
+      const inputs = r.querySelectorAll('input');
+      const txt = inputs[1].value.trim();
+      if (txt) items.push({ icon: inputs[0].value.trim(), text: txt });
+    });
+    return {
+      ...base,
+      listHdr:      document.getElementById('listHdr').value,
+      listHdrColor: document.getElementById('listHdrColor').value,
+      listItemColor: document.getElementById('listItemColor').value,
+      items,
+    };
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   LAYOUT CONSTANTS
+═══════════════════════════════════════════════════════════════════ */
+function getLayout(fmt) {
+  if (fmt === 'square') {
+    return {
+      W: 1080, H: 1080,
+      safeTop: 0, safeBottom: 1080,
+      borderH: 6,
+      // Icons
+      icoY: 196, icoSize: 118, icoSpacing: 190,
+      // Dashed line
+      lineY: 326, lineL: 88, lineR: 992, lineR2: 7,
+      // Cascade
+      srcValY: 390, srcValSz: 134,
+      srcLblY: 552, srcLblSz: 27,
+      arrX: 540, arrTop: 598, arrBot: 682, arrHead: 34,
+      resValY: 716, resValSz: 154,
+      resLblY: 894, resLblSz: 27,
+      // List  (placed below icons at icoY=196 — no overlap with dashed line)
+      lstTopLineY: 332, lstTopLineW: 5,
+      lstHdrY: 380, lstHdrSz: 46,
+      lstStartY: 500, lstItemH: 90,
+      lstIcoX: 144, lstIcoR: 40,
+      lstTxtX: 204, lstTxtSz: 46,
+      lstInsY: 960,
+      // Shared
+      insY: 962, insSz: 23,
+      footY: 1043, footSz: 19,
+    };
+  } else {
+    return {
+      W: 1080, H: 1920,
+      safeTop: 250, safeBottom: 1550,
+      borderH: 8,
+      // Icons
+      icoY: 418, icoSize: 136, icoSpacing: 210,
+      // Dashed line
+      lineY: 598, lineL: 88, lineR: 992, lineR2: 8,
+      // Cascade
+      srcValY: 662, srcValSz: 154,
+      srcLblY: 844, srcLblSz: 30,
+      arrX: 540, arrTop: 900, arrBot: 1010, arrHead: 44,
+      resValY: 1050, resValSz: 176,
+      resLblY: 1264, resLblSz: 30,
+      // List  (below icons at icoY=418 — no overlap)
+      lstTopLineY: 560, lstTopLineW: 6,
+      lstHdrY: 616, lstHdrSz: 54,
+      lstStartY: 760, lstItemH: 112,
+      lstIcoX: 168, lstIcoR: 50,
+      lstTxtX: 250, lstTxtSz: 50,
+      lstInsY: 1390,
+      // Shared
+      insY: 1330, insSz: 26,
+      footY: 1858, footSz: 22,
+    };
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════════════ */
+function easeOut(t)         { return 1 - Math.pow(1 - Math.min(Math.max(t,0),1), 3); }
+function lerp(a, b, t)      { return a + (b-a)*t; }
+function clr(key) {
+  if (key === 'pink')  return C.PINK;
+  if (key === 'blue')  return C.BLUE;
+  return C.MUTED;
+}
+
+// Parse [b:text] and [p:text] tags → array of {text, color}
+function parseTagged(str) {
+  const segs = [];
+  const re = /\[([bp]):([^\]]*)\]|([^\[]+)/g;
+  let m;
+  while ((m = re.exec(str)) !== null) {
+    if (m[1] === 'b') segs.push({ text: m[2], color: C.BLUE });
+    else if (m[1] === 'p') segs.push({ text: m[2], color: C.PINK });
+    else if (m[3])    segs.push({ text: m[3], color: C.WHITE });
+  }
+  return segs;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   DRAW FUNCTIONS
+═══════════════════════════════════════════════════════════════════ */
+
+function drawBackground(ctx, L) {
+  const { W, H, safeTop, safeBottom, borderH } = L;
+
+  // Base
+  ctx.fillStyle = C.BG;
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle radial glow top-left (blue hint)
+  const g1 = ctx.createRadialGradient(W*0.18, H*0.12, 0, W*0.4, H*0.35, W*0.85);
+  g1.addColorStop(0, 'rgba(51,154,233,0.07)');
+  g1.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g1;
+  ctx.fillRect(0, 0, W, H);
+
+  // Bottom-right pink glow
+  const g2 = ctx.createRadialGradient(W*0.88, H*0.92, 0, W*0.7, H*0.75, W*0.7);
+  g2.addColorStop(0, 'rgba(237,10,115,0.06)');
+  g2.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = g2;
+  ctx.fillRect(0, 0, W, H);
+
+  // Pink top border
+  ctx.fillStyle = C.PINK;
+  ctx.fillRect(0, 0, W, borderH);
+}
+
+function drawIcons(ctx, L, progress, icons) {
+  if (!icons.length || progress <= 0) return;
+  const n = icons.length;
+  const totalW = L.icoSpacing * (n - 1);
+  const startX = L.W/2 - totalW/2;
+
+  icons.forEach((ico, i) => {
+    const delay = i * 0.18;
+    const p = easeOut((progress - delay) / 0.58);
+    if (p <= 0) return;
+    const x = startX + i * L.icoSpacing;
+    const y = lerp(L.icoY - 75, L.icoY, p);
+
+    ctx.save();
+    ctx.globalAlpha = p;
+    ctx.font = `${L.icoSize}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(ico, x, y);
+    ctx.restore();
+  });
+}
+
+function drawDashedLine(ctx, L, progress) {
+  if (progress <= 0) return;
+  const { lineL, lineR, lineY, lineR2 } = L;
+  const W = lineR - lineL;
+
+  // Blue left dot
+  ctx.save();
+  ctx.globalAlpha = Math.min(progress * 5, 1);
+  ctx.fillStyle = C.BLUE;
+  ctx.beginPath();
+  ctx.arc(lineL, lineY, lineR2, 0, Math.PI*2);
+  ctx.fill();
+  ctx.restore();
+
+  // Dashed line — clipped progress
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(lineL, lineY - 18, W * progress, 36);
+  ctx.clip();
+  ctx.setLineDash([15, 10]);
+  ctx.strokeStyle = C.BORDER;
+  ctx.lineWidth = 2.5;
+  ctx.beginPath();
+  ctx.moveTo(lineL, lineY);
+  ctx.lineTo(lineR, lineY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+
+  // Pink right dot (pops in at end)
+  const dotP = easeOut((progress - 0.88) / 0.12);
+  if (dotP > 0) {
+    ctx.save();
+    ctx.globalAlpha = dotP;
+    ctx.fillStyle = C.PINK;
+    ctx.beginPath();
+    ctx.arc(lineR, lineY, lineR2, 0, Math.PI*2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+function drawStat(ctx, L, progress, val, colorKey, yTop, sz) {
+  if (progress <= 0) return;
+  const offY = (1 - progress) * 44;
+  ctx.save();
+  ctx.globalAlpha = progress;
+  ctx.font = `700 ${sz}px Oswald`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = clr(colorKey);
+  ctx.fillText(val, L.W/2, yTop + offY);
+  ctx.restore();
+}
+
+function drawLabel(ctx, L, progress, lbl, colorKey, yTop, sz) {
+  if (progress <= 0) return;
+  const offY = (1 - progress) * 30;
+  ctx.save();
+  ctx.globalAlpha = progress * 0.82;
+  ctx.font = `400 ${sz}px Roboto`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = clr(colorKey);
+  ctx.fillText(lbl, L.W/2, yTop + offY);
+  ctx.restore();
+}
+
+function drawArrow(ctx, L, progress, dir) {
+  if (progress <= 0) return;
+  const { arrX, arrTop, arrBot, arrHead } = L;
+  const span = arrBot - arrTop;
+
+  ctx.save();
+  ctx.globalAlpha = progress;
+  ctx.strokeStyle = C.BLUE;
+  ctx.fillStyle   = C.BLUE;
+  ctx.lineWidth   = 4.5;
+  ctx.lineCap     = 'round';
+
+  if (dir === 'down') {
+    const curBot = arrTop + span * progress;
+    ctx.beginPath(); ctx.moveTo(arrX, arrTop); ctx.lineTo(arrX, curBot); ctx.stroke();
+    const hp = easeOut((progress - 0.75) / 0.25);
+    if (hp > 0) {
+      const hw = arrHead * 0.52 * hp;
+      const tip = curBot;
+      ctx.globalAlpha = progress * hp;
+      ctx.beginPath();
+      ctx.moveTo(arrX - hw, tip - arrHead*0.55*hp);
+      ctx.lineTo(arrX, tip);
+      ctx.lineTo(arrX + hw, tip - arrHead*0.55*hp);
+      ctx.fill();
+    }
+  } else if (dir === 'up') {
+    const curTop = arrBot - span * progress;
+    ctx.beginPath(); ctx.moveTo(arrX, arrBot); ctx.lineTo(arrX, curTop); ctx.stroke();
+    const hp = easeOut((progress - 0.75) / 0.25);
+    if (hp > 0) {
+      const hw = arrHead * 0.52 * hp;
+      ctx.globalAlpha = progress * hp;
+      ctx.beginPath();
+      ctx.moveTo(arrX - hw, curTop + arrHead*0.55*hp);
+      ctx.lineTo(arrX, curTop);
+      ctx.lineTo(arrX + hw, curTop + arrHead*0.55*hp);
+      ctx.fill();
+    }
+  } else { // right
+    const midY = (arrTop + arrBot) / 2;
+    const startX = arrX - span/2;
+    const curX = startX + span * progress;
+    ctx.beginPath(); ctx.moveTo(startX, midY); ctx.lineTo(curX, midY); ctx.stroke();
+    const hp = easeOut((progress - 0.75) / 0.25);
+    if (hp > 0) {
+      const hh = arrHead * 0.52 * hp;
+      ctx.globalAlpha = progress * hp;
+      ctx.beginPath();
+      ctx.moveTo(curX - arrHead*0.55*hp, midY - hh);
+      ctx.lineTo(curX, midY);
+      ctx.lineTo(curX - arrHead*0.55*hp, midY + hh);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+function drawListTopBar(ctx, L, progress, hdr, hdrColor) {
+  if (progress <= 0) return;
+
+  // Phase 1 (0→0.45): pink accent line sweeps from centre outward
+  const lineP = easeOut(Math.min(progress / 0.45, 1));
+  const lineHalf = (L.W / 2 - 72) * lineP;
+  ctx.save();
+  ctx.strokeStyle = C.PINK;
+  ctx.lineWidth = L.lstTopLineW;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(L.W / 2 - lineHalf, L.lstTopLineY);
+  ctx.lineTo(L.W / 2 + lineHalf, L.lstTopLineY);
+  ctx.stroke();
+  ctx.restore();
+
+  // Phase 2 (0.3→1): bold Oswald header fades + slides up
+  const hdrP = easeOut((progress - 0.3) / 0.7);
+  if (hdrP <= 0) return;
+  const offY = (1 - hdrP) * 24;
+  ctx.save();
+  ctx.globalAlpha = hdrP;
+  ctx.font = `700 ${L.lstHdrSz}px Oswald`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = hdrColor || C.WHITE;
+  ctx.fillText(hdr.toUpperCase(), L.W / 2, L.lstHdrY + offY);
+  ctx.restore();
+}
+
+function drawListItems(ctx, L, progress, items, itemColor) {
+  const txtColor = itemColor || C.WHITE;
+  items.forEach((item, i) => {
+    const delay = 0.15 + i * 0.12;
+    const p = easeOut((progress - delay) / 0.42);
+    if (p <= 0) return;
+
+    const cy = L.lstStartY + i * L.lstItemH + L.lstItemH * 0.5;
+    const offY = (1 - p) * 32;
+
+    ctx.save();
+    ctx.globalAlpha = p;
+
+    // Circle badge
+    ctx.beginPath();
+    ctx.arc(L.lstIcoX, cy + offY, L.lstIcoR, 0, Math.PI * 2);
+    ctx.strokeStyle = C.BORDER;
+    ctx.lineWidth = 2;
+    ctx.fillStyle = 'rgba(13,42,71,0.55)';
+    ctx.fill();
+    ctx.stroke();
+
+    // Emoji/icon — slightly nudged down to visually centre in circle
+    const icoSz = Math.round(L.lstIcoR * 1.05);
+    ctx.font = `${icoSz}px serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'alphabetic';
+    ctx.fillStyle = C.WHITE;
+    // alphabetic baseline sits ~0.2× font-size above the glyph bottom;
+    // shift down by ~18% of size so emoji optical centre lands on circle centre
+    ctx.fillText(item.icon || '·', L.lstIcoX, cy + offY + icoSz * 0.18);
+
+    // Text — vertically centred in row
+    ctx.font = `600 ${L.lstTxtSz}px Roboto`;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = txtColor;
+    ctx.fillText(item.text, L.lstTxtX, cy + offY);
+
+    ctx.restore();
+  });
+}
+
+function drawInsight(ctx, L, progress, text) {
+  if (progress <= 0 || !text.trim()) return;
+  const segs = parseTagged(text);
+  if (!segs.length) return;
+
+  const sz = L.insSz;
+  ctx.font = `400 ${sz}px Roboto`;
+
+  // Measure total width for centering
+  let tw = 0;
+  segs.forEach(s => { tw += ctx.measureText(s.text).width; });
+
+  const offY = (1-progress) * 20;
+  let cx = L.W/2 - tw/2;
+
+  ctx.save();
+  ctx.globalAlpha = progress;
+  ctx.textBaseline = 'top';
+  ctx.textAlign = 'left';
+  segs.forEach(s => {
+    ctx.fillStyle = s.color;
+    ctx.fillText(s.text, cx, L.insY + offY);
+    cx += ctx.measureText(s.text).width;
+  });
+  ctx.restore();
+}
+
+function drawFooter(ctx, L, progress, text) {
+  if (progress <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = progress * 0.48;
+  ctx.font = `300 ${L.footSz}px Roboto`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'top';
+  ctx.fillStyle = C.MUTED;
+  ctx.fillText(text || '@upperhandfantasy', L.W/2, L.footY);
+
+  // Small accent dots flanking footer
+  ctx.globalAlpha = progress * 0.35;
+  const ty = L.footY + L.footSz * 0.48;
+  ctx.fillStyle = C.PINK;
+  ctx.beginPath(); ctx.arc(L.W*0.1, ty, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = C.BLUE;
+  ctx.beginPath(); ctx.arc(L.W*0.9, ty, 3.5, 0, Math.PI*2); ctx.fill();
+  ctx.restore();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   RENDER FRAME
+═══════════════════════════════════════════════════════════════════ */
+function renderFrame(canvas, data, frame) {
+  const ctx = canvas.getContext('2d');
+  const L   = getLayout(canvas.id === 'squareCanvas' ? 'square' : 'reels');
+  ctx.clearRect(0, 0, L.W, L.H);
+
+  drawBackground(ctx, L);
+
+  if (data.type === 'cascade') {
+
+    // Icons  frames 0–78
+    const icoP = easeOut(frame / 78);
+    drawIcons(ctx, L, icoP, data.icons);
+
+    // Dashed line  frames 28–105
+    const lineP = easeOut((frame - 28) / 77);
+    drawDashedLine(ctx, L, lineP);
+
+    // Source stat  frames 88–150
+    const srcP = easeOut((frame - 88) / 62);
+    drawStat( ctx, L, srcP, data.srcVal, data.srcColor, L.srcValY, L.srcValSz);
+    drawLabel(ctx, L, srcP, data.srcLbl, data.srcColor, L.srcLblY, L.srcLblSz);
+
+    // Arrow  frames 132–178
+    const arrP = easeOut((frame - 132) / 46);
+    drawArrow(ctx, L, arrP, data.arrowDir);
+
+    // Result stat  frames 168–240
+    const resP = easeOut((frame - 168) / 72);
+    drawStat( ctx, L, resP, data.resVal, data.resColor, L.resValY, L.resValSz);
+    drawLabel(ctx, L, resP, data.resLbl, data.resColor, L.resLblY, L.resLblSz);
+
+    // Insight  frames 210–265
+    const insP = easeOut((frame - 210) / 55);
+    drawInsight(ctx, L, insP, data.insightText);
+
+    // Footer  frames 228–278
+    const footP = easeOut((frame - 228) / 50);
+    drawFooter(ctx, L, footP, data.attribution);
+
+  } else { // list
+
+    // Icons  frames 0–78
+    const icoP = easeOut(frame / 78);
+    drawIcons(ctx, L, icoP, data.icons);
+
+    // Pink sweep line + bold header  frames 56–168
+    const topBarP = easeOut((frame - 56) / 112);
+    drawListTopBar(ctx, L, topBarP, data.listHdr, data.listHdrColor);
+
+    // Items  frames 110–280
+    const lstP = easeOut((frame - 110) / 170);
+    drawListItems(ctx, L, lstP, data.items, data.listItemColor);
+
+    // Insight  frames 240–290 (uses lstInsY if defined)
+    const insP = easeOut((frame - 240) / 50);
+    const insL = L.lstInsY ? { ...L, insY: L.lstInsY } : L;
+    drawInsight(ctx, insL, insP, data.insightText);
+
+    // Footer  frames 250–295
+    const footP = easeOut((frame - 250) / 45);
+    drawFooter(ctx, L, footP, data.attribution);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   ANIMATION LOOP
+═══════════════════════════════════════════════════════════════════ */
+const TOTAL_FRAMES = 310;
+
+function generate() {
+  if (rafId) cancelAnimationFrame(rafId);
+  const data = getData();
+  const sq = document.getElementById('squareCanvas');
+  const re = document.getElementById('reelsCanvas');
+  let t0 = null;
+
+  function tick(ts) {
+    if (!t0) t0 = ts;
+    const frame = ((ts - t0) / 1000) * 60;
+    renderFrame(sq, data, frame);
+    renderFrame(re, data, frame);
+    if (frame < TOTAL_FRAMES) {
+      rafId = requestAnimationFrame(tick);
+    } else {
+      renderFrame(sq, data, TOTAL_FRAMES);
+      renderFrame(re, data, TOTAL_FRAMES);
+    }
+  }
+  rafId = requestAnimationFrame(tick);
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   EXPORT PNG
+═══════════════════════════════════════════════════════════════════ */
+function exportPNG(fmt) {
+  const canvas = document.getElementById(fmt === 'square' ? 'squareCanvas' : 'reelsCanvas');
+  renderFrame(canvas, getData(), TOTAL_FRAMES);
+  const a = document.createElement('a');
+  a.download = `stat-explainer-${fmt}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   VIDEO RECORDING
+═══════════════════════════════════════════════════════════════════ */
+function toggleRecord(fmt) {
+  recState[fmt].active ? stopRecord(fmt) : startRecord(fmt);
+}
+
+function startRecord(fmt) {
+  const canvas  = document.getElementById(fmt === 'square' ? 'squareCanvas' : 'reelsCanvas');
+  const badge   = document.getElementById('recBadge-' + fmt);
+  const st      = recState[fmt];
+
+  const mimeType = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'].find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
+  const ext = mimeType.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const stream   = canvas.captureStream(60);
+  const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 25_000_000 });
+  const chunks   = [];
+
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const blob = new Blob(chunks, { type: mimeType });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    const filename = `stat-explainer-${fmt}.${ext}`;
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+    showFFmpegModal(filename, 60);
+    badge.textContent = 'IDLE';
+    badge.className = 'rec-badge rec-idle';
+  };
+
+  st.recorder = recorder;
+  st.active   = true;
+  recorder.start();
+
+  badge.textContent = '● REC';
+  badge.className = 'rec-badge rec-live';
+
+  // Replay animation so it's captured from frame 0
+  generate();
+
+  // Auto-stop after animation + 0.5s hold
+  const ms = ((TOTAL_FRAMES / 60) + 0.5) * 1000;
+  setTimeout(() => stopRecord(fmt), ms);
+}
+
+function stopRecord(fmt) {
+  const st = recState[fmt];
+  if (st.recorder && st.recorder.state !== 'inactive') st.recorder.stop();
+  st.active = false;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   BOOT
+═══════════════════════════════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', init);
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

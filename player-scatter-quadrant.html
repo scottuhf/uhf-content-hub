@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Player Efficiency Scatter</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  .tool-nav {
+    display: flex; align-items: center; gap: 18px;
+    padding: 12px 24px; background: #0a1929;
+    border-bottom: 1px solid #1a3a5c;
+    margin: -24px -24px 24px -24px;
+  }
+  .back-btn {
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #339AE9; text-decoration: none;
+    padding: 6px 14px; border: 1px solid #1a4a73; border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .back-btn:hover { background: #1a3a5c; color: #fff; }
+  .tool-nav-title {
+    font-family: 'Oswald', sans-serif; font-size: 15px; letter-spacing: 2px;
+    text-transform: uppercase; color: #5a8ab0;
+  }
+  .tool-nav-badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 3px;
+    background: rgba(237,10,115,0.15); color: #ED0A73;
+  }
+  body {
+    background: #060e18; color: #ccc;
+    font-family: 'Roboto', sans-serif;
+    padding: 24px; min-height: 100vh;
+  }
+  h1 {
+    font-family: 'Oswald', sans-serif; color: #ED0A73;
+    font-size: 22px; letter-spacing: 2px;
+    margin-bottom: 20px; text-transform: uppercase;
+  }
+  .form-wrap {
+    background: #0d1f33; border: 1px solid #1a3a5c;
+    border-radius: 8px; padding: 24px;
+    max-width: 920px; margin-bottom: 32px;
+  }
+  .form-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-grid-4 { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 14px; }
+  .form-group  { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #5a8ab0; }
+  input[type="text"], input[type="number"] {
+    background: #060e18; border: 1px solid #1a3a5c; border-radius: 4px;
+    color: #eee; padding: 8px 10px; font-size: 13px;
+    font-family: 'Roboto', sans-serif; outline: none; transition: border-color 0.2s;
+  }
+  input:focus { border-color: #339AE9; }
+  .section-title {
+    font-size: 11px; text-transform: uppercase; letter-spacing: 2px;
+    color: #339AE9; margin: 18px 0 10px; font-weight: 600;
+  }
+  .player-row {
+    display: grid;
+    grid-template-columns: 1fr 80px 80px 90px;
+    gap: 10px; align-items: center;
+  }
+  .hl-wrap {
+    display: flex; align-items: center; gap: 7px;
+    padding: 8px 10px; background: #060e18;
+    border: 1px solid #1a3a5c; border-radius: 4px;
+    cursor: pointer; height: 36px;
+  }
+  .hl-wrap input[type="checkbox"] { cursor: pointer; width: 14px; height: 14px; accent-color: #ED0A73; }
+  .hl-wrap span { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #5a8ab0; }
+  .btn-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; align-items: center; }
+  button {
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1px;
+    text-transform: uppercase; padding: 10px 18px; border: none;
+    border-radius: 4px; cursor: pointer; transition: opacity 0.2s;
+  }
+  button:hover { opacity: 0.85; }
+  #btn-generate { background: #ED0A73; color: #fff; font-weight: 700; }
+  .btn-dl-sq  { background: transparent; color: #339AE9; border: 1px solid #339AE9; }
+  .btn-dl-rl  { background: transparent; color: #ED0A73; border: 1px solid #ED0A73; }
+  .btn-vid-sq { background: #1a3a5c; color: #339AE9; border: 1px solid #339AE9; }
+  .btn-vid-rl { background: #3a0a1e; color: #ED0A73; border: 1px solid #ED0A73; }
+  .btn-group-label {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    color: #5a8ab0; align-self: center; margin-right: 4px;
+  }
+  .btn-divider { width: 1px; background: #1a3a5c; align-self: stretch; margin: 0 4px; }
+  .previews { display: flex; gap: 32px; align-items: flex-start; flex-wrap: wrap; }
+  .preview-panel { display: flex; flex-direction: column; gap: 10px; }
+  .preview-label {
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 2px;
+    color: #5a8ab0; text-transform: uppercase;
+  }
+  .canvas-scaler-sq {
+    transform-origin: top left; transform: scale(0.5);
+    display: inline-block; width: 540px; height: 540px;
+  }
+  .canvas-scaler-rl {
+    transform-origin: top left; transform: scale(0.5);
+    display: inline-block; width: 540px; height: 960px;
+  }
+  .canvas-scaler-sq > div { width: 1080px; height: 1080px; }
+  .canvas-scaler-rl > div { width: 1080px; height: 1920px; }
+  #graphic-sq, #graphic-rl {
+    position: relative; overflow: hidden; flex-shrink: 0; background: #061525;
+  }
+  #graphic-sq { width: 1080px; height: 1080px; }
+  #graphic-rl { width: 1080px; height: 1920px; }
+  .recording-badge {
+    display: none; background: #ED0A73; color: white;
+    font-size: 11px; font-family: 'Oswald', sans-serif; letter-spacing: 1px;
+    padding: 4px 10px; border-radius: 4px; animation: blink 1s infinite;
+  }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<nav class="tool-nav">
+  <a href="index.html" class="back-btn">&#8592; Hub</a>
+  <span class="tool-nav-title">Player Efficiency Scatter</span>
+  <span class="tool-nav-badge">Graphic Tool</span>
+</nav>
+<h1>Player Efficiency Scatter</h1>
+
+<div class="form-wrap">
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label>Stat Label (top, small)</label>
+      <input type="text" id="f-title" value="TARGET SHARE VS YARDS PER ROUTE">
+    </div>
+    <div class="form-group">
+      <label>Sub-Heading (large)</label>
+      <input type="text" id="f-subtitle" value="WR EFFICIENCY QUADRANT">
+    </div>
+    <div class="form-group">
+      <label>Context / Note</label>
+      <input type="text" id="f-context" value="Min 50 Routes Run · 2025 Season">
+    </div>
+    <div class="form-group">
+      <label>Highlight Pill Text</label>
+      <input type="text" id="f-diff" value="CEEDEE LAMB LEADS ALL WRs IN EFFICIENCY">
+    </div>
+  </div>
+
+  <div class="section-title">Axes</div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label>X-Axis Label</label>
+      <input type="text" id="f-xlabel" value="TARGET SHARE %">
+    </div>
+    <div class="form-group">
+      <label>Y-Axis Label</label>
+      <input type="text" id="f-ylabel" value="YARDS PER ROUTE RUN">
+    </div>
+    <div class="form-group">
+      <label>X Average Line</label>
+      <input type="number" id="f-xavg" value="20.0" step="0.1">
+    </div>
+    <div class="form-group">
+      <label>Y Average Line</label>
+      <input type="number" id="f-yavg" value="1.80" step="0.01">
+    </div>
+  </div>
+
+  <div class="section-title">Quadrant Labels</div>
+  <div class="form-grid-4">
+    <div class="form-group">
+      <label>Top-Left</label>
+      <input type="text" id="f-qtl" value="UNDERRATED">
+    </div>
+    <div class="form-group">
+      <label>Top-Right</label>
+      <input type="text" id="f-qtr" value="ELITE">
+    </div>
+    <div class="form-group">
+      <label>Bottom-Left</label>
+      <input type="text" id="f-qbl" value="FADE">
+    </div>
+    <div class="form-group">
+      <label>Bottom-Right</label>
+      <input type="text" id="f-qbr" value="VOLUME PLAY">
+    </div>
+  </div>
+
+  <div class="section-title">Players (up to 8)</div>
+  <div style="display:grid;grid-template-columns:1fr 80px 80px 90px;gap:10px;margin-bottom:6px;">
+    <label>Player Name</label><label>X Value</label><label>Y Value</label><label>Spotlight</label>
+  </div>
+  <div id="players-wrap" style="display:flex;flex-direction:column;gap:8px;"></div>
+
+  <div class="btn-row">
+    <button id="btn-generate">&#9654; Generate</button>
+    <div class="btn-divider"></div>
+    <span class="btn-group-label">1:1</span>
+    <button class="btn-dl-sq"  id="btn-dl-sq">PNG</button>
+    <button class="btn-vid-sq" id="btn-vid-sq">Video</button>
+    <span id="rec-badge-sq" class="recording-badge">&#9679; REC</span>
+    <div class="btn-divider"></div>
+    <span class="btn-group-label">9:16</span>
+    <button class="btn-dl-rl"  id="btn-dl-rl">PNG</button>
+    <button class="btn-vid-rl" id="btn-vid-rl">Video</button>
+    <span id="rec-badge-rl" class="recording-badge">&#9679; REC</span>
+  </div>
+</div>
+
+<div class="previews">
+  <div class="preview-panel">
+    <div class="preview-label">1:1 Square (1080×1080)</div>
+    <div class="canvas-scaler-sq"><div id="graphic-sq"></div></div>
+  </div>
+  <div class="preview-panel">
+    <div class="preview-label">9:16 Reels (1080×1920)</div>
+    <div class="canvas-scaler-rl"><div id="graphic-rl"></div></div>
+  </div>
+</div>
+
+<script>
+// ─── PALETTE ──────────────────────────────────────────────────────────────────
+const PINK       = '#ED0A73';
+const PINK_DARK  = '#5c0430';
+const BLUE       = '#339AE9';
+const BLUE_DARK  = '#061525';
+const BLUE_MID   = '#0d2a47';
+const BLUE_DIM   = '#1a4a73';
+const BLUE_MUTED = '#5a8ab0';
+const WHITE      = '#FFFFFF';
+
+// ─── DEFAULT PLAYERS ──────────────────────────────────────────────────────────
+const DEFAULTS = [
+  { name: 'CEEDEE LAMB',      x: 28.5, y: 2.65, hl: true  },
+  { name: "JA'MARR CHASE",    x: 26.2, y: 2.42, hl: false },
+  { name: 'JUSTIN JEFFERSON', x: 24.8, y: 2.31, hl: false },
+  { name: 'NICO COLLINS',     x: 22.1, y: 2.08, hl: false },
+  { name: 'PUKA NACUA',       x: 19.4, y: 1.95, hl: false },
+  { name: 'STEFON DIGGS',     x: 18.9, y: 1.84, hl: false },
+  { name: 'DAVANTE ADAMS',    x: 23.6, y: 1.72, hl: false },
+  { name: 'KEENAN ALLEN',     x: 17.2, y: 1.56, hl: false },
+];
+
+const wrap = document.getElementById('players-wrap');
+DEFAULTS.forEach((p, i) => {
+  const row = document.createElement('div');
+  row.className = 'player-row';
+  row.innerHTML = `
+    <input type="text"   id="p${i}n" value="${p.name}">
+    <input type="number" id="p${i}x" value="${p.x}" step="0.1">
+    <input type="number" id="p${i}y" value="${p.y}" step="0.01">
+    <label class="hl-wrap">
+      <input type="checkbox" id="p${i}h" ${p.hl ? 'checked' : ''}>
+      <span>Spotlight</span>
+    </label>`;
+  wrap.appendChild(row);
+});
+
+// ─── LAYOUT ───────────────────────────────────────────────────────────────────
+function getLayout(mode) {
+  if (mode === 'sq') {
+    return {
+      W: 1080, H: 1080,
+      pad: 48,
+      titleY: 68,   titleSize: 20,
+      subtitleY: 148, subtitleSize: 70,
+      contextY: 202,  contextSize: 26,
+      chart: { left: 132, right: 1022, top: 252, bottom: 830 },
+      yAxisLabelX: 36,
+      xAxisLabelY: 898,
+      axisValSize: 16,
+      axisLblSize: 18,
+      dotR: 18,
+      labelSize: 18,
+      quadLabelSize: 15,
+      diffY: 944,
+      diffSize: 28,
+      footerLineY: 1004,
+      footerTextY: 1040,
+      footerSize: 22,
+    };
+  } else {
+    return {
+      W: 1080, H: 1920,
+      pad: 75,
+      safeTop: 250, safeBottom: 1550,
+      titleY: 318,   titleSize: 22,
+      subtitleY: 418, subtitleSize: 78,
+      contextY: 484,  contextSize: 30,
+      chart: { left: 132, right: 940, top: 542, bottom: 1370 },
+      yAxisLabelX: 38,
+      xAxisLabelY: 1440,
+      axisValSize: 19,
+      axisLblSize: 21,
+      dotR: 22,
+      labelSize: 21,
+      quadLabelSize: 18,
+      diffY: 1462,
+      diffSize: 30,
+      footerLineY: 1820,
+      footerTextY: 1856,
+      footerSize: 24,
+    };
+  }
+}
+
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+function getData() {
+  const players = DEFAULTS.map((_, i) => ({
+    name: (document.getElementById(`p${i}n`).value || '').trim(),
+    x:    parseFloat(document.getElementById(`p${i}x`).value) || 0,
+    y:    parseFloat(document.getElementById(`p${i}y`).value) || 0,
+    hl:   document.getElementById(`p${i}h`).checked,
+  })).filter(p => p.name);
+
+  return {
+    title:   document.getElementById('f-title').value,
+    subtitle:document.getElementById('f-subtitle').value,
+    context: document.getElementById('f-context').value,
+    diff:    document.getElementById('f-diff').value,
+    xLabel:  document.getElementById('f-xlabel').value,
+    yLabel:  document.getElementById('f-ylabel').value,
+    xAvg:    parseFloat(document.getElementById('f-xavg').value) || 0,
+    yAvg:    parseFloat(document.getElementById('f-yavg').value) || 0,
+    qTL: document.getElementById('f-qtl').value,
+    qTR: document.getElementById('f-qtr').value,
+    qBL: document.getElementById('f-qbl').value,
+    qBR: document.getElementById('f-qbr').value,
+    players,
+  };
+}
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function easeOut(t)    { return 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3); }
+function tween(t,s,d)  { return Math.min(1, Math.max(0, (t - s) / d)); }
+function lerp(a,b,t)   { return a + (b - a) * Math.min(1, Math.max(0, t)); }
+function easeOutBack(t) {
+  t = Math.min(1, Math.max(0, t));
+  const s = 1.70158;
+  return 1 + (s + 1) * Math.pow(t - 1, 3) + s * Math.pow(t - 1, 2);
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y);
+  ctx.quadraticCurveTo(x+w,y,x+w,y+r); ctx.lineTo(x+w,y+h-r);
+  ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h); ctx.lineTo(x+r,y+h);
+  ctx.quadraticCurveTo(x,y+h,x,y+h-r); ctx.lineTo(x,y+r);
+  ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
+}
+
+function axisMetrics(data) {
+  const ps = data.players;
+  if (!ps.length) return { xMin:0, xMax:30, yMin:0, yMax:3 };
+  const xs = ps.map(p=>p.x).concat(data.xAvg);
+  const ys = ps.map(p=>p.y).concat(data.yAvg);
+  const xn = Math.min(...xs), xx = Math.max(...xs);
+  const yn = Math.min(...ys), yx = Math.max(...ys);
+  const xp = Math.max((xx-xn)*0.22, 1);
+  const yp = Math.max((yx-yn)*0.22, 0.1);
+  return { xMin:xn-xp, xMax:xx+xp, yMin:yn-yp, yMax:yx+yp };
+}
+
+function cx(v, am, chart) {
+  return chart.left + (v - am.xMin) / (am.xMax - am.xMin) * (chart.right - chart.left);
+}
+function cy(v, am, chart) {
+  return chart.bottom - (v - am.yMin) / (am.yMax - am.yMin) * (chart.bottom - chart.top);
+}
+
+function gridLines(min, max, n) {
+  const range = max - min; if (range <= 0) return [];
+  const raw = range / n;
+  const mag = Math.pow(10, Math.floor(Math.log10(raw)));
+  const r = raw/mag;
+  const step = r>5 ? 10*mag : r>2 ? 5*mag : r>1 ? 2*mag : mag;
+  const start = Math.ceil(min/step)*step;
+  const out = [];
+  for (let v = start; v <= max + step*0.001; v = Math.round((v+step)*1e9)/1e9) out.push(v);
+  return out;
+}
+
+function fmt(v, max) { return max > 8 ? v.toFixed(1) : v.toFixed(2); }
+
+// ─── CANVAS SETUP ─────────────────────────────────────────────────────────────
+function makeCanvas(id, w, h) {
+  const el = document.getElementById(id);
+  el.innerHTML = '';
+  el.style.width = w+'px'; el.style.height = h+'px';
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  c.style.width = w+'px'; c.style.height = h+'px';
+  el.appendChild(c);
+  return c.getContext('2d');
+}
+
+// ─── DRAW: STATIC ─────────────────────────────────────────────────────────────
+function drawStatic(ctx, L) {
+  const { W, H, pad } = L;
+  const isReels = !!L.safeTop;
+  ctx.fillStyle = BLUE_DARK;
+  ctx.fillRect(0, 0, W, H);
+  // pink top stripe
+  ctx.fillStyle = PINK;
+  ctx.fillRect(0, 0, W, 4);
+  // left accent bar
+  ctx.fillStyle = BLUE_DIM;
+  ctx.fillRect(0, 4, 4, isReels ? 290 : 226);
+  if (!isReels) {
+    ctx.strokeStyle = BLUE_DIM; ctx.lineWidth = 1; ctx.setLineDash([]);
+    ctx.beginPath(); ctx.moveTo(pad, L.footerLineY); ctx.lineTo(W-pad, L.footerLineY); ctx.stroke();
+    ctx.font = `500 ${L.footerSize}px Roboto`;
+    ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'right';
+    ctx.fillText('@upperhandfantasy', W-pad, L.footerTextY);
+  }
+}
+
+// ─── DRAW: HEADER ─────────────────────────────────────────────────────────────
+function drawHeader(ctx, data, L, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha;
+  ctx.font = `500 ${L.titleSize}px Oswald`;
+  ctx.fillStyle = BLUE; ctx.textAlign = 'left';
+  ctx.fillText(data.title.toUpperCase(), L.pad, L.titleY);
+  ctx.font = `700 ${L.subtitleSize}px Oswald`;
+  ctx.fillStyle = WHITE;
+  ctx.fillText(data.subtitle.toUpperCase(), L.pad, L.subtitleY);
+  ctx.font = `italic 500 ${L.contextSize}px Roboto`;
+  ctx.fillStyle = BLUE_MUTED;
+  ctx.fillText(data.context, L.pad, L.contextY);
+  ctx.restore();
+}
+
+// ─── DRAW: CHART GRID + AXES ──────────────────────────────────────────────────
+function drawAxes(ctx, data, L, am, alpha) {
+  const { chart, axisValSize, axisLblSize, yAxisLabelX, xAxisLabelY } = L;
+  ctx.save(); ctx.globalAlpha = alpha;
+
+  // X gridlines + tick labels
+  gridLines(am.xMin, am.xMax, 5).forEach(v => {
+    const x = cx(v, am, chart);
+    if (x < chart.left-2 || x > chart.right+2) return;
+    ctx.strokeStyle = BLUE_DIM; ctx.lineWidth = 1; ctx.setLineDash([4,6]);
+    ctx.beginPath(); ctx.moveTo(x, chart.top); ctx.lineTo(x, chart.bottom); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = `400 ${axisValSize}px Roboto`;
+    ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'center';
+    ctx.fillText(fmt(v, am.xMax), x, chart.bottom + axisValSize + 8);
+  });
+
+  // Y gridlines + tick labels
+  gridLines(am.yMin, am.yMax, 5).forEach(v => {
+    const y = cy(v, am, chart);
+    if (y < chart.top-2 || y > chart.bottom+2) return;
+    ctx.strokeStyle = BLUE_DIM; ctx.lineWidth = 1; ctx.setLineDash([4,6]);
+    ctx.beginPath(); ctx.moveTo(chart.left, y); ctx.lineTo(chart.right, y); ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.font = `400 ${axisValSize}px Roboto`;
+    ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'right';
+    ctx.fillText(fmt(v, am.yMax), chart.left - 10, y + 5);
+  });
+
+  // Baseline axes
+  ctx.strokeStyle = BLUE_DIM; ctx.lineWidth = 1.5; ctx.setLineDash([]);
+  ctx.beginPath(); ctx.moveTo(chart.left, chart.bottom); ctx.lineTo(chart.right, chart.bottom); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(chart.left, chart.top);   ctx.lineTo(chart.left, chart.bottom);  ctx.stroke();
+
+  // Y-axis label (rotated)
+  ctx.save();
+  ctx.translate(yAxisLabelX, (chart.top + chart.bottom) / 2);
+  ctx.rotate(-Math.PI / 2);
+  ctx.font = `600 ${axisLblSize}px Oswald`;
+  ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'center';
+  ctx.fillText(data.yLabel.toUpperCase(), 0, 0);
+  ctx.restore();
+
+  // X-axis label
+  ctx.font = `600 ${axisLblSize}px Oswald`;
+  ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'center';
+  ctx.fillText(data.xLabel.toUpperCase(), (chart.left + chart.right) / 2, xAxisLabelY);
+
+  ctx.restore();
+}
+
+// ─── DRAW: AVERAGE LINES + QUADRANT LABELS ────────────────────────────────────
+function drawQuadrants(ctx, data, L, am, alpha) {
+  const { chart, quadLabelSize } = L;
+  ctx.save();
+
+  const qx = cx(data.xAvg, am, chart);
+  const qy = cy(data.yAvg, am, chart);
+
+  // Subtle quadrant fills
+  ctx.globalAlpha = alpha * 0.06;
+  ctx.fillStyle = PINK;
+  ctx.fillRect(qx, chart.top, chart.right-qx, qy-chart.top); // TR
+  ctx.fillStyle = BLUE;
+  ctx.fillRect(chart.left, chart.top, qx-chart.left, qy-chart.top); // TL
+
+  // Avg divider lines
+  ctx.globalAlpha = alpha * 0.9;
+  ctx.strokeStyle = BLUE; ctx.lineWidth = 1.5; ctx.setLineDash([9, 5]);
+  ctx.beginPath(); ctx.moveTo(qx, chart.top); ctx.lineTo(qx, chart.bottom); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(chart.left, qy); ctx.lineTo(chart.right, qy); ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Avg line value badges
+  const badgeSize = quadLabelSize - 1;
+  ctx.font = `600 ${badgeSize}px Roboto`;
+  ctx.fillStyle = BLUE; ctx.textAlign = 'center';
+  ctx.globalAlpha = alpha * 0.85;
+  const xBadge = fmt(data.xAvg, am.xMax) + ' AVG';
+  const yBadge = fmt(data.yAvg, am.yMax) + ' AVG';
+  ctx.fillText(xBadge, qx, chart.top - 8);
+  ctx.textAlign = 'right';
+  ctx.fillText(yBadge, chart.left - 8, qy - 6);
+
+  // Quadrant corner labels
+  ctx.globalAlpha = alpha * 0.38;
+  ctx.font = `700 ${quadLabelSize + 1}px Oswald`;
+
+  ctx.fillStyle = BLUE; ctx.textAlign = 'left';
+  ctx.fillText(data.qTL.toUpperCase(), chart.left + 12, chart.top + quadLabelSize + 6);
+  ctx.fillStyle = PINK; ctx.textAlign = 'right';
+  ctx.fillText(data.qTR.toUpperCase(), chart.right - 12, chart.top + quadLabelSize + 6);
+  ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'left';
+  ctx.fillText(data.qBL.toUpperCase(), chart.left + 12, chart.bottom - 10);
+  ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'right';
+  ctx.fillText(data.qBR.toUpperCase(), chart.right - 12, chart.bottom - 10);
+
+  ctx.restore();
+}
+
+// ─── DRAW: PLAYERS ────────────────────────────────────────────────────────────
+function drawPlayers(ctx, data, L, am, progress) {
+  const { chart, dotR, labelSize } = L;
+
+  // Pass 1: dots
+  data.players.forEach((p, i) => {
+    const prog = progress[i]; if (prog <= 0) return;
+    const scale = easeOutBack(prog);
+    const alpha = Math.min(1, prog * 3);
+    const px = cx(p.x, am, chart);
+    const py = cy(p.y, am, chart);
+    const r  = dotR * scale;
+
+    ctx.save(); ctx.globalAlpha = alpha;
+
+    if (p.hl) {
+      // Glow
+      const grd = ctx.createRadialGradient(px, py, 0, px, py, dotR * 2.8 * scale);
+      grd.addColorStop(0, 'rgba(237,10,115,0.28)');
+      grd.addColorStop(1, 'rgba(237,10,115,0)');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(px, py, dotR * 2.8 * scale, 0, Math.PI*2); ctx.fill();
+      // Ring
+      ctx.strokeStyle = PINK; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(px, py, r + 5, 0, Math.PI*2); ctx.stroke();
+      ctx.fillStyle = PINK;
+    } else {
+      ctx.fillStyle = BLUE;
+    }
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
+    ctx.restore();
+  });
+
+  // Pass 2: name labels (drawn on top of all dots)
+  data.players.forEach((p, i) => {
+    const prog = progress[i];
+    const labelAlpha = Math.max(0, (prog - 0.55) / 0.45);
+    if (labelAlpha <= 0) return;
+    const px = cx(p.x, am, chart);
+    const py = cy(p.y, am, chart);
+
+    ctx.save(); ctx.globalAlpha = labelAlpha;
+    ctx.font = `700 ${labelSize}px Oswald`;
+    const tw = ctx.measureText(p.name.toUpperCase()).width;
+
+    // Flip label below dot if too close to chart top
+    let ly = py - dotR - 10;
+    if (ly - labelSize < chart.top + 4) ly = py + dotR + labelSize + 8;
+
+    // Label background
+    ctx.fillStyle = 'rgba(6,21,37,0.82)';
+    roundRect(ctx, px - tw/2 - 6, ly - labelSize - 1, tw + 12, labelSize + 6, 3);
+    ctx.fill();
+
+    ctx.fillStyle = p.hl ? PINK : WHITE;
+    ctx.textAlign = 'center';
+    ctx.fillText(p.name.toUpperCase(), px, ly);
+    ctx.restore();
+  });
+}
+
+// ─── DRAW: DIFF PILL ──────────────────────────────────────────────────────────
+function drawDiff(ctx, data, L, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha;
+  const isReels = !!L.safeTop;
+  const text = data.diff.toUpperCase();
+  ctx.font = `700 ${L.diffSize}px Oswald`;
+  const tw = ctx.measureText(text).width;
+  const pillW = tw + 72;
+  const pillH = L.diffSize * 1.8;
+  const pillY = L.diffY;
+
+  let pillX;
+  if (isReels) {
+    ctx.font = `500 ${L.diffSize - 4}px Roboto`;
+    const brandW = ctx.measureText('@upperhandfantasy').width;
+    const gap = 24;
+    const totalW = brandW + gap + pillW;
+    const startX = (L.W - totalW) / 2;
+    ctx.fillStyle = BLUE_MUTED; ctx.textAlign = 'left';
+    ctx.fillText('@upperhandfantasy', startX, pillY + pillH * 0.67);
+    pillX = startX + brandW + gap;
+    ctx.font = `700 ${L.diffSize}px Oswald`;
+  } else {
+    pillX = (L.W - pillW) / 2;
+  }
+
+  ctx.fillStyle = PINK;
+  roundRect(ctx, pillX, pillY, pillW, pillH, pillH / 2);
+  ctx.fill();
+  ctx.fillStyle = WHITE; ctx.textAlign = 'center';
+  ctx.fillText(text, pillX + pillW / 2, pillY + pillH * 0.67);
+  ctx.restore();
+}
+
+// ─── FULL FRAME ───────────────────────────────────────────────────────────────
+function drawFrame(ctx, data, L, state) {
+  ctx.clearRect(0, 0, L.W, L.H);
+  drawStatic(ctx, L);
+
+  const am = axisMetrics(data);
+
+  drawAxes(ctx, data, L, am,     easeOut(tween(state.t, 0.0, 0.6)));
+  drawHeader(ctx, data, L,       easeOut(tween(state.t, 0.3, 0.5)));
+  drawQuadrants(ctx, data, L, am, easeOut(tween(state.t, 0.7, 0.45)));
+
+  const n = data.players.length;
+  const dotStart = 1.15, dotDur = 0.55, dotStagger = 0.18;
+  const progress = data.players.map((_, i) =>
+    easeOut(tween(state.t, dotStart + i * dotStagger, dotDur))
+  );
+  drawPlayers(ctx, data, L, am, progress);
+
+  const lastEnd = dotStart + (n - 1) * dotStagger + dotDur;
+  drawDiff(ctx, data, L, easeOut(tween(state.t, lastEnd + 0.15, 0.4)));
+
+  return lastEnd + 0.75;
+}
+
+// ─── ANIMATION ────────────────────────────────────────────────────────────────
+function runAnimation(containerId, data, L, frameRef, onDone) {
+  if (frameRef.id) cancelAnimationFrame(frameRef.id);
+  const canvas = document.querySelector(`#${containerId} canvas`);
+  const ctx = canvas.getContext('2d');
+  const state = { t: 0 };
+  const start = performance.now();
+  function frame(now) {
+    state.t = (now - start) / 1000;
+    const dur = drawFrame(ctx, data, L, state);
+    if (state.t < dur) {
+      frameRef.id = requestAnimationFrame(frame);
+    } else {
+      state.t = dur;
+      drawFrame(ctx, data, L, state);
+      if (onDone) onDone();
+    }
+  }
+  frameRef.id = requestAnimationFrame(frame);
+}
+
+// ─── GENERATE ─────────────────────────────────────────────────────────────────
+const frameSq = { id: null };
+const frameRl = { id: null };
+
+function generate() {
+  const data = getData();
+  const Lsq = getLayout('sq');
+  const Lrl = getLayout('rl');
+  makeCanvas('graphic-sq', Lsq.W, Lsq.H);
+  makeCanvas('graphic-rl', Lrl.W, Lrl.H);
+  runAnimation('graphic-sq', data, Lsq, frameSq, null);
+  runAnimation('graphic-rl', data, Lrl, frameRl, null);
+}
+
+// ─── PNG EXPORT ───────────────────────────────────────────────────────────────
+function downloadPNG(mode) {
+  const id = mode === 'sq' ? 'graphic-sq' : 'graphic-rl';
+  const L  = getLayout(mode);
+  const canvas = document.querySelector(`#${id} canvas`);
+  if (!canvas) return;
+  drawFrame(canvas.getContext('2d'), getData(), L, { t: 999 });
+  canvas.toBlob(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = `scatter-${mode}.png`; a.click();
+    URL.revokeObjectURL(url);
+  }, 'image/png');
+}
+
+// ─── VIDEO EXPORT ─────────────────────────────────────────────────────────────
+function downloadVideo(mode) {
+  const id    = mode === 'sq' ? 'graphic-sq' : 'graphic-rl';
+  const badge = document.getElementById(`rec-badge-${mode}`);
+  const L     = getLayout(mode);
+  const data  = getData();
+  const ctx   = makeCanvas(id, L.W, L.H);
+  const canvas = document.querySelector(`#${id} canvas`);
+
+  const mimes = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'];
+  const mime  = mimes.find(m => MediaRecorder.isTypeSupported(m)) || 'video/webm';
+  const ext   = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const chunks = [];
+  const stream  = canvas.captureStream(60);
+  const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 8_000_000 });
+
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    badge.style.display = 'none';
+    const blob = new Blob(chunks, { type: mime });
+    const url  = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = `scatter-${mode}.${ext}`;
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+    showFFmpegModal(filename, 60);
+    const fr = mode === 'sq' ? frameSq : frameRl;
+    runAnimation(id, data, L, fr, null);
+  };
+
+  badge.style.display = 'inline-block';
+  recorder.start();
+  const fr = mode === 'sq' ? frameSq : frameRl;
+  runAnimation(id, data, L, fr, () => setTimeout(() => recorder.stop(), 600));
+}
+
+// ─── EVENTS ───────────────────────────────────────────────────────────────────
+document.getElementById('btn-generate').addEventListener('click', generate);
+document.getElementById('btn-dl-sq').addEventListener('click',  () => downloadPNG('sq'));
+document.getElementById('btn-dl-rl').addEventListener('click',  () => downloadPNG('rl'));
+document.getElementById('btn-vid-sq').addEventListener('click', () => downloadVideo('sq'));
+document.getElementById('btn-vid-rl').addEventListener('click', () => downloadVideo('rl'));
+
+window.addEventListener('load', () => setTimeout(generate, 300));
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

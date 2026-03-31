@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Higher or Lower — Upper Hand Fantasy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --pink: #ED0A73;
+    --blue: #339AE9;
+    --white: #FFFFFF;
+    --bg: #061525;
+    --border: #1a3a5c;
+    --muted: #5a8ab0;
+    --dim: #2d4a63;
+    --panel-bg: #0a1f35;
+    --input-bg: #0d2a47;
+    --nav-h: 56px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--white); font-family: 'Roboto', sans-serif; min-height: 100vh; }
+
+  .tool-nav {
+    position: fixed; top: 0; left: 0; right: 0; height: var(--nav-h);
+    display: flex; align-items: center; gap: 18px;
+    padding: 0 24px; background: #0a1929;
+    border-bottom: 1px solid #1a3a5c; z-index: 100;
+  }
+  .back-btn {
+    font-family: 'Oswald', sans-serif; font-size: 13px; letter-spacing: 1.5px;
+    text-transform: uppercase; color: #339AE9; text-decoration: none;
+    padding: 6px 14px; border: 1px solid #1a4a73; border-radius: 4px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .back-btn:hover { background: #1a3a5c; color: #fff; }
+  .tool-nav-title {
+    font-family: 'Oswald', sans-serif; font-size: 15px; letter-spacing: 2px;
+    text-transform: uppercase; color: #5a8ab0;
+  }
+  .tool-nav-badge {
+    font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 3px;
+    background: rgba(237,10,115,0.15); color: #ED0A73;
+  }
+  .reel-game-badge { background: rgba(255,107,53,0.15); color: #FF6B35; }
+
+  .main-layout {
+    display: flex; min-height: 100vh; padding-top: var(--nav-h);
+  }
+
+  .form-panel {
+    width: 440px; min-width: 440px; background: var(--panel-bg);
+    border-right: 1px solid var(--border); padding: 24px 20px;
+    overflow-y: auto; height: calc(100vh - var(--nav-h)); position: sticky; top: var(--nav-h);
+  }
+
+  .preview-panel {
+    flex: 1; padding: 24px; display: flex; flex-direction: column; align-items: center; gap: 24px; overflow-y: auto;
+  }
+
+  .section-label {
+    font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+    color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase;
+    margin-bottom: 10px; margin-top: 20px;
+  }
+  .section-label:first-child { margin-top: 0; }
+
+  .form-group { margin-bottom: 12px; }
+  .form-group label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 5px; }
+  .form-group input, .form-group select {
+    width: 100%; background: var(--input-bg); border: 1px solid var(--border);
+    color: var(--white); padding: 8px 10px; border-radius: 6px; font-size: 13px;
+    font-family: 'Roboto', sans-serif; outline: none; transition: border-color 0.2s;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--blue); }
+  .form-group select option { background: var(--input-bg); }
+
+  .player-section {
+    background: rgba(13,42,71,0.5); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px; margin-bottom: 12px;
+  }
+  .player-section-header {
+    font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.06em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .player-section-header .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-blue { background: var(--blue); }
+  .dot-pink { background: var(--pink); }
+
+  .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .row-3 { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 8px; }
+
+  .type-toggle {
+    display: flex; gap: 0; background: var(--input-bg); border: 1px solid var(--border);
+    border-radius: 8px; padding: 3px; margin-bottom: 18px;
+  }
+  .type-toggle button {
+    flex: 1; padding: 7px 10px; border: none; border-radius: 6px;
+    font-family: 'Roboto', sans-serif; font-size: 13px; font-weight: 500;
+    cursor: pointer; background: transparent; color: var(--muted); transition: all 0.2s;
+  }
+  .type-toggle button.active { background: var(--blue); color: var(--white); }
+
+  .btn { padding: 9px 16px; border: none; border-radius: 7px; cursor: pointer; font-size: 13px; font-weight: 600; font-family: 'Roboto', sans-serif; transition: all 0.18s; display: inline-flex; align-items: center; gap: 8px; }
+  .btn-primary { background: var(--blue); color: var(--white); }
+  .btn-primary:hover { background: #4aaaf0; }
+  .btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--blue); color: var(--blue); }
+  .btn-export { background: rgba(237,10,115,0.12); color: var(--pink); border: 1px solid var(--pink); }
+  .btn-export:hover { background: rgba(237,10,115,0.22); }
+
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+
+  .rec-badge {
+    display: inline-block; font-size: 10px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 2px 6px; border-radius: 4px; line-height: 1.4;
+  }
+  .rec-idle { background: rgba(237,10,115,0.2); color: var(--pink); }
+  .rec-active { background: var(--pink); color: var(--white); animation: recPulse 1s infinite; }
+  @keyframes recPulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+
+  .canvas-wrap { position: relative; display: inline-block; }
+  .canvas-label { font-size: 11px; color: var(--muted); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .canvases-row { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+
+  .preview-btn-row { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+
+  canvas { display: block; }
+  .outer-wrap { display: inline-block; }
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<nav class="tool-nav">
+  <a href="index.html" class="back-btn">&#8592; Hub</a>
+  <span class="tool-nav-title">Higher or Lower</span>
+  <span class="tool-nav-badge reel-game-badge">Reel Game</span>
+</nav>
+
+<div class="main-layout">
+  <!-- FORM PANEL -->
+  <div class="form-panel">
+    <div class="section-label">Card Type</div>
+    <div class="type-toggle" id="typeToggle">
+      <button class="active" onclick="switchType('question')">Question</button>
+      <button onclick="switchType('reveal')">Reveal</button>
+    </div>
+
+    <div class="section-label">Stat</div>
+    <div class="form-group">
+      <label>Stat Label</label>
+      <input type="text" id="statLabel" value="2024 RUSHING YARDS" oninput="debouncedGenerate()">
+    </div>
+
+    <div class="section-label">Player A</div>
+    <div class="player-section">
+      <div class="player-section-header">
+        <span class="dot dot-blue"></span>
+        <span style="color:var(--blue)">PLAYER A</span>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="aName" value="SAQUON BARKLEY" oninput="debouncedGenerate()">
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Position</label>
+          <input type="text" id="aPos" value="RB" oninput="debouncedGenerate()">
+        </div>
+        <div class="form-group">
+          <label>Team</label>
+          <input type="text" id="aTeam" value="PHI" oninput="debouncedGenerate()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Photo URL</label>
+        <input type="text" id="aPhoto" value="https://media.pff.com/player-photos/nfl/45791.webp" oninput="debouncedGenerate()">
+      </div>
+      <div class="form-group">
+        <label>Stat Value (shown)</label>
+        <input type="text" id="aVal" value="2,005" oninput="debouncedGenerate()">
+      </div>
+    </div>
+
+    <div class="section-label">Player B</div>
+    <div class="player-section">
+      <div class="player-section-header">
+        <span class="dot dot-pink"></span>
+        <span style="color:var(--pink)">PLAYER B</span>
+      </div>
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" id="bName" value="DERRICK HENRY" oninput="debouncedGenerate()">
+      </div>
+      <div class="row-2">
+        <div class="form-group">
+          <label>Position</label>
+          <input type="text" id="bPos" value="RB" oninput="debouncedGenerate()">
+        </div>
+        <div class="form-group">
+          <label>Team</label>
+          <input type="text" id="bTeam" value="BAL" oninput="debouncedGenerate()">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Photo URL</label>
+        <input type="text" id="bPhoto" value="https://media.pff.com/player-photos/nfl/10679.webp" oninput="debouncedGenerate()">
+      </div>
+      <div class="form-group">
+        <label>Stat Value (revealed)</label>
+        <input type="text" id="bVal" value="1,921" oninput="debouncedGenerate()">
+      </div>
+    </div>
+
+    <div class="section-label">Background Watermark</div>
+    <div class="form-group">
+      <label>Upload Logo Image</label>
+      <input type="file" id="bgImgFile" accept="image/*" style="width:100%;background:var(--input-bg);border:1px solid var(--border);border-radius:6px;color:var(--white);padding:7px 10px;font-size:12px;font-family:'Roboto',sans-serif;cursor:pointer;" onchange="loadBgFile(this)">
+    </div>
+    <div class="form-group">
+      <label>Opacity: <span id="bgOpacityVal">7%</span></label>
+      <input type="range" id="bgOpacity" min="2" max="25" value="7" style="width:100%;margin-top:4px;" oninput="document.getElementById('bgOpacityVal').textContent=this.value+'%';debouncedGenerate()">
+    </div>
+
+    <div class="section-label">Attribution</div>
+    <div class="form-group">
+      <input type="text" id="attribution" value="@upperhandfantasy" oninput="debouncedGenerate()">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generate()">Generate</button>
+    </div>
+    <div class="btn-row" style="margin-top:12px">
+      <button class="btn btn-outline" onclick="exportPNG('square')">PNG 1:1</button>
+      <button class="btn btn-outline" onclick="exportPNG('reels')">PNG 9:16</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-export" onclick="toggleRecord('square')">
+        <span class="rec-badge rec-idle" id="recBadge-square">REC</span> Video 1:1
+      </button>
+      <button class="btn btn-export" onclick="toggleRecord('reels')">
+        <span class="rec-badge rec-idle" id="recBadge-reels">REC</span> Video 9:16
+      </button>
+    </div>
+  </div>
+
+  <!-- PREVIEW PANEL -->
+  <div class="preview-panel">
+    <div class="canvases-row">
+      <div>
+        <div class="canvas-label">Square 1:1</div>
+        <div class="outer-wrap" id="squareOuterWrap">
+          <div id="squareOuter" class="outer-wrap">
+            <canvas id="squareCanvas" width="1080" height="1080"></canvas>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="canvas-label">Reels 9:16</div>
+        <div class="outer-wrap" id="reelsOuterWrap">
+          <div id="reelsOuter" class="outer-wrap">
+            <canvas id="reelsCanvas" width="1080" height="1920"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── DESIGN SYSTEM ───────────────────────────────────────────────
+const C = { PINK:'#ED0A73', BLUE:'#339AE9', WHITE:'#FFFFFF', BG:'#061525', BORDER:'#1a3a5c', MUTED:'#5a8ab0', DIM:'#2d4a63' };
+
+function easeOut(t) { return 1 - Math.pow(1 - Math.min(Math.max(t,0),1), 3); }
+function easeOutBack(t) { const c=1.3; t=Math.min(Math.max(t,0),1); return 1+c*(Math.pow(t-1,3))+c*(Math.pow(t-1,2)); }
+function lerp(a,b,t) { return a+(b-a)*t; }
+function countUp(raw,p) { const s=String(raw).trim(); const m=s.match(/^([^0-9\-]*)(-?[0-9]+(?:\.[0-9]+)?)(.*)$/); if(!m) return s; const[,pre,numStr,suf]=m; const cur=parseFloat(numStr)*easeOut(p); const dec=numStr.includes('.')?numStr.split('.')[1].length:0; return pre+cur.toFixed(dec)+suf; }
+function fitText(ctx,text,maxW,size,weight,family) { ctx.font=`${weight} ${size}px ${family}`; while(ctx.measureText(text).width>maxW&&size>10){size-=2;ctx.font=`${weight} ${size}px ${family}`;} return size; }
+const imgCache={};
+function loadImg(url,cb) { if(!url){cb(null);return;} if(imgCache[url]!==undefined){cb(imgCache[url]);return;} const img=new Image();img.crossOrigin='anonymous';img.onload=()=>{imgCache[url]=img;cb(img);};img.onerror=()=>{imgCache[url]=null;cb(null);};img.src=url; }
+function drawCirclePhoto(ctx,img,cx,cy,r,borderColor,bw) { ctx.save();ctx.beginPath();ctx.arc(cx,cy,r+bw,0,Math.PI*2);ctx.fillStyle=borderColor;ctx.fill();ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();if(img){const sc=Math.max((r*2)/img.width,(r*2)/img.height);ctx.drawImage(img,cx-img.width*sc/2,cy-img.height*sc/2,img.width*sc,img.height*sc);}else{ctx.fillStyle='#0d2a47';ctx.fill();}ctx.restore(); }
+function roundRect(ctx,x,y,w,h,r) { const rad=typeof r==='number'?{tl:r,tr:r,br:r,bl:r}:{tl:r[0]||0,tr:r[1]||0,br:r[2]||0,bl:r[3]||0}; ctx.beginPath(); ctx.moveTo(x+rad.tl,y); ctx.lineTo(x+w-rad.tr,y); ctx.quadraticCurveTo(x+w,y,x+w,y+rad.tr); ctx.lineTo(x+w,y+h-rad.br); ctx.quadraticCurveTo(x+w,y+h,x+w-rad.br,y+h); ctx.lineTo(x+rad.bl,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-rad.bl); ctx.lineTo(x,y+rad.tl); ctx.quadraticCurveTo(x,y,x+rad.tl,y); ctx.closePath(); }
+
+// ─── LAYOUT ──────────────────────────────────────────────────────
+function getLayout(fmt) {
+  if (fmt === 'square') return {
+    W:1080, H:1080, borderH:6,
+    statLabelY:54, statLabelSz:30,
+    photoR:130, photoCYA:260, photoCYB:260,
+    photoCXA:270, photoCXB:810,
+    nameY:420, nameSz:26,
+    teamY:454, teamSz:16,
+    valY:590, valSz:92,
+    arrowY:670, arrowSz:56,
+    arrowBtnH:120, arrowBtnW:390,
+    footY:1044, footSz:16
+  };
+  // IG safe zone: ~250px hidden at top, ~350px at bottom
+  // All content kept between y=285 and y=1595
+  return {
+    W:1080, H:1920, vertical:true, borderH:8,
+    dividerY:888,
+    statLabelY:262, statLabelSz:52,
+    photoR:120,
+    photoCYA:448, photoCYB:1052,
+    photoCXA:540, photoCXB:540,
+    nameYA:620, nameYB:1224,
+    teamYA:664, teamYB:1268,
+    valYA:786, valYB:1370,
+    nameY:620, nameSz:32,
+    teamY:664, teamSz:22,
+    valY:786, valSz:108,
+    arrowY:1468, arrowSz:58, arrowRow:true,
+    arrowBtnH:82, arrowBtnW:295,
+    footY:1598, footSz:22
+  };
+}
+
+// ─── STATE ───────────────────────────────────────────────────────
+let currentType = 'question';
+let animFrameId = null;
+let currentFrame = 0;
+const TOTAL_FRAMES_Q = 300;
+const TOTAL_FRAMES_R = 300;
+let recorders = {};
+let recChunks = {};
+let isRecording = {};
+
+function switchType(t) {
+  currentType = t;
+  document.querySelectorAll('#typeToggle button').forEach((b,i) => {
+    b.classList.toggle('active', (i===0&&t==='question')||(i===1&&t==='reveal'));
+  });
+  generate();
+}
+
+// ─── DATA ────────────────────────────────────────────────────────
+function getData() {
+  return {
+    statLabel: document.getElementById('statLabel').value.trim().toUpperCase(),
+    aName: document.getElementById('aName').value.trim().toUpperCase(),
+    aPos: document.getElementById('aPos').value.trim().toUpperCase(),
+    aTeam: document.getElementById('aTeam').value.trim().toUpperCase(),
+    aPhoto: document.getElementById('aPhoto').value.trim(),
+    aVal: document.getElementById('aVal').value.trim(),
+    bName: document.getElementById('bName').value.trim().toUpperCase(),
+    bPos: document.getElementById('bPos').value.trim().toUpperCase(),
+    bTeam: document.getElementById('bTeam').value.trim().toUpperCase(),
+    bPhoto: document.getElementById('bPhoto').value.trim(),
+    bVal: document.getElementById('bVal').value.trim(),
+    attribution: document.getElementById('attribution').value.trim(),
+    bgOpacity: parseInt(document.getElementById('bgOpacity').value) / 100,
+  };
+}
+
+function parseNum(s) {
+  return parseFloat(String(s).replace(/[^0-9.\-]/g,'')) || 0;
+}
+
+// ─── DRAWING ─────────────────────────────────────────────────────
+function drawBg(ctx, L, bgImg, bgOpacity) {
+  ctx.fillStyle = C.BG;
+  ctx.fillRect(0, 0, L.W, L.H);
+
+  // Watermark background image
+  if (bgImg) {
+    ctx.save();
+    ctx.globalAlpha = bgOpacity || 0.07;
+    const sc = Math.max(L.W / bgImg.width, L.H / bgImg.height);
+    const iw = bgImg.width * sc, ih = bgImg.height * sc;
+    ctx.drawImage(bgImg, (L.W - iw) / 2, (L.H - ih) / 2, iw, ih);
+    ctx.restore();
+  }
+
+  if (L.vertical) {
+    const dY = L.dividerY || L.H / 2;
+
+    // Radial glow: top = blue (A), bottom = pink (B)
+    const glT = ctx.createRadialGradient(L.W/2, 0, 0, L.W/2, 0, L.H * 0.52);
+    glT.addColorStop(0, 'rgba(51,154,233,0.09)');
+    glT.addColorStop(1, 'rgba(51,154,233,0)');
+    ctx.fillStyle = glT; ctx.fillRect(0, 0, L.W, dY);
+
+    const glB = ctx.createRadialGradient(L.W/2, L.H, 0, L.W/2, L.H, L.H * 0.52);
+    glB.addColorStop(0, 'rgba(237,10,115,0.09)');
+    glB.addColorStop(1, 'rgba(237,10,115,0)');
+    ctx.fillStyle = glB; ctx.fillRect(0, dY, L.W, L.H - dY);
+
+    // Side accent strips: left = blue, right = pink
+    ctx.fillStyle = C.BLUE;
+    ctx.fillRect(0, 0, L.borderH, L.H);
+    ctx.fillStyle = C.PINK;
+    ctx.fillRect(L.W - L.borderH, 0, L.borderH, L.H);
+
+    // Horizontal center divider
+    ctx.globalAlpha = 0.28;
+    ctx.fillStyle = C.BORDER;
+    ctx.fillRect(60, dY - 1, L.W - 120, 2);
+    ctx.globalAlpha = 1;
+  } else {
+    // Subtle radial glow left (blue) and right (pink)
+    const glL = ctx.createRadialGradient(0, L.H*0.4, 0, 0, L.H*0.4, L.W*0.55);
+    glL.addColorStop(0, 'rgba(51,154,233,0.07)');
+    glL.addColorStop(1, 'rgba(51,154,233,0)');
+    ctx.fillStyle = glL; ctx.fillRect(0, 0, L.W/2, L.H);
+
+    const glR = ctx.createRadialGradient(L.W, L.H*0.4, 0, L.W, L.H*0.4, L.W*0.55);
+    glR.addColorStop(0, 'rgba(237,10,115,0.07)');
+    glR.addColorStop(1, 'rgba(237,10,115,0)');
+    ctx.fillStyle = glR; ctx.fillRect(L.W/2, 0, L.W/2, L.H);
+
+    // Top border
+    ctx.fillStyle = C.PINK;
+    ctx.fillRect(0, 0, L.W/2, L.borderH);
+    ctx.fillStyle = C.BLUE;
+    ctx.fillRect(L.W/2, 0, L.W/2, L.borderH);
+
+    // Center divider
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = C.BORDER;
+    ctx.fillRect(L.W/2 - 1, 60, 2, L.H - 120);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawStatLabel(ctx, L, progress, label) {
+  if (progress <= 0) return;
+  ctx.save();
+  ctx.globalAlpha = easeOut(progress);
+  ctx.font = `600 ${L.statLabelSz}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.WHITE;
+  ctx.fillText(label, L.W/2, L.statLabelY);
+  ctx.restore();
+}
+
+function drawPlayer(ctx, L, side, data, imgA, imgB, progress, valProgress, type, revealProgress, isWinner) {
+  if (progress <= 0) return;
+  const isA = side === 'A';
+  const cx = isA ? L.photoCXA : L.photoCXB;
+  const cy = isA ? L.photoCYA : L.photoCYB;
+  const color = isA ? C.BLUE : C.PINK;
+  const name = isA ? data.aName : data.bName;
+  const team = isA ? data.aTeam : data.bTeam;
+  const pos = isA ? data.aPos : data.bPos;
+  const val = isA ? data.aVal : data.bVal;
+  const img = isA ? imgA : imgB;
+  const slideDir = isA ? -1 : 1;
+  const nameY = isA ? (L.nameYA !== undefined ? L.nameYA : L.nameY) : (L.nameYB !== undefined ? L.nameYB : L.nameY);
+  const teamY = isA ? (L.teamYA !== undefined ? L.teamYA : L.teamY) : (L.teamYB !== undefined ? L.teamYB : L.teamY);
+  const valY  = isA ? (L.valYA  !== undefined ? L.valYA  : L.valY)  : (L.valYB  !== undefined ? L.valYB  : L.valY);
+  const maxTextW = L.vertical ? L.W - 80 : L.W/2 - 40;
+
+  ctx.save();
+  ctx.globalAlpha = easeOut(progress);
+  // Vertical layout: slide players in from top/bottom; horizontal: slide from sides
+  if (L.vertical) {
+    ctx.translate(0, lerp(slideDir * 60, 0, easeOut(progress)));
+  } else {
+    ctx.translate(lerp(slideDir * 60, 0, easeOut(progress)), 0);
+  }
+
+  // Photo ring pulse for winner in reveal
+  let ringExtra = 0;
+  if (!isA && type === 'reveal' && revealProgress > 0 && isWinner) {
+    ringExtra = Math.sin(revealProgress * Math.PI * 3) * 8 * revealProgress;
+  }
+  const ringBW = isWinner && type === 'reveal' ? 5 + ringExtra : 4;
+  drawCirclePhoto(ctx, img, cx, cy, L.photoR, color, ringBW);
+
+  // Name
+  const nSz = fitText(ctx, name, maxTextW, L.nameSz, '700', 'Oswald');
+  ctx.font = `700 ${nSz}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.fillText(name, cx, nameY);
+
+  // Team / pos
+  ctx.font = `400 ${L.teamSz}px Roboto`;
+  ctx.fillStyle = C.MUTED;
+  ctx.globalAlpha = easeOut(progress) * 0.7;
+  ctx.fillText(`${pos} · ${team}`, cx, teamY);
+  ctx.globalAlpha = easeOut(progress);
+
+  ctx.restore();
+
+  // Values
+  if (isA) {
+    if (valProgress > 0) {
+      ctx.save();
+      ctx.globalAlpha = easeOut(progress);
+      const vSz = fitText(ctx, data.aVal, maxTextW, L.valSz, '700', 'Oswald');
+      ctx.font = `700 ${vSz}px Oswald`;
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+      ctx.fillStyle = C.BLUE;
+
+      const raw = data.aVal.replace(/,/g,'');
+      const num = parseFloat(raw);
+      if (!isNaN(num)) {
+        const cur = Math.round(num * easeOut(valProgress));
+        ctx.fillText(cur.toLocaleString(), cx, valY);
+      } else {
+        ctx.fillText(countUp(data.aVal, valProgress), cx, valY);
+      }
+      ctx.restore();
+    }
+  } else {
+    // B side
+    if (type === 'question') {
+      if (valProgress > 0) {
+        ctx.save();
+        const qScale = 0.85 + 0.15 * easeOut(valProgress);
+        ctx.globalAlpha = easeOut(valProgress) * easeOut(progress);
+        ctx.translate(cx, valY);
+        ctx.scale(qScale, qScale);
+        ctx.font = `700 ${L.valSz}px Oswald`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = C.MUTED;
+        ctx.fillText('?', 0, 0);
+        ctx.restore();
+      }
+    } else {
+      // Reveal mode
+      if (revealProgress > 0) {
+        const scale = easeOutBack(revealProgress);
+        ctx.save();
+        ctx.globalAlpha = easeOut(revealProgress) * easeOut(progress);
+        ctx.translate(cx, valY);
+        ctx.scale(scale, scale);
+        const vSz = fitText(ctx, data.bVal, maxTextW, L.valSz, '700', 'Oswald');
+        ctx.font = `700 ${vSz}px Oswald`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = C.PINK;
+
+        const raw = data.bVal.replace(/,/g,'');
+        const num = parseFloat(raw);
+        if (!isNaN(num)) {
+          ctx.fillText(num.toLocaleString(), 0, 0);
+        } else {
+          ctx.fillText(data.bVal, 0, 0);
+        }
+        ctx.restore();
+      } else if (valProgress > 0) {
+        ctx.save();
+        ctx.globalAlpha = easeOut(valProgress) * easeOut(progress);
+        ctx.font = `700 ${L.valSz}px Oswald`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillStyle = C.MUTED;
+        ctx.fillText('?', cx, valY);
+        ctx.restore();
+      }
+    }
+  }
+}
+
+function drawArrowButtons(ctx, L, progress, type, revealProgress, aNum, bNum) {
+  if (progress <= 0) return;
+  const bw = L.arrowBtnW;
+  const bh = L.arrowBtnH;
+
+  // Row layout (side-by-side): used for vertical/reels to save vertical space
+  // Stack layout (default): both buttons under player B column
+  let higherBtnX, lowerBtnX, higherBtnY, lowerBtnY;
+  if (L.arrowRow) {
+    const rowGap = 22;
+    const totalRowW = bw * 2 + rowGap;
+    higherBtnX = L.W / 2 - totalRowW / 2;
+    lowerBtnX  = higherBtnX + bw + rowGap;
+    higherBtnY = lowerBtnY = L.arrowY;
+  } else {
+    const btnGap = Math.round(bh * 0.18);
+    higherBtnX = lowerBtnX = L.photoCXB - bw / 2;
+    higherBtnY = L.arrowY;
+    lowerBtnY  = L.arrowY + bh + btnGap;
+  }
+
+  const isHigher = bNum > aNum;
+  let higherAlpha = progress;
+  let lowerAlpha  = progress;
+
+  if (type === 'reveal' && revealProgress > 0) {
+    if (isHigher) {
+      lowerAlpha  = progress * lerp(1, 0.15, easeOut(revealProgress));
+    } else {
+      higherAlpha = progress * lerp(1, 0.15, easeOut(revealProgress));
+    }
+  }
+
+  const slideY = lerp(30, 0, easeOut(progress));
+  ctx.save();
+  ctx.translate(0, slideY);
+
+  // Draw arrow + word inline, horizontally centered in the button
+  function drawInlineLabel(arrow, word, btnX, btnY, color) {
+    const innerGap = Math.round(L.arrowSz * 0.28);
+    ctx.font = `700 ${L.arrowSz}px Oswald`;
+    const arrowW = ctx.measureText(arrow).width;
+    ctx.font = `700 ${Math.round(L.arrowSz * 0.62)}px Oswald`;
+    const wordW = ctx.measureText(word).width;
+    const totalW = arrowW + innerGap + wordW;
+    const startX = btnX + bw / 2 - totalW / 2;
+    const midY   = btnY + bh / 2;
+
+    ctx.fillStyle = color;
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'middle';
+
+    ctx.font = `700 ${L.arrowSz}px Oswald`;
+    ctx.fillText(arrow, startX, midY);
+
+    ctx.font = `700 ${Math.round(L.arrowSz * 0.62)}px Oswald`;
+    ctx.fillText(word, startX + arrowW + innerGap, midY);
+  }
+
+  // ── HIGHER button ──
+  ctx.save();
+  ctx.globalAlpha = higherAlpha;
+  ctx.fillStyle = 'rgba(51,154,233,0.12)';
+  roundRect(ctx, higherBtnX, higherBtnY, bw, bh, 12); ctx.fill();
+  ctx.strokeStyle = C.BLUE; ctx.lineWidth = 2;
+  roundRect(ctx, higherBtnX, higherBtnY, bw, bh, 12); ctx.stroke();
+  if (type === 'reveal' && revealProgress > 0 && isHigher) {
+    ctx.shadowColor = C.BLUE; ctx.shadowBlur = 22 * revealProgress;
+  }
+  drawInlineLabel('↑', 'HIGHER', higherBtnX, higherBtnY, C.BLUE);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+
+  // ── LOWER button ──
+  ctx.save();
+  ctx.globalAlpha = lowerAlpha;
+  ctx.fillStyle = 'rgba(237,10,115,0.12)';
+  roundRect(ctx, lowerBtnX, lowerBtnY, bw, bh, 12); ctx.fill();
+  ctx.strokeStyle = C.PINK; ctx.lineWidth = 2;
+  roundRect(ctx, lowerBtnX, lowerBtnY, bw, bh, 12); ctx.stroke();
+  if (type === 'reveal' && revealProgress > 0 && !isHigher) {
+    ctx.shadowColor = C.PINK; ctx.shadowBlur = 22 * revealProgress;
+  }
+  drawInlineLabel('↓', 'LOWER', lowerBtnX, lowerBtnY, C.PINK);
+  ctx.shadowBlur = 0;
+  ctx.restore();
+
+  ctx.restore();
+}
+
+function drawAttribution(ctx, L, progress, text) {
+  if (progress <= 0 || !text) return;
+  ctx.save();
+  ctx.globalAlpha = easeOut(progress);
+  ctx.font = `500 ${L.footSz}px Roboto`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.MUTED;
+  ctx.fillText(text, L.W/2, L.footY);
+  ctx.restore();
+}
+
+// ─── RENDER FRAME ────────────────────────────────────────────────
+function renderFrame(ctx, L, frame, data, imgA, imgB, bgImg) {
+  const type = currentType;
+  const TF = type === 'question' ? TOTAL_FRAMES_Q : TOTAL_FRAMES_R;
+  const t = frame / TF;
+  const f = frame;
+
+  drawBg(ctx, L, bgImg, data.bgOpacity);
+
+  const aNum = parseNum(data.aVal);
+  const bNum = parseNum(data.bVal);
+  const isHigher = bNum > aNum;
+
+  function prog(start, end) { return Math.min(Math.max((f - start)/(end - start), 0), 1); }
+
+  if (type === 'question') {
+    // 0–50: stat label
+    drawStatLabel(ctx, L, prog(0, 50), data.statLabel);
+    // 20–80: A player
+    drawPlayer(ctx, L, 'A', data, imgA, imgB, prog(20, 80), prog(80, 160), type, 0, false);
+    // 30–90: B player + ? from 120-170
+    drawPlayer(ctx, L, 'B', data, imgA, imgB, prog(30, 90), prog(120, 170), type, 0, false);
+    // 170–240: arrow buttons
+    drawArrowButtons(ctx, L, prog(170, 220), type, 0, aNum, bNum);
+    // 260–300: attribution
+    drawAttribution(ctx, L, prog(260, 300), data.attribution);
+  } else {
+    // Reveal mode
+    const revP = prog(180, 230);
+    const arrowRevP = prog(230, 280);
+    const isWinner = true; // B is the reveal
+
+    drawStatLabel(ctx, L, prog(0, 50), data.statLabel);
+    drawPlayer(ctx, L, 'A', data, imgA, imgB, prog(20, 80), prog(80, 160), type, 0, false);
+    drawPlayer(ctx, L, 'B', data, imgA, imgB, prog(30, 90), prog(120, 170), type, revP, true);
+    // Show arrows (question style up to reveal, then reveal version)
+    drawArrowButtons(ctx, L, prog(150, 190), type, arrowRevP, aNum, bNum);
+    drawAttribution(ctx, L, prog(270, 300), data.attribution);
+  }
+}
+
+// ─── ANIMATION LOOP ──────────────────────────────────────────────
+let imgA_cache = null, imgB_cache = null, bgImg_cache = null;
+let lastPhotoA = '', lastPhotoB = '';
+
+function loadBgFile(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => { bgImg_cache = img; debouncedGenerate(); };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function generate() {
+  if (animFrameId) cancelAnimationFrame(animFrameId);
+  currentFrame = 0;
+
+  const data = getData();
+  const TF = currentType === 'question' ? TOTAL_FRAMES_Q : TOTAL_FRAMES_R;
+
+  // Load player images then animate
+  let loadedA = false, loadedB = false;
+  function tryStart() {
+    if (!loadedA || !loadedB) return;
+    animate();
+  }
+
+  if (data.aPhoto !== lastPhotoA) {
+    loadedA = false;
+    loadImg(data.aPhoto, img => { imgA_cache = img; lastPhotoA = data.aPhoto; loadedA = true; tryStart(); });
+  } else { loadedA = true; }
+
+  if (data.bPhoto !== lastPhotoB) {
+    loadedB = false;
+    loadImg(data.bPhoto, img => { imgB_cache = img; lastPhotoB = data.bPhoto; loadedB = true; tryStart(); });
+  } else { loadedB = true; }
+
+  if (loadedA && loadedB) animate();
+
+  function animate() {
+    const data = getData();
+    const TF = currentType === 'question' ? TOTAL_FRAMES_Q : TOTAL_FRAMES_R;
+    const ctxSq = document.getElementById('squareCanvas').getContext('2d');
+    const ctxRe = document.getElementById('reelsCanvas').getContext('2d');
+    const LSq = getLayout('square');
+    const LRe = getLayout('reels');
+
+    renderFrame(ctxSq, LSq, currentFrame, data, imgA_cache, imgB_cache, bgImg_cache);
+    renderFrame(ctxRe, LRe, currentFrame, data, imgA_cache, imgB_cache, bgImg_cache);
+
+    feedRecorders();
+
+    if (currentFrame < TF) {
+      currentFrame++;
+      animFrameId = requestAnimationFrame(animate);
+    } else {
+      animFrameId = null;
+    }
+  }
+}
+
+// ─── SCALE CANVASES ──────────────────────────────────────────────
+function scaleCanvases() {
+  const avail = Math.max(window.innerWidth - 480, 280);
+  const sq = Math.min(0.46, (avail * 0.50) / 1080);
+  const re = Math.min(0.42, (avail * 0.44) / 1080);
+  applyScale('squareOuter', sq, 1080, 1080);
+  applyScale('reelsOuter', re, 1080, 1920);
+}
+function applyScale(id, s, w, h) {
+  const el = document.getElementById(id);
+  el.style.transform = `scale(${s})`;
+  el.style.transformOrigin = 'top left';
+  el.style.width = w + 'px';
+  el.style.height = h + 'px';
+  el.parentElement.style.width = Math.round(w * s) + 'px';
+  el.parentElement.style.height = Math.round(h * s) + 'px';
+}
+
+// ─── EXPORT PNG ──────────────────────────────────────────────────
+function exportPNG(fmt) {
+  const data = getData();
+  const canvas = document.getElementById(fmt === 'square' ? 'squareCanvas' : 'reelsCanvas');
+  const ctx = canvas.getContext('2d');
+  const L = getLayout(fmt);
+  const TF = currentType === 'question' ? TOTAL_FRAMES_Q : TOTAL_FRAMES_R;
+  renderFrame(ctx, L, TF, data, imgA_cache, imgB_cache, bgImg_cache);
+  const a = document.createElement('a');
+  a.download = `higher-or-lower-${fmt}.png`;
+  a.href = canvas.toDataURL('image/png');
+  a.click();
+}
+
+// ─── VIDEO RECORDING ─────────────────────────────────────────────
+function feedRecorders() {
+  ['square','reels'].forEach(fmt => {
+    if (recorders[fmt] && recorders[fmt].state === 'recording') {
+      // frames are captured via canvas stream automatically
+    }
+  });
+}
+
+function toggleRecord(fmt) {
+  if (isRecording[fmt]) {
+    stopRecord(fmt);
+  } else {
+    startRecord(fmt);
+  }
+}
+
+function startRecord(fmt) {
+  const canvas = document.getElementById(fmt === 'square' ? 'squareCanvas' : 'reelsCanvas');
+  const mime = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'].find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
+  const ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const stream = canvas.captureStream(30);
+  const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25_000_000 });
+  recChunks[fmt] = [];
+  rec.ondataavailable = e => { if (e.data.size > 0) recChunks[fmt].push(e.data); };
+  rec.onstop = () => {
+    const blob = new Blob(recChunks[fmt], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const filename = `higher-or-lower-${fmt}.${ext}`;
+    a.download = filename;
+    a.href = url; a.click();
+    URL.revokeObjectURL(url);
+    showFFmpegModal(filename, 30);
+    setBadge(fmt, false);
+  };
+  rec.start();
+  recorders[fmt] = rec;
+  isRecording[fmt] = true;
+  setBadge(fmt, true);
+  generate();
+  // Auto-stop after animation completes
+  const TF = currentType === 'question' ? TOTAL_FRAMES_Q : TOTAL_FRAMES_R;
+  setTimeout(() => { if (isRecording[fmt]) stopRecord(fmt); }, (TF / 30) * 1000 + 500);
+}
+
+function stopRecord(fmt) {
+  if (recorders[fmt] && recorders[fmt].state === 'recording') {
+    recorders[fmt].stop();
+  }
+  isRecording[fmt] = false;
+}
+
+function setBadge(fmt, active) {
+  const badge = document.getElementById(`recBadge-${fmt}`);
+  if (!badge) return;
+  badge.className = 'rec-badge ' + (active ? 'rec-active' : 'rec-idle');
+}
+
+// ─── DEBOUNCE ────────────────────────────────────────────────────
+let debTimer = null;
+function debouncedGenerate() {
+  clearTimeout(debTimer);
+  debTimer = setTimeout(generate, 220);
+}
+
+// ─── INIT ────────────────────────────────────────────────────────
+function init() {
+  scaleCanvases();
+  window.addEventListener('resize', scaleCanvases);
+  generate();
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>

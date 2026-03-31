@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Converter — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --green:      #3ECF6A;
+  --orange:     #FF6B35;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --bg-deep:    #060e18;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: var(--pink);
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 4px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(6, 21, 37, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  flex-shrink: 0;
+}
+.logo-mark {
+  width: 40px; height: 40px;
+  border-radius: 6px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-dim);
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-top {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 700;
+  letter-spacing: 2px; color: #fff;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 9px; letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid var(--border-dim);
+  padding-left: 20px;
+  height: 100%;
+}
+.nav-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-tab.active {
+  color: var(--pink);
+  background: rgba(237,10,115,0.1);
+  border-color: rgba(237,10,115,0.3);
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 20px;
+  margin-left: auto;
+}
+.header-tag {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── MAIN ── */
+.main {
+  padding: 100px 40px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  margin-bottom: 36px;
+  opacity: 0;
+  transform: translateY(12px);
+  animation: fadeUp 0.5s ease 0.05s forwards;
+}
+.page-eyebrow {
+  font-size: 10px; letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 8px;
+}
+.page-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 36px; font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 10px;
+}
+.page-title span { color: var(--blue); }
+.page-desc {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* ── TWO-COL LAYOUT ── */
+.layout { display: grid; grid-template-columns: 1fr 300px; gap: 24px; align-items: start; }
+
+/* ── CARD ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  overflow: hidden;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+.card-head {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px;
+}
+.card-head-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.card-body { padding: 20px; }
+
+/* ── DROP ZONE ── */
+.drop-zone {
+  border: 2px dashed var(--border-dim);
+  border-radius: 8px;
+  padding: 48px 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.drop-zone:hover,
+.drop-zone.dragover {
+  border-color: var(--blue);
+  background: rgba(51, 154, 233, 0.05);
+}
+.drop-zone input[type="file"] {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: pointer;
+}
+.drop-icon {
+  width: 52px; height: 52px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.25);
+  display: flex; align-items: center; justify-content: center;
+}
+.drop-icon svg { width: 24px; height: 24px; fill: var(--blue); }
+.drop-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px; font-weight: 600;
+  letter-spacing: 1px;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.drop-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.drop-hint strong { color: var(--blue); }
+
+/* ── FILES LIST ── */
+.files-list { display: flex; flex-direction: column; gap: 10px; }
+
+.file-entry {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeUp 0.3s ease forwards;
+}
+.file-entry-head {
+  display: flex; align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-dim);
+}
+.file-entry-icon {
+  width: 32px; height: 32px;
+  border-radius: 6px;
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.2);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.file-entry-icon svg { width: 16px; height: 16px; fill: var(--blue); }
+.file-entry-icon.webm-icon { background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.2); }
+.file-entry-icon.webm-icon svg { fill: var(--orange); }
+.file-entry-meta { flex: 1; min-width: 0; }
+.file-entry-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.3px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.file-entry-info {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 3px;
+}
+.file-tag {
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+.tag-webm { background: rgba(255,107,53,0.15); color: var(--orange); }
+.tag-mp4  { background: rgba(51,154,233,0.12); color: var(--blue); }
+.tag-warn { background: rgba(237,10,115,0.12); color: var(--pink); }
+.file-size { font-size: 11px; color: var(--text-muted); }
+
+.file-entry-remove {
+  background: none; border: none;
+  color: var(--text-dim);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+  display: flex; align-items: center;
+  flex-shrink: 0;
+}
+.file-entry-remove:hover { color: var(--pink); }
+.file-entry-remove svg { width: 14px; height: 14px; fill: currentColor; }
+
+.file-entry-cmd {
+  padding: 12px 16px;
+}
+.cmd-label {
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+.cmd-wrap {
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.cmd-text {
+  flex: 1;
+  background: #030a12;
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #7EC8E3;
+  white-space: pre-wrap;
+  word-break: break-all;
+  line-height: 1.6;
+  min-height: 48px;
+}
+.cmd-copy-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border-dim);
+  background: rgba(51,154,233,0.1);
+  color: var(--blue);
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  align-self: flex-start;
+}
+.cmd-copy-btn:hover { background: rgba(51,154,233,0.2); border-color: var(--blue); }
+.cmd-copy-btn.copied { background: rgba(62,207,106,0.15); color: var(--green); border-color: rgba(62,207,106,0.4); }
+
+/* ── FPS OVERRIDES per file ── */
+.file-fps-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 16px 12px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.fps-label { font-size: 11px; color: var(--text-muted); letter-spacing: 0.5px; }
+.fps-btn-group { display: flex; gap: 4px; }
+.fps-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: 1px solid var(--border-dim);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.fps-btn:hover { color: #fff; border-color: #fff; }
+.fps-btn.active { background: rgba(237,10,115,0.15); color: var(--pink); border-color: rgba(237,10,115,0.4); }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  padding: 32px 20px;
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 13px;
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+}
+.empty-state svg { width: 32px; height: 32px; fill: var(--text-dim); opacity: 0.5; }
+
+/* ── BATCH BAR ── */
+.batch-bar {
+  margin-top: 16px;
+  padding: 16px;
+  background: var(--bg-deep);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px;
+}
+.batch-bar-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.batch-bar-btns { display: flex; gap: 8px; }
+.batch-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 8px 18px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: 1px solid transparent;
+}
+.batch-btn-primary {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+}
+.batch-btn-primary:hover { background: #c40060; }
+.batch-btn-primary.copied { background: var(--green); border-color: var(--green); }
+.batch-btn-secondary {
+  background: transparent;
+  color: var(--text-muted);
+  border-color: var(--border-dim);
+}
+.batch-btn-secondary:hover { color: var(--pink); border-color: var(--pink); }
+
+/* ── SIDEBAR ── */
+.sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+/* Settings */
+.setting-row {
+  display: flex; flex-direction: column; gap: 6px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  margin-bottom: 16px;
+}
+.setting-row:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+.setting-label {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.setting-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.toggle-group { display: flex; gap: 4px; }
+.toggle-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1px;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid var(--border-dim);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  flex: 1; text-align: center;
+}
+.toggle-btn:hover { color: #fff; }
+.toggle-btn.active { background: rgba(237,10,115,0.15); color: var(--pink); border-color: rgba(237,10,115,0.4); }
+
+.crf-wrap { display: flex; gap: 10px; align-items: center; }
+.crf-input {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Oswald', sans-serif;
+  font-size: 16px; font-weight: 600;
+  text-align: center;
+  width: 64px; padding: 6px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.crf-input:focus { border-color: var(--blue); }
+.crf-hint { font-size: 11px; color: var(--text-dim); line-height: 1.4; }
+
+.suffix-input {
+  background: var(--bg-deep);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  padding: 8px 10px;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.suffix-input:focus { border-color: var(--blue); }
+
+/* ── SPEC TABLE ── */
+.spec-table { width: 100%; border-collapse: collapse; }
+.spec-table tr { border-bottom: 1px solid rgba(255,255,255,0.05); }
+.spec-table tr:last-child { border-bottom: none; }
+.spec-table td {
+  padding: 8px 0;
+  font-size: 12px;
+  line-height: 1.4;
+  vertical-align: top;
+}
+.spec-key {
+  color: var(--text-muted);
+  width: 40%;
+  padding-right: 8px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.spec-val {
+  color: #fff;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+}
+.spec-val.good { color: var(--green); }
+.spec-val.bad  { color: var(--pink); }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+.card:nth-child(1) { animation-delay: 0.1s; }
+.card:nth-child(2) { animation-delay: 0.2s; }
+.page-header { animation-delay: 0.05s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  .site-header { padding: 0 20px; }
+  .main { padding: 90px 20px 40px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-mark">
+      <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/8558213/6a3c83e6313d4b649d48148158a8804b/eyJoIjozNjAsInciOjM2MH0%3D/1.jpeg?token-hash=fORyWgkKV7uzcJEahyyHUn27tPrt2FmCGHiDuYRJBOg%3D&token-time=1774828800" alt="Upper Hand Fantasy">
+    </div>
+    <div class="logo-text">
+      <span class="logo-top">Upper Hand Fantasy</span>
+      <span class="logo-sub">Video Graphic Hub</span>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-tab">Hub</a>
+    <a href="video-converter.html" class="nav-tab active">Video Converter</a>
+  </nav>
+  <div class="header-right">
+    <span class="header-tag">@upperhandfantasy</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <div class="page-header">
+    <div class="page-eyebrow">DaVinci Resolve Prep</div>
+    <h1 class="page-title">Video <span>Converter</span></h1>
+    <p class="page-desc">Drop exported video files here to generate FFmpeg conversion commands. Converts VP9/WebM and H.264 Baseline exports to H.264 High profile MP4 — ready to import into DaVinci Resolve.</p>
+  </div>
+
+  <div class="layout">
+
+    <!-- LEFT: Drop + Files -->
+    <div style="display:flex;flex-direction:column;gap:16px;">
+
+      <!-- Drop zone card -->
+      <div class="card" style="animation-delay:0.1s;">
+        <div class="card-head">
+          <span class="card-head-title">Add Files</span>
+          <span id="file-count-badge" style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);">No files added</span>
+        </div>
+        <div class="card-body">
+          <div class="drop-zone" id="drop-zone">
+            <input type="file" id="file-input" accept="video/*,.webm,.mp4,.mov,.avi,.mkv" multiple>
+            <div class="drop-icon">
+              <svg viewBox="0 0 24 24"><path d="M19 11H7.83l4.88-4.88c.39-.39.39-1.03 0-1.42-.39-.39-1.02-.39-1.41 0l-6.59 6.59c-.39.39-.39 1.02 0 1.41l6.59 6.59c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L7.83 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" transform="rotate(180 12 12)"/><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="drop-title">Drop video files here</div>
+            <div class="drop-hint">Or click to browse — supports <strong>.webm</strong>, <strong>.mp4</strong>, <strong>.mov</strong>, and more<br>Multiple files accepted</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Files list card -->
+      <div class="card" id="files-card" style="animation-delay:0.18s;">
+        <div class="card-head">
+          <span class="card-head-title">Files &amp; Commands</span>
+          <button id="clear-all-btn" onclick="clearAll()" style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;background:none;border:none;color:var(--text-dim);cursor:pointer;padding:4px 8px;border-radius:3px;transition:color 0.15s;display:none;" onmouseover="this.style.color='var(--pink)'" onmouseout="this.style.color='var(--text-dim)'">Clear All</button>
+        </div>
+        <div class="card-body" style="padding:16px;">
+
+          <!-- Empty state -->
+          <div class="empty-state" id="empty-state">
+            <svg viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
+            <span>Drop files above to generate FFmpeg commands</span>
+          </div>
+
+          <!-- File entries will be inserted here -->
+          <div class="files-list" id="files-list"></div>
+
+        </div>
+
+        <!-- Batch bar (hidden until files added) -->
+        <div class="batch-bar" id="batch-bar" style="display:none;margin:0 16px 16px;border-radius:8px;">
+          <span class="batch-bar-label">Batch Export</span>
+          <div class="batch-bar-btns">
+            <button class="batch-btn batch-btn-secondary" onclick="copyAllCommands(this)">Copy All Commands</button>
+            <button class="batch-btn batch-btn-primary" id="batch-script-btn" onclick="copyBatchScript(this)">Copy Shell Script</button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Sidebar -->
+    <div class="sidebar">
+
+      <!-- Settings card -->
+      <div class="card" style="animation-delay:0.14s;">
+        <div class="card-head">
+          <span class="card-head-title">Default Settings</span>
+        </div>
+        <div class="card-body">
+
+          <div class="setting-row">
+            <span class="setting-label">Default FPS</span>
+            <div class="toggle-group">
+              <button class="toggle-btn" id="fps-30" onclick="setGlobalFps(30)">30 fps</button>
+              <button class="toggle-btn active" id="fps-60" onclick="setGlobalFps(60)">60 fps</button>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Quality (CRF)</span>
+            <div class="crf-wrap">
+              <input type="number" class="crf-input" id="crf-input" value="18" min="0" max="51" oninput="rebuildAll()">
+              <span class="crf-hint">0 = lossless<br>18 = recommended<br>51 = worst</span>
+            </div>
+          </div>
+
+          <div class="setting-row">
+            <span class="setting-label">Output Suffix</span>
+            <input type="text" class="suffix-input" id="suffix-input" value="-davinci" oninput="rebuildAll()" placeholder="-davinci">
+          </div>
+
+          <div class="setting-row" style="margin-bottom:0;padding-bottom:0;border:none;">
+            <span class="setting-label">Output Format</span>
+            <span class="setting-value" style="color:var(--blue);font-size:12px;">H.264 / High / MP4</span>
+            <span style="font-size:10px;color:var(--text-dim);margin-top:2px;">yuv420p · level 4.2 · faststart</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- DaVinci Spec card -->
+      <div class="card" style="animation-delay:0.22s;">
+        <div class="card-head">
+          <span class="card-head-title">Required Specs</span>
+          <span style="font-size:9px;letter-spacing:1.5px;text-transform:uppercase;background:rgba(62,207,106,0.12);color:var(--green);padding:3px 8px;border-radius:3px;">DaVinci Ready</span>
+        </div>
+        <div class="card-body" style="padding:16px 20px;">
+          <table class="spec-table">
+            <tr><td class="spec-key">Codec</td><td class="spec-val good">H.264</td></tr>
+            <tr><td class="spec-key">Profile</td><td class="spec-val good">High</td></tr>
+            <tr><td class="spec-key">Level</td><td class="spec-val good">4.2</td></tr>
+            <tr><td class="spec-key">Pixel Fmt</td><td class="spec-val good">yuv420p</td></tr>
+            <tr><td class="spec-key">Container</td><td class="spec-val good">.mp4</td></tr>
+            <tr><td class="spec-key">Audio</td><td class="spec-val good">AAC</td></tr>
+            <tr><td class="spec-key">Fast Start</td><td class="spec-val good">+faststart</td></tr>
+          </table>
+          <div style="margin-top:14px;padding-top:12px;border-top:1px solid rgba(255,255,255,0.06);">
+            <div style="font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-dim);margin-bottom:8px;">Avoid</div>
+            <table class="spec-table">
+              <tr><td class="spec-key">VP9 codec</td><td class="spec-val bad">Not supported</td></tr>
+              <tr><td class="spec-key">H.264 Baseline</td><td class="spec-val bad">Wrong profile</td></tr>
+              <tr><td class="spec-key">WebM container</td><td class="spec-val bad">Incompatible</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Diagnose card -->
+      <div class="card" style="animation-delay:0.28s;">
+        <div class="card-head">
+          <span class="card-head-title">Diagnose a File</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:12px;color:var(--text-muted);line-height:1.55;margin-bottom:12px;">Run this command to check if a file is DaVinci-compatible before importing:</p>
+          <div class="cmd-wrap" style="flex-direction:column;gap:8px;">
+            <pre class="cmd-text" style="font-size:11px;">ffprobe -v quiet \
+  -print_format json \
+  -show_streams \
+  "your-file.mp4"</pre>
+            <button class="cmd-copy-btn" onclick="copyDiagnoseCmd(this)" style="align-self:flex-start;">Copy</button>
+          </div>
+          <p style="font-size:11px;color:var(--text-dim);margin-top:10px;line-height:1.5;">Check that <code style="color:var(--blue);">codec_name</code> is <code style="color:var(--green);">h264</code> and <code style="color:var(--blue);">profile</code> is <code style="color:var(--green);">High</code>.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────────────────────
+const state = {
+  files: [],   // { id, name, size, ext, fps }
+  globalFps: 60,
+  crf: 18,
+  suffix: '-davinci',
+};
+
+let nextId = 0;
+
+// ── SETTINGS ──────────────────────────────────────────────────────────────────
+function setGlobalFps(fps) {
+  state.globalFps = fps;
+  document.getElementById('fps-30').classList.toggle('active', fps === 30);
+  document.getElementById('fps-60').classList.toggle('active', fps === 60);
+  // Update files that haven't been individually overridden
+  state.files.forEach(f => {
+    if (!f.fpsOverride) f.fps = fps;
+  });
+  rebuildAll();
+}
+
+function rebuildAll() {
+  state.crf    = parseInt(document.getElementById('crf-input').value, 10) || 18;
+  state.suffix = document.getElementById('suffix-input').value || '-davinci';
+  state.files.forEach(f => renderFileCommand(f));
+}
+
+// ── DROP ZONE ─────────────────────────────────────────────────────────────────
+const dropZone  = document.getElementById('drop-zone');
+const fileInput = document.getElementById('file-input');
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  addFiles(e.dataTransfer.files);
+});
+fileInput.addEventListener('change', () => { addFiles(fileInput.files); fileInput.value = ''; });
+
+function addFiles(fileList) {
+  Array.from(fileList).forEach(file => {
+    const ext  = file.name.split('.').pop().toLowerCase();
+    const entry = {
+      id:   nextId++,
+      name: file.name,
+      size: file.size,
+      ext,
+      fps:  state.globalFps,
+      fpsOverride: false,
+    };
+    state.files.push(entry);
+    renderFileEntry(entry);
+  });
+  updateUI();
+}
+
+// ── RENDER ────────────────────────────────────────────────────────────────────
+function renderFileEntry(f) {
+  const list = document.getElementById('files-list');
+
+  const isWebm = f.ext === 'webm';
+  const iconClass = isWebm ? 'file-entry-icon webm-icon' : 'file-entry-icon';
+  const tagClass  = isWebm ? 'file-tag tag-webm' : 'file-tag tag-mp4';
+  const tagLabel  = isWebm ? 'WebM / VP9' : f.ext.toUpperCase();
+  const warnHtml  = isWebm
+    ? `<span class="file-tag tag-warn">Needs Conversion</span>`
+    : `<span class="file-tag" style="background:rgba(62,207,106,0.1);color:var(--green);">Re-encoding</span>`;
+
+  const div = document.createElement('div');
+  div.className = 'file-entry';
+  div.id = `file-${f.id}`;
+  div.innerHTML = `
+    <div class="file-entry-head">
+      <div class="${iconClass}">
+        <svg viewBox="0 0 24 24"><path d="M17 10.5V7c0-.55-.45-1-1-1H4c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h12c.55 0 1-.45 1-1v-3.5l4 4v-11l-4 4z"/></svg>
+      </div>
+      <div class="file-entry-meta">
+        <div class="file-entry-name" title="${escHtml(f.name)}">${escHtml(f.name)}</div>
+        <div class="file-entry-info">
+          <span class="${tagClass}">${tagLabel}</span>
+          ${warnHtml}
+          <span class="file-size">${formatSize(f.size)}</span>
+        </div>
+      </div>
+      <button class="file-entry-remove" onclick="removeFile(${f.id})" title="Remove">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="file-entry-cmd">
+      <div class="cmd-label">FFmpeg Command</div>
+      <div class="cmd-wrap">
+        <pre class="cmd-text" id="cmd-${f.id}"></pre>
+        <button class="cmd-copy-btn" id="copybtn-${f.id}" onclick="copyCmd(${f.id}, this)">Copy</button>
+      </div>
+    </div>
+    <div class="file-fps-row">
+      <span class="fps-label">FPS override:</span>
+      <div class="fps-btn-group">
+        <button class="fps-btn" id="fps-btn-30-${f.id}" onclick="setFileFps(${f.id}, 30)">30</button>
+        <button class="fps-btn" id="fps-btn-60-${f.id}" onclick="setFileFps(${f.id}, 60)">60</button>
+        <button class="fps-btn active" id="fps-btn-def-${f.id}" onclick="setFileFps(${f.id}, null)">Default</button>
+      </div>
+    </div>
+  `;
+  list.appendChild(div);
+  renderFileCommand(f);
+}
+
+function renderFileCommand(f) {
+  const el = document.getElementById(`cmd-${f.id}`);
+  if (!el) return;
+  const fps    = f.fps || state.globalFps;
+  const crf    = state.crf;
+  const suffix = state.suffix;
+  const base   = f.name.replace(/\.[^.]+$/, '');
+  const out    = base + suffix + '.mp4';
+  el.textContent = buildCmd(f.name, out, fps, crf);
+}
+
+function buildCmd(input, output, fps, crf) {
+  return `ffmpeg -i "${input}" \\
+  -c:v libx264 \\
+  -profile:v high \\
+  -level:v 4.2 \\
+  -pix_fmt yuv420p \\
+  -crf ${crf} \\
+  -r ${fps} \\
+  -c:a aac \\
+  -movflags +faststart \\
+  "${output}"`;
+}
+
+function setFileFps(id, fps) {
+  const f = state.files.find(x => x.id === id);
+  if (!f) return;
+  if (fps === null) {
+    f.fps = state.globalFps;
+    f.fpsOverride = false;
+    document.getElementById(`fps-btn-30-${id}`).classList.remove('active');
+    document.getElementById(`fps-btn-60-${id}`).classList.remove('active');
+    document.getElementById(`fps-btn-def-${id}`).classList.add('active');
+  } else {
+    f.fps = fps;
+    f.fpsOverride = true;
+    document.getElementById(`fps-btn-30-${id}`).classList.toggle('active', fps === 30);
+    document.getElementById(`fps-btn-60-${id}`).classList.toggle('active', fps === 60);
+    document.getElementById(`fps-btn-def-${id}`).classList.remove('active');
+  }
+  renderFileCommand(f);
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────────────────────
+function removeFile(id) {
+  state.files = state.files.filter(f => f.id !== id);
+  const el = document.getElementById(`file-${id}`);
+  if (el) el.remove();
+  updateUI();
+}
+
+function clearAll() {
+  state.files = [];
+  document.getElementById('files-list').innerHTML = '';
+  updateUI();
+}
+
+function copyCmd(id, btn) {
+  const el = document.getElementById(`cmd-${id}`);
+  if (!el) return;
+  navigator.clipboard.writeText(el.textContent).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 1600);
+  });
+}
+
+function copyAllCommands(btn) {
+  const cmds = state.files.map(f => {
+    const fps = f.fps || state.globalFps;
+    const base = f.name.replace(/\.[^.]+$/, '');
+    const out  = base + state.suffix + '.mp4';
+    return buildCmd(f.name, out, fps, state.crf);
+  });
+  navigator.clipboard.writeText(cmds.join('\n\n')).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy All Commands'; }, 1800);
+  });
+}
+
+function copyBatchScript(btn) {
+  const lines = ['#!/bin/bash', '# Upper Hand Fantasy — DaVinci Resolve Video Converter', '# Generated by Video Converter Tool', ''];
+  state.files.forEach(f => {
+    const fps = f.fps || state.globalFps;
+    const base = f.name.replace(/\.[^.]+$/, '');
+    const out  = base + state.suffix + '.mp4';
+    lines.push(`# ${f.name}`);
+    lines.push(buildCmd(f.name, out, fps, state.crf).replace(/\\\n/g, ' \\\n'));
+    lines.push('');
+  });
+  navigator.clipboard.writeText(lines.join('\n')).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy Shell Script'; btn.classList.remove('copied'); }, 1800);
+  });
+}
+
+function copyDiagnoseCmd(btn) {
+  const cmd = `ffprobe -v quiet \\\n  -print_format json \\\n  -show_streams \\\n  "your-file.mp4"`;
+  navigator.clipboard.writeText(cmd).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy'; }, 1600);
+  });
+}
+
+// ── UI STATE ──────────────────────────────────────────────────────────────────
+function updateUI() {
+  const count   = state.files.length;
+  const empty   = document.getElementById('empty-state');
+  const batch   = document.getElementById('batch-bar');
+  const clearBtn = document.getElementById('clear-all-btn');
+  const badge   = document.getElementById('file-count-badge');
+
+  empty.style.display   = count === 0 ? 'flex' : 'none';
+  batch.style.display   = count === 0 ? 'none' : 'flex';
+  clearBtn.style.display = count === 0 ? 'none' : 'block';
+  badge.textContent = count === 0 ? 'No files added' : `${count} file${count !== 1 ? 's' : ''}`;
+}
+
+// ── UTILS ─────────────────────────────────────────────────────────────────────
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function formatSize(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(0) + ' KB';
+  return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+}
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+updateUI();
+</script>
+</body>
+</html>

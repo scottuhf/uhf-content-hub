@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mystery Player — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 56px;
+  background: rgba(6,21,37,0.94);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+  z-index: 100;
+}
+.nav-back {
+  display: flex; align-items: center; gap: 7px;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px; font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-back:hover { color: var(--white); }
+.nav-back svg { width: 15px; height: 15px; }
+.nav-sep { width: 1px; height: 20px; background: var(--border-dim); }
+.nav-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 600;
+  letter-spacing: 0.05em;
+  color: var(--white);
+}
+
+/* LAYOUT */
+.main {
+  margin-top: 56px;
+  display: grid;
+  grid-template-columns: 440px 1fr;
+  min-height: calc(100vh - 56px);
+}
+
+/* FORM PANEL */
+.form-panel {
+  border-right: 1px solid var(--border-dim);
+  padding: 24px 20px 48px;
+  overflow-y: auto;
+  background: rgba(13,42,71,0.18);
+}
+
+.sec-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 9px;
+}
+
+.form-group { margin-bottom: 16px; }
+.form-group label {
+  display: block;
+  font-size: 12px; font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+  letter-spacing: 0.03em;
+}
+.form-group input {
+  width: 100%;
+  background: rgba(13,42,71,0.75);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus { border-color: var(--blue); }
+
+hr.divider {
+  border: none;
+  border-top: 1px solid var(--border-dim);
+  margin: 18px 0;
+}
+
+/* TYPE TOGGLE */
+.type-toggle {
+  display: flex;
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.type-toggle button {
+  flex: 1;
+  padding: 9px 0;
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.type-toggle button.active {
+  background: var(--blue);
+  color: var(--white);
+}
+
+/* CLUE ROWS */
+.clue-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.clue-row-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  margin-top: 14px;
+}
+.clue-num {
+  font-size: 10px;
+  color: var(--text-dim);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* BUTTONS */
+.btn-row { display: flex; gap: 9px; flex-wrap: wrap; margin-top: 22px; }
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 10px 16px;
+  border-radius: 8px; border: none;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px; font-weight: 700;
+  cursor: pointer;
+  transition: all 0.18s;
+  letter-spacing: 0.04em;
+}
+.btn-primary { background: var(--pink); color: var(--white); }
+.btn-primary:hover { background: #c8086a; }
+.btn-export {
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.35);
+  color: var(--blue);
+}
+.btn-export:hover { background: rgba(51,154,233,0.2); }
+.exp-label {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  margin-top: 14px;
+}
+.rec-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700;
+  padding: 3px 8px; border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+.rec-idle { background: rgba(90,138,176,0.08); color: var(--text-dim); border: 1px solid var(--border-dim); }
+.rec-live { background: rgba(237,10,115,0.12); color: var(--pink); border: 1px solid rgba(237,10,115,0.3); }
+
+/* PREVIEW PANEL */
+.preview-panel {
+  padding: 28px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  overflow-y: auto;
+}
+.preview-hdr {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.canvas-row {
+  display: flex;
+  gap: 36px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.canvas-wrap { display: flex; flex-direction: column; gap: 8px; }
+.canvas-lbl {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--text-dim);
+}
+.canvas-outer {
+  transform-origin: top left;
+  position: relative;
+}
+.canvas-outer canvas {
+  display: block;
+  border-radius: 8px;
+  border: 1px solid var(--border-dim);
+}
+
+  /* ─── FFmpeg Conversion Modal ─────────────────────────────────────────────── */
+  #ffmpeg-modal { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:9999; align-items:center; justify-content:center; padding:24px; }
+  #ffmpeg-modal.open { display:flex; }
+  #ffmpeg-modal-box { background:#0d1f33; border:1px solid #1a3a5c; border-radius:8px; padding:24px; max-width:640px; width:100%; }
+  #ffmpeg-modal h3 { font-family:'Oswald',sans-serif; color:#ED0A73; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:10px; }
+  #ffmpeg-modal p { font-size:13px; color:#aaa; margin-bottom:12px; line-height:1.5; }
+  #ffmpeg-cmd-block { background:#060e18; border:1px solid #1a3a5c; border-radius:4px; padding:12px; font-size:12px; color:#7EC8E3; white-space:pre-wrap; word-break:break-all; margin-bottom:14px; font-family:monospace; }
+  #ffmpeg-modal-btns { display:flex; gap:10px; }
+  .ffmpeg-btn { font-family:'Oswald',sans-serif; font-size:12px; letter-spacing:1px; text-transform:uppercase; padding:7px 16px; border-radius:4px; border:none; cursor:pointer; transition:opacity 0.2s; }
+  .ffmpeg-btn:hover { opacity:0.8; }
+  .ffmpeg-btn-copy { background:#339AE9; color:#fff; }
+  .ffmpeg-btn-dismiss { background:#1a3a5c; color:#ccc; }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-back" href="index.html">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 3L5 8l5 5"/></svg>
+    Hub
+  </a>
+  <div class="nav-sep"></div>
+  <span class="nav-title">Mystery Player</span>
+</nav>
+
+<div class="main">
+
+  <aside class="form-panel">
+
+    <div class="type-toggle" id="typeToggle">
+      <button class="active" onclick="switchType('question')">Question</button>
+      <button onclick="switchType('reveal')">Reveal</button>
+    </div>
+
+    <div class="sec-label">Player Info</div>
+
+    <div class="form-group">
+      <label>Player Name</label>
+      <input type="text" id="f-name" value="SAQUON BARKLEY">
+    </div>
+    <div class="form-group">
+      <label>Position</label>
+      <input type="text" id="f-pos" value="RB">
+    </div>
+    <div class="form-group">
+      <label>Team</label>
+      <input type="text" id="f-team" value="PHI">
+    </div>
+    <div class="form-group">
+      <label>Photo URL</label>
+      <input type="text" id="f-photo" value="https://a.espncdn.com/i/headshots/nfl/players/full/3054211.png">
+    </div>
+
+    <hr class="divider">
+    <div class="sec-label">Clues</div>
+
+    <div class="clue-row-label"><span class="clue-num">CLUE 1</span></div>
+    <div class="clue-row">
+      <div><label style="font-size:11px;color:var(--text-muted)">Label</label><input type="text" id="c1-label" value="POSITION"></div>
+      <div><label style="font-size:11px;color:var(--text-muted)">Value</label><input type="text" id="c1-value" value="Running Back"></div>
+    </div>
+
+    <div class="clue-row-label"><span class="clue-num">CLUE 2</span></div>
+    <div class="clue-row">
+      <div><label style="font-size:11px;color:var(--text-muted)">Label</label><input type="text" id="c2-label" value="2024 RUSH YDS"></div>
+      <div><label style="font-size:11px;color:var(--text-muted)">Value</label><input type="text" id="c2-value" value="2,005"></div>
+    </div>
+
+    <div class="clue-row-label"><span class="clue-num">CLUE 3</span></div>
+    <div class="clue-row">
+      <div><label style="font-size:11px;color:var(--text-muted)">Label</label><input type="text" id="c3-label" value="PRO BOWLS"></div>
+      <div><label style="font-size:11px;color:var(--text-muted)">Value</label><input type="text" id="c3-value" value="5"></div>
+    </div>
+
+    <div class="clue-row-label"><span class="clue-num">CLUE 4</span></div>
+    <div class="clue-row">
+      <div><label style="font-size:11px;color:var(--text-muted)">Label</label><input type="text" id="c4-label" value="TEAM"></div>
+      <div><label style="font-size:11px;color:var(--text-muted)">Value</label><input type="text" id="c4-value" value="Philadelphia Eagles"></div>
+    </div>
+
+    <div class="clue-row-label"><span class="clue-num">CLUE 5</span></div>
+    <div class="clue-row">
+      <div><label style="font-size:11px;color:var(--text-muted)">Label</label><input type="text" id="c5-label" value="DRAFT ROUND"></div>
+      <div><label style="font-size:11px;color:var(--text-muted)">Value</label><input type="text" id="c5-value" value="2nd Round, 2018"></div>
+    </div>
+
+    <hr class="divider">
+
+    <div class="form-group">
+      <label>Attribution</label>
+      <input type="text" id="f-attr" value="@upperhandfantasy">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="generate()">&#9654; Generate</button>
+    </div>
+
+    <div class="exp-label">Export PNG</div>
+    <div class="btn-row">
+      <button class="btn btn-export" onclick="exportPNG('square')">PNG 1:1</button>
+      <button class="btn btn-export" onclick="exportPNG('reels')">PNG 9:16</button>
+    </div>
+
+    <div class="exp-label">Export Video</div>
+    <div class="btn-row">
+      <button class="btn btn-export" onclick="toggleRecord('square')">
+        <span class="rec-badge rec-idle" id="recBadge-square">REC</span> Video 1:1
+      </button>
+      <button class="btn btn-export" onclick="toggleRecord('reels')">
+        <span class="rec-badge rec-idle" id="recBadge-reels">REC</span> Video 9:16
+      </button>
+    </div>
+
+  </aside>
+
+  <section class="preview-panel">
+    <div>
+      <div class="preview-hdr">Preview</div>
+      <div class="canvas-row">
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">1:1 Square</div>
+          <div id="squareOuter" class="canvas-outer">
+            <canvas id="squareCanvas" width="1080" height="1080"></canvas>
+          </div>
+        </div>
+        <div class="canvas-wrap">
+          <div class="canvas-lbl">9:16 Reels</div>
+          <div id="reelsOuter" class="canvas-outer">
+            <canvas id="reelsCanvas" width="1080" height="1920"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<script>
+// ── DESIGN TOKENS ──────────────────────────────────────────────────────────────
+const C = {
+  PINK:   '#ED0A73',
+  BLUE:   '#339AE9',
+  WHITE:  '#FFFFFF',
+  BG:     '#061525',
+  BORDER: '#1a3a5c',
+  MUTED:  '#5a8ab0',
+  DIM:    '#2d4a63'
+};
+
+const TOTAL_FRAMES = 320;
+
+// ── HELPERS ────────────────────────────────────────────────────────────────────
+function easeOut(t) { return 1 - Math.pow(1 - Math.min(Math.max(t,0),1), 3); }
+function easeOutBack(t) { const c=1.3; t=Math.min(Math.max(t,0),1); return 1+c*(Math.pow(t-1,3))+c*(Math.pow(t-1,2)); }
+function lerp(a,b,t) { return a+(b-a)*t; }
+function tween(f, start, dur) { return easeOut(Math.min(1, Math.max(0, (f - start) / dur))); }
+function tweenBack(f, start, dur) { return Math.min(1, Math.max(0, (f - start) / dur)); }
+
+function countUp(raw, p) {
+  const s = String(raw).trim();
+  const m = s.match(/^([^0-9\-]*)(-?[0-9]+(?:\.[0-9]+)?)(.*)$/);
+  if (!m) return s;
+  const [, pre, numStr, suf] = m;
+  const cur = parseFloat(numStr) * easeOut(p);
+  const dec = numStr.includes('.') ? numStr.split('.')[1].length : 0;
+  return pre + cur.toFixed(dec) + suf;
+}
+
+function fitText(ctx, text, maxW, size, weight, family) {
+  ctx.font = `${weight} ${size}px ${family}`;
+  while (ctx.measureText(text).width > maxW && size > 10) {
+    size -= 2;
+    ctx.font = `${weight} ${size}px ${family}`;
+  }
+  return size;
+}
+
+const imgCache = {};
+function loadImg(url, cb) {
+  if (!url) { cb(null); return; }
+  if (imgCache[url] !== undefined) { cb(imgCache[url]); return; }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => { imgCache[url] = img; cb(img); };
+  img.onerror = () => { imgCache[url] = null; cb(null); };
+  img.src = url;
+}
+
+function drawCirclePhoto(ctx, img, cx, cy, r, borderColor, bw) {
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, r+bw, 0, Math.PI*2);
+  ctx.fillStyle = borderColor; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI*2); ctx.clip();
+  if (img) {
+    const sc = Math.max((r*2)/img.width, (r*2)/img.height);
+    ctx.drawImage(img, cx - img.width*sc/2, cy - img.height*sc/2, img.width*sc, img.height*sc);
+  } else {
+    ctx.fillStyle = '#0d2a47'; ctx.fill();
+  }
+  ctx.restore();
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  const radius = typeof r === 'number' ? {tl:r,tr:r,br:r,bl:r} : {tl:r[0]||0, tr:r[1]||0, br:r[2]||0, bl:r[3]||0};
+  ctx.beginPath();
+  ctx.moveTo(x + radius.tl, y);
+  ctx.lineTo(x + w - radius.tr, y);
+  ctx.quadraticCurveTo(x+w, y, x+w, y+radius.tr);
+  ctx.lineTo(x+w, y+h-radius.br);
+  ctx.quadraticCurveTo(x+w, y+h, x+w-radius.br, y+h);
+  ctx.lineTo(x+radius.bl, y+h);
+  ctx.quadraticCurveTo(x, y+h, x, y+h-radius.bl);
+  ctx.lineTo(x, y+radius.tl);
+  ctx.quadraticCurveTo(x, y, x+radius.tl, y);
+  ctx.closePath();
+}
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let playerImg = null;
+let animId = null;
+let currentType = 'question';
+const recorders = {};
+
+function switchType(t) {
+  currentType = t;
+  document.querySelectorAll('.type-toggle button').forEach((b, i) => {
+    b.classList.toggle('active', (i === 0 && t === 'question') || (i === 1 && t === 'reveal'));
+  });
+  scheduleRegen();
+}
+
+function getData() {
+  return {
+    type:  currentType,
+    name:  document.getElementById('f-name').value,
+    pos:   document.getElementById('f-pos').value,
+    team:  document.getElementById('f-team').value,
+    photo: document.getElementById('f-photo').value,
+    clues: [
+      { label: document.getElementById('c1-label').value, value: document.getElementById('c1-value').value },
+      { label: document.getElementById('c2-label').value, value: document.getElementById('c2-value').value },
+      { label: document.getElementById('c3-label').value, value: document.getElementById('c3-value').value },
+      { label: document.getElementById('c4-label').value, value: document.getElementById('c4-value').value },
+      { label: document.getElementById('c5-label').value, value: document.getElementById('c5-value').value },
+    ],
+    attr: document.getElementById('f-attr').value,
+  };
+}
+
+// ── LAYOUT ─────────────────────────────────────────────────────────────────────
+function getLayout(fmt) {
+  if (fmt === 'square') {
+    return { W:1080, H:1080, photoR:185, photoCX:540, photoCY:310,
+             clueStartY:545, clueH:80, clueGap:12,
+             titleY:60, titleSz:32, nameSz:52, nameY:555,
+             posBadgeY:620, borderH:6 };
+  } else {
+    return { W:1080, H:1920, safeTop:250, safeBottom:1650,
+             photoR:210, photoCX:540, photoCY:620,
+             clueStartY:880, clueH:88, clueGap:14,
+             titleY:316, titleSz:38, nameSz:64, nameY:895,
+             posBadgeY:980, borderH:8 };
+  }
+}
+
+// ── BG ─────────────────────────────────────────────────────────────────────────
+function drawBg(ctx, L) {
+  ctx.fillStyle = C.BG;
+  ctx.fillRect(0, 0, L.W, L.H);
+
+  // Blue glow top-left
+  let g = ctx.createRadialGradient(0, 0, 0, 0, 0, L.W * 0.65);
+  g.addColorStop(0, 'rgba(51,154,233,0.09)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, L.W, L.H);
+
+  // Pink glow bottom-right
+  g = ctx.createRadialGradient(L.W, L.H, 0, L.W, L.H, L.W * 0.65);
+  g.addColorStop(0, 'rgba(237,10,115,0.08)');
+  g.addColorStop(1, 'rgba(6,21,37,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, L.W, L.H);
+
+  // Pink top border
+  ctx.fillStyle = C.PINK;
+  ctx.fillRect(0, 0, L.W, L.borderH);
+}
+
+// ── SILHOUETTE ─────────────────────────────────────────────────────────────────
+function drawSilhouette(ctx, img, cx, cy, r, progress) {
+  ctx.save();
+  ctx.globalAlpha = Math.min(progress, 1);
+
+  // Outer ring
+  ctx.beginPath(); ctx.arc(cx, cy, r + 6, 0, Math.PI*2);
+  ctx.strokeStyle = C.PINK; ctx.lineWidth = 4; ctx.stroke();
+
+  // Dark ring fill behind
+  ctx.beginPath(); ctx.arc(cx, cy, r + 6, 0, Math.PI*2);
+  ctx.fillStyle = 'rgba(10,18,37,0.6)'; ctx.fill();
+
+  // Silhouette via offscreen canvas
+  const off = document.createElement('canvas');
+  off.width = r*2 + 20; off.height = r*2 + 20;
+  const o = off.getContext('2d');
+  o.beginPath(); o.arc(r+10, r+10, r, 0, Math.PI*2); o.clip();
+  if (img) {
+    const sc = Math.max((r*2)/img.width, (r*2)/img.height);
+    o.drawImage(img, r+10 - img.width*sc/2, r+10 - img.height*sc/2, img.width*sc, img.height*sc);
+  } else {
+    o.fillStyle = '#0d2a47'; o.fillRect(0, 0, r*2+20, r*2+20);
+  }
+  o.globalCompositeOperation = 'source-in';
+  o.fillStyle = '#0a1525'; o.fillRect(0, 0, r*2+20, r*2+20);
+  ctx.drawImage(off, cx - r - 10, cy - r - 10);
+
+  // Question mark
+  ctx.font = `700 ${Math.round(r * 0.7)}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = 'rgba(51,154,233,0.35)';
+  ctx.fillText('?', cx, cy + r * 0.04);
+
+  ctx.restore();
+}
+
+// ── CLUE CARD ──────────────────────────────────────────────────────────────────
+function drawClueCard(ctx, L, idx, label, value, progress) {
+  if (progress <= 0) return;
+  const y = L.clueStartY + idx * (L.clueH + L.clueGap);
+  const padX = 54;
+  const cardW = L.W - padX * 2;
+  const cardH = L.clueH;
+  const p = Math.min(progress, 1);
+
+  ctx.save();
+  ctx.globalAlpha = p;
+  ctx.translate(lerp(-80, 0, p), 0);
+
+  // Card background
+  ctx.fillStyle = idx % 2 === 0 ? 'rgba(13,42,71,0.7)' : 'rgba(13,42,71,0.4)';
+  roundRect(ctx, padX, y, cardW, cardH, 10);
+  ctx.fill();
+
+  // Left accent bar
+  ctx.fillStyle = C.BLUE; ctx.globalAlpha = p * 0.7;
+  roundRect(ctx, padX, y, 5, cardH, [10,0,0,10]);
+  ctx.fill();
+
+  // Label
+  ctx.globalAlpha = p * 0.55;
+  ctx.font = `500 ${Math.round(cardH * 0.22)}px Roboto`;
+  ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.MUTED;
+  ctx.fillText(label.toUpperCase(), padX + 22, y + cardH * 0.36);
+
+  // Value
+  ctx.globalAlpha = p;
+  ctx.fillStyle = C.WHITE;
+  const valSz = Math.round(cardH * 0.35);
+  fitText(ctx, value, cardW - 30, valSz, '700', 'Oswald');
+  ctx.fillText(value, padX + 22, y + cardH * 0.68);
+
+  ctx.restore();
+}
+
+// ── RENDER FRAME ───────────────────────────────────────────────────────────────
+function renderFrame(ctx, L, data, frame, img) {
+  ctx.clearRect(0, 0, L.W, L.H);
+  drawBg(ctx, L);
+
+  if (data.type === 'question') {
+    renderQuestion(ctx, L, data, frame, img);
+  } else {
+    renderReveal(ctx, L, data, frame, img);
+  }
+}
+
+function renderQuestion(ctx, L, data, frame, img) {
+  // "WHO AM I?" title fades in 0-40
+  const titleT = tween(frame, 0, 40);
+  ctx.save();
+  ctx.globalAlpha = titleT;
+  ctx.translate(0, lerp(20, 0, titleT));
+  ctx.font = `700 ${L.titleSz}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.WHITE;
+  ctx.fillText('WHO AM I?', L.W / 2, L.titleY + L.titleSz * 0.5);
+  // Pink ? badge
+  const badgeSz = Math.round(L.titleSz * 0.7);
+  const qTxt = '?';
+  ctx.font = `700 ${badgeSz}px Oswald`;
+  const qW = ctx.measureText(qTxt).width + 20;
+  const qX = L.W / 2 + ctx.measureText('WHO AM I?').width / 2 + 16;
+  const qY = L.titleY + L.titleSz * 0.5;
+  ctx.fillStyle = 'rgba(237,10,115,0.2)';
+  ctx.beginPath(); ctx.arc(qX, qY, badgeSz * 0.65, 0, Math.PI*2); ctx.fill();
+  ctx.fillStyle = C.PINK;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(qTxt, qX, qY + badgeSz * 0.04);
+  ctx.restore();
+
+  // Silhouette scales in 50-120 with easeOutBack
+  const sil0 = Math.min(1, Math.max(0, (frame - 50) / 70));
+  const silScale = easeOutBack(sil0);
+  if (sil0 > 0) {
+    ctx.save();
+    ctx.translate(L.photoCX, L.photoCY);
+    ctx.scale(silScale, silScale);
+    ctx.translate(-L.photoCX, -L.photoCY);
+    drawSilhouette(ctx, img, L.photoCX, L.photoCY, L.photoR, sil0);
+    ctx.restore();
+  }
+
+  // Clues stagger from frame 120, 40 apart
+  for (let i = 0; i < data.clues.length; i++) {
+    const start = 120 + i * 40;
+    const p = tween(frame, start, 35);
+    drawClueCard(ctx, L, i, data.clues[i].label, data.clues[i].value, p);
+  }
+
+  // Attribution
+  const attrT = tween(frame, 280, 30);
+  ctx.save();
+  ctx.globalAlpha = attrT * 0.45;
+  ctx.font = `300 ${L.W > 1080 ? 22 : 18}px Roboto`;
+  ctx.fillStyle = C.MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(data.attr, L.W / 2, L.H - (L.W > 1080 ? 40 : 30));
+  ctx.restore();
+}
+
+function renderReveal(ctx, L, data, frame, img) {
+  // "REVEALED!" title 0-40
+  const titleT = tween(frame, 0, 40);
+  const titleScale = lerp(0.6, 1.0, tween(frame, 0, 40));
+  ctx.save();
+  ctx.globalAlpha = titleT;
+  ctx.translate(L.W / 2, L.titleY + L.titleSz * 0.5);
+  ctx.scale(titleScale, titleScale);
+  ctx.translate(-L.W / 2, -(L.titleY + L.titleSz * 0.5));
+  ctx.font = `700 ${L.titleSz}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.PINK;
+  ctx.fillText('REVEALED!', L.W / 2, L.titleY + L.titleSz * 0.5);
+  ctx.restore();
+
+  // Photo punches in 40-100 easeOutBack
+  const ph0 = Math.min(1, Math.max(0, (frame - 40) / 60));
+  const phScale = easeOutBack(ph0);
+  if (ph0 > 0) {
+    ctx.save();
+    ctx.globalAlpha = ph0;
+    ctx.translate(L.photoCX, L.photoCY);
+    ctx.scale(phScale, phScale);
+    ctx.translate(-L.photoCX, -L.photoCY);
+    drawCirclePhoto(ctx, img, L.photoCX, L.photoCY, L.photoR, C.BLUE, 5);
+    ctx.restore();
+  }
+
+  // Player name slides up from below 100-160
+  const nameT = tween(frame, 100, 60);
+  ctx.save();
+  ctx.globalAlpha = nameT;
+  ctx.translate(0, lerp(30, 0, nameT));
+  const nameSz = fitText(ctx, data.name, L.W - 80, L.nameSz, '700', 'Oswald');
+  ctx.font = `700 ${nameSz}px Oswald`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.PINK;
+  ctx.fillText(data.name, L.W / 2, L.nameY);
+  ctx.restore();
+
+  // Position/team badge 160-220
+  const badgeT = tween(frame, 160, 60);
+  ctx.save();
+  ctx.globalAlpha = badgeT;
+  ctx.font = `600 ${Math.round(L.nameSz * 0.38)}px Roboto`;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillStyle = C.MUTED;
+  ctx.fillText(`${data.pos}  ·  ${data.team}`, L.W / 2, L.posBadgeY);
+  ctx.restore();
+
+  // Clues 220-280
+  for (let i = 0; i < data.clues.length; i++) {
+    const start = 220 + i * 14;
+    const p = tween(frame, start, 30);
+    drawClueCard(ctx, L, i, data.clues[i].label, data.clues[i].value, p);
+  }
+
+  // Attribution
+  const attrT = tween(frame, 295, 20);
+  ctx.save();
+  ctx.globalAlpha = attrT * 0.45;
+  ctx.font = `300 ${L.W > 1080 ? 22 : 18}px Roboto`;
+  ctx.fillStyle = C.MUTED;
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(data.attr, L.W / 2, L.H - (L.W > 1080 ? 40 : 30));
+  ctx.restore();
+}
+
+// ── GENERATE ───────────────────────────────────────────────────────────────────
+function generate() {
+  if (animId) cancelAnimationFrame(animId);
+  const sqCanvas = document.getElementById('squareCanvas');
+  const rlCanvas = document.getElementById('reelsCanvas');
+  const sqCtx = sqCanvas.getContext('2d');
+  const rlCtx = rlCanvas.getContext('2d');
+  const data = getData();
+  const sqL = getLayout('square');
+  const rlL = getLayout('reels');
+  let frame = 0;
+
+  loadImg(data.photo, (img) => {
+    playerImg = img;
+
+    function tick() {
+      renderFrame(sqCtx, sqL, data, frame, playerImg);
+      renderFrame(rlCtx, rlL, data, frame, playerImg);
+      if (frame < TOTAL_FRAMES) {
+        frame++;
+        animId = requestAnimationFrame(tick);
+      }
+    }
+    animId = requestAnimationFrame(tick);
+  });
+}
+
+// ── SCALE CANVASES ─────────────────────────────────────────────────────────────
+function scaleCanvases() {
+  const avail = Math.max(window.innerWidth - 480, 280);
+  const sq = Math.min(0.39, (avail * 0.47) / 1080);
+  const re = sq * (1080 / 1920) * 0.86;
+  applyScale('squareOuter', sq, 1080, 1080);
+  applyScale('reelsOuter', re, 1080, 1920);
+}
+function applyScale(id, s, w, h) {
+  const el = document.getElementById(id);
+  el.style.transform = `scale(${s})`; el.style.transformOrigin = 'top left';
+  el.style.width = w + 'px'; el.style.height = h + 'px';
+  el.parentElement.style.width = Math.round(w * s) + 'px';
+  el.parentElement.style.height = Math.round(h * s) + 'px';
+}
+
+// ── DEBOUNCE ───────────────────────────────────────────────────────────────────
+let _regenTimer;
+function scheduleRegen() {
+  clearTimeout(_regenTimer);
+  _regenTimer = setTimeout(generate, 220);
+}
+
+// ── EXPORT PNG ─────────────────────────────────────────────────────────────────
+function exportPNG(fmt) {
+  if (animId) cancelAnimationFrame(animId);
+  const isSquare = fmt === 'square';
+  const canvas = document.getElementById(isSquare ? 'squareCanvas' : 'reelsCanvas');
+  const ctx = canvas.getContext('2d');
+  const L = getLayout(fmt);
+  const data = getData();
+  loadImg(data.photo, (img) => {
+    renderFrame(ctx, L, data, TOTAL_FRAMES, img);
+    const a = document.createElement('a');
+    a.href = canvas.toDataURL('image/png');
+    a.download = `mystery-player-${fmt}.png`;
+    a.click();
+  });
+}
+
+// ── VIDEO EXPORT ───────────────────────────────────────────────────────────────
+function startRecord(fmt) {
+  const data = getData();
+  const total = TOTAL_FRAMES;
+  const canvas = document.getElementById(fmt === 'square' ? 'squareCanvas' : 'reelsCanvas');
+  const badge = document.getElementById('recBadge-' + fmt);
+  const mime = ['video/mp4;codecs=h264','video/mp4','video/webm;codecs=vp9','video/webm'].find(t => MediaRecorder.isTypeSupported(t)) || 'video/webm';
+  const ext = mime.startsWith('video/mp4') ? 'mp4' : 'webm';
+  const recorder = new MediaRecorder(canvas.captureStream(60), { mimeType: mime, videoBitsPerSecond: 25_000_000 });
+  const chunks = [];
+  recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
+  recorder.onstop = () => {
+    const url = URL.createObjectURL(new Blob(chunks, { type: mime }));
+    const filename = `mystery-player-${fmt}.${ext}`;
+    Object.assign(document.createElement('a'), { href: url, download: filename }).click();
+    URL.revokeObjectURL(url);
+    showFFmpegModal(filename, 60);
+    badge.textContent = 'REC'; badge.className = 'rec-badge rec-idle';
+    delete recorders[fmt];
+  };
+  recorders[fmt] = recorder;
+  badge.textContent = 'REC'; badge.className = 'rec-badge rec-live';
+  recorder.start();
+  generate();
+  setTimeout(() => { if (recorder.state !== 'inactive') recorder.stop(); }, ((total / 60) + 0.5) * 1000);
+}
+
+function stopRecord(fmt) {
+  const r = recorders[fmt];
+  if (r && r.state !== 'inactive') r.stop();
+}
+
+function toggleRecord(fmt) {
+  if (recorders[fmt] && recorders[fmt].state === 'recording') {
+    stopRecord(fmt);
+  } else {
+    startRecord(fmt);
+  }
+}
+
+// ── INIT ───────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  scaleCanvases();
+  window.addEventListener('resize', scaleCanvases);
+
+  document.querySelectorAll('#f-name, #f-pos, #f-team, #f-photo, #f-attr').forEach(el => {
+    el.addEventListener('input', scheduleRegen);
+  });
+  for (let i = 1; i <= 5; i++) {
+    document.getElementById(`c${i}-label`).addEventListener('input', scheduleRegen);
+    document.getElementById(`c${i}-value`).addEventListener('input', scheduleRegen);
+  }
+
+  generate();
+});
+
+// ─── FFmpeg Conversion Modal ──────────────────────────────────────────────────
+function showFFmpegModal(filename, fps) {
+  const base = filename.replace(/\.(webm|mp4)$/, '');
+  const ext  = filename.split('.').pop();
+  const out  = base + '-davinci.mp4';
+  const cmd  = `ffmpeg -i "${filename}" \\\n  -c:v libx264 \\\n  -profile:v high \\\n  -level:v 4.2 \\\n  -pix_fmt yuv420p \\\n  -crf 18 \\\n  -r ${fps} \\\n  -c:a aac \\\n  -movflags +faststart \\\n  "${out}"`;
+  document.getElementById('ffmpeg-codec-note').textContent = ext.toUpperCase() + ' (' + (ext === 'webm' ? 'VP9' : 'H.264') + ')';
+  document.getElementById('ffmpeg-cmd-block').textContent = cmd;
+  document.getElementById('ffmpeg-modal').classList.add('open');
+}
+</script>
+
+<!-- FFmpeg Conversion Modal -->
+<div id="ffmpeg-modal" role="dialog" aria-modal="true">
+  <div id="ffmpeg-modal-box">
+    <h3>Convert for DaVinci Resolve</h3>
+    <p>Your browser exported this as <strong id="ffmpeg-codec-note"></strong>. Run this FFmpeg command to make it DaVinci Resolve-compatible (H.264 / High profile):</p>
+    <pre id="ffmpeg-cmd-block"></pre>
+    <div id="ffmpeg-modal-btns">
+      <button class="ffmpeg-btn ffmpeg-btn-copy" onclick="navigator.clipboard.writeText(document.getElementById('ffmpeg-cmd-block').textContent).then(()=>{this.textContent='Copied!';setTimeout(()=>{this.textContent='Copy Command'},1500)})">Copy Command</button>
+      <button class="ffmpeg-btn ffmpeg-btn-dismiss" onclick="document.getElementById('ffmpeg-modal').classList.remove('open')">Dismiss</button>
+    </div>
+  </div>
+</div>
+</body>
+</html>
