@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upper Hand Fantasy — Content Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --orange:     #FF6B35;
+  --green:      #3ECF6A;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --bg-card-cs: #090f1a;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 60%, var(--orange) 100%);
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 4px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(6, 21, 37, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-dim);
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-top {
+  font-family: 'Oswald', sans-serif;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid var(--border-dim);
+  padding-left: 20px;
+  height: 100%;
+}
+.nav-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-tab.active {
+  color: var(--pink);
+  background: rgba(237,10,115,0.1);
+  border-color: rgba(237,10,115,0.3);
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 20px;
+}
+.header-tag {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── MAIN ── */
+.main {
+  padding: 120px 40px 80px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+/* ── HERO ── */
+.hero {
+  margin-bottom: 64px;
+  opacity: 0;
+  transform: translateY(16px);
+  animation: fadeUp 0.6s ease 0.05s forwards;
+}
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--pink);
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 52px; font-weight: 700;
+  line-height: 1;
+  color: #fff;
+  margin-bottom: 14px;
+}
+.hero-title .accent-pink { color: var(--pink); }
+.hero-title .accent-blue { color: var(--blue); }
+.hero-desc {
+  font-size: 16px;
+  color: var(--text-muted);
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+/* ── SUITE OVERVIEW ── */
+.suite-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 56px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease 0.12s forwards;
+}
+.suite-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  flex: 1;
+}
+.suite-pill:hover { transform: translateY(-2px); cursor: pointer; }
+.suite-pill.pink  { border-left: 3px solid var(--pink); }
+.suite-pill.blue  { border-left: 3px solid var(--blue); }
+.suite-pill.orange{ border-left: 3px solid var(--orange); }
+.suite-pill.pink:hover  { border-color: var(--pink); box-shadow: 0 6px 24px rgba(237,10,115,0.15); }
+.suite-pill.blue:hover  { border-color: var(--blue); box-shadow: 0 6px 24px rgba(51,154,233,0.15); }
+.suite-pill.orange:hover{ border-color: var(--orange); box-shadow: 0 6px 24px rgba(255,107,53,0.15); }
+.suite-pill-icon {
+  font-size: 20px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.suite-pill-text { display: flex; flex-direction: column; gap: 2px; }
+.suite-pill-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #fff;
+}
+.suite-pill-count {
+  font-size: 10px; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+/* ── SECTION ── */
+.section { margin-bottom: 52px; }
+.section-header {
+  display: flex; align-items: center; gap: 16px;
+  margin-bottom: 24px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease forwards;
+}
+.section-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.section-line {
+  flex: 1; height: 1px;
+  background: var(--border-dim);
+}
+
+/* ── GRID ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+.grid-2 {
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  opacity: 0;
+  transform: translateY(24px);
+  animation: fadeUp 0.5s ease forwards;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+.card:hover { transform: translateY(-4px) scale(1.012); box-shadow: 0 12px 40px rgba(0,0,0,0.5); }
+.card.pink:hover   { border-color: var(--pink);   box-shadow: 0 12px 40px rgba(237,10,115,0.18); }
+.card.blue:hover   { border-color: var(--blue);   box-shadow: 0 12px 40px rgba(51,154,233,0.18); }
+.card.orange:hover { border-color: var(--orange); box-shadow: 0 12px 40px rgba(255,107,53,0.18); }
+.card.locked {
+  background: var(--bg-card-cs);
+  cursor: default;
+}
+.card.locked:hover { transform: none; box-shadow: none; border-color: var(--border-dim); }
+
+.card-bar {
+  height: 3px;
+  width: 100%;
+  background: var(--border-dim);
+  transition: background 0.22s;
+}
+.card.pink   .card-bar { background: var(--pink); }
+.card.blue   .card-bar { background: var(--blue); }
+.card.orange .card-bar { background: var(--orange); }
+
+/* ── CARD PREVIEW ── */
+.card-preview {
+  height: 150px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid var(--border-dim);
+}
+.card-preview-bg {
+  position: absolute; inset: 0;
+  opacity: 0.06;
+  background-size: 28px 28px;
+  background-image:
+    linear-gradient(var(--border-dim) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border-dim) 1px, transparent 1px);
+}
+.lock-icon {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border-dim);
+  display: flex; align-items: center; justify-content: center;
+}
+.lock-icon svg { width: 20px; height: 20px; fill: var(--text-dim); }
+
+/* ── CARD BODY ── */
+.card-body {
+  padding: 18px 20px 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.card-badge {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+.badge-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+.badge-live { background: rgba(237,10,115,0.15); color: var(--pink); }
+.badge-blue { background: rgba(51,154,233,0.12); color: var(--blue); }
+.badge-orange{ background: rgba(255,107,53,0.15); color: var(--orange); }
+.badge-wip  { background: rgba(245,166,35,0.15); color: #F5A623; }
+.badge-lock { background: rgba(255,255,255,0.04); color: var(--text-dim); }
+
+.card-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px; font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.15;
+}
+.card.locked .card-name { color: var(--text-dim); }
+.card-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  flex: 1;
+}
+.card.locked .card-desc { color: var(--text-dim); }
+.card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-dim);
+}
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+.tag {
+  font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.05);
+  color: var(--text-muted);
+}
+.card-arrow {
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s;
+}
+.card.pink   .card-arrow { color: var(--pink); }
+.card.blue   .card-arrow { color: var(--blue); }
+.card.orange .card-arrow { color: var(--orange); }
+.card:hover .card-arrow { transform: translateX(4px); }
+.card.locked .card-arrow { display: none; }
+
+/* ── FEATURED CARD (wide) ── */
+.card.featured {
+  grid-column: span 2;
+  flex-direction: row;
+}
+.card.featured .card-preview {
+  width: 260px;
+  min-width: 260px;
+  height: auto;
+  border-bottom: none;
+  border-right: 1px solid var(--border-dim);
+}
+@media (max-width: 860px) {
+  .card.featured { grid-column: span 1; flex-direction: column; }
+  .card.featured .card-preview { width: 100%; min-width: 0; height: 150px; border-right: none; border-bottom: 1px solid var(--border-dim); }
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: flex;
+  gap: 40px;
+  margin-top: 56px;
+  padding: 28px 36px;
+  background: #0a1929;
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  opacity: 0;
+  animation: fadeUp 0.5s ease 0.8s forwards;
+  flex-wrap: wrap;
+}
+.stat-item { display: flex; flex-direction: column; gap: 4px; }
+.stat-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px; font-weight: 700;
+  color: var(--pink);
+  line-height: 1;
+}
+.stat-num.blue   { color: var(--blue); }
+.stat-num.orange { color: var(--orange); }
+.stat-num.muted  { color: var(--text-muted); }
+.stat-lbl {
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.stat-divider { width: 1px; background: var(--border-dim); align-self: stretch; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+.section:nth-child(1) .section-header { animation-delay: 0.18s; }
+.section:nth-child(1) .card:nth-child(1) { animation-delay: 0.24s; }
+.section:nth-child(1) .card:nth-child(2) { animation-delay: 0.32s; }
+.section:nth-child(1) .card:nth-child(3) { animation-delay: 0.40s; }
+.section:nth-child(1) .card:nth-child(4) { animation-delay: 0.48s; }
+
+.section:nth-child(2) .section-header { animation-delay: 0.44s; }
+.section:nth-child(2) .card:nth-child(1) { animation-delay: 0.50s; }
+.section:nth-child(2) .card:nth-child(2) { animation-delay: 0.58s; }
+.section:nth-child(2) .card:nth-child(3) { animation-delay: 0.66s; }
+
+.section:nth-child(3) .section-header { animation-delay: 0.64s; }
+.section:nth-child(3) .card:nth-child(1) { animation-delay: 0.70s; }
+.section:nth-child(3) .card:nth-child(2) { animation-delay: 0.78s; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-mark">
+      <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/8558213/6a3c83e6313d4b649d48148158a8804b/eyJoIjozNjAsInciOjM2MH0%3D/1.jpeg?token-hash=fORyWgkKV7uzcJEahyyHUn27tPrt2FmCGHiDuYRJBOg%3D&token-time=1774828800" alt="Upper Hand Fantasy">
+    </div>
+    <div class="logo-text">
+      <span class="logo-top">Upper Hand Fantasy</span>
+      <span class="logo-sub">Content Hub</span>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-tab active">Hub</a>
+    <a href="reels-framework.html" class="nav-tab">Reels Framework</a>
+    <a href="../nfl-stats-chart/index.html" class="nav-tab">Graphic Hub</a>
+  </nav>
+  <div class="header-right">
+    <span class="header-tag">@upperhandfantasy</span>
+  </div>
+</header>
+
+<main class="main">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Upper Hand Content Hub</div>
+    <h1 class="hero-title">Create <span class="accent-pink">Faster.</span> Post <span class="accent-blue">Smarter.</span></h1>
+    <p class="hero-desc">Every tool you need to plan, produce, and publish winning sports content — all in one place.</p>
+  </div>
+
+  <!-- SUITE PILLS -->
+  <div class="suite-row">
+    <a href="#section-creation" class="suite-pill pink">
+      <span class="suite-pill-icon">🎬</span>
+      <div class="suite-pill-text">
+        <span class="suite-pill-name">Creation Suite</span>
+        <span class="suite-pill-count">3 Tools  •  1 Live  •  2 WIP</span>
+      </div>
+    </a>
+    <a href="#section-graphics" class="suite-pill blue">
+      <span class="suite-pill-icon">📊</span>
+      <div class="suite-pill-text">
+        <span class="suite-pill-name">Graphic Suite</span>
+        <span class="suite-pill-count">2 Hubs  •  Video + Games</span>
+      </div>
+    </a>
+    <a href="#section-database" class="suite-pill orange">
+      <span class="suite-pill-icon">🗂️</span>
+      <div class="suite-pill-text">
+        <span class="suite-pill-name">Database</span>
+        <span class="suite-pill-count">Coming Soon</span>
+      </div>
+    </a>
+  </div>
+
+  <!-- ── CREATION TOOLS ── -->
+  <div id="section-creation" class="section">
+    <div class="section-header">
+      <span class="section-title">Creation & Planning</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="grid">
+
+      <!-- REELS CREATION FRAMEWORK — LIVE -->
+      <a href="reels-framework.html" class="card pink">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <!-- Step progress mockup -->
+          <div style="display:flex;flex-direction:column;gap:6px;padding:20px 24px;">
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;">1</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--pink);opacity:0.85;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;">2</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--blue);opacity:0.7;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--pink);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:#fff;flex-shrink:0;">3</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--pink);opacity:0.5;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--border-dim);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:var(--text-dim);flex-shrink:0;">4</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--border-dim);"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--border-dim);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:var(--text-dim);flex-shrink:0;">5</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--border-dim);"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:18px;height:18px;border-radius:50%;background:var(--border-dim);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:var(--text-dim);flex-shrink:0;">6</div>
+              <div style="flex:1;height:5px;border-radius:3px;background:var(--border-dim);"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-live"><span class="badge-dot"></span> Live</div>
+          <div class="card-name">Reels Creation<br>Framework</div>
+          <div class="card-desc">6-step guided planner for producing sports content reels. Ideation, topic, recording style, hook scripting, and editing. Exports a planning doc.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">6 Steps</span>
+              <span class="tag">Hook Bank</span>
+              <span class="tag">Docx Export</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- SCRIPT FRAMEWORK — WIP -->
+      <div class="card locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;gap:6px;width:150px;">
+            <div style="height:10px;border-radius:3px;background:#0d2a47;border-left:3px solid var(--pink);"></div>
+            <div style="height:10px;border-radius:3px;background:#0a1e35;border-left:3px solid var(--border-dim);"></div>
+            <div style="height:10px;border-radius:3px;background:#0a1e35;border-left:3px solid var(--border-dim);"></div>
+            <div style="width:60%;height:10px;border-radius:3px;background:#0a1e35;border-left:3px solid var(--border-dim);"></div>
+            <div style="height:1px;background:var(--border-dim);margin:4px 0;"></div>
+            <div style="height:10px;border-radius:3px;background:#0d2a47;border-left:3px solid var(--blue);"></div>
+            <div style="height:10px;border-radius:3px;background:#0a1e35;border-left:3px solid var(--border-dim);"></div>
+            <div style="width:75%;height:10px;border-radius:3px;background:#0a1e35;border-left:3px solid var(--border-dim);"></div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip">⚙ WIP</div>
+          <div class="card-name">Script<br>Framework</div>
+          <div class="card-desc">Step-by-step script builder for long-form and short-form sports content. Structure your story, talking points, and CTAs before you hit record.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">Script</span>
+              <span class="tag">Story Structure</span>
+              <span class="tag">CTA</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- EDITING FRAMEWORK — WIP -->
+      <div class="card locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;gap:5px;width:150px;">
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:16px;height:16px;border-radius:3px;background:rgba(237,10,115,0.15);border:1px solid rgba(237,10,115,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:var(--pink);">✓</span></div>
+              <div style="flex:1;height:8px;border-radius:2px;background:#0d2a47;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:16px;height:16px;border-radius:3px;background:rgba(237,10,115,0.15);border:1px solid rgba(237,10,115,0.35);display:flex;align-items:center;justify-content:center;flex-shrink:0;"><span style="font-size:8px;color:var(--pink);">✓</span></div>
+              <div style="flex:1;height:8px;border-radius:2px;background:#0d2a47;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:16px;height:16px;border-radius:3px;background:#0a1e35;border:1px solid var(--border-dim);flex-shrink:0;"></div>
+              <div style="flex:1;height:8px;border-radius:2px;background:#0a1e35;"></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:16px;height:16px;border-radius:3px;background:#0a1e35;border:1px solid var(--border-dim);flex-shrink:0;"></div>
+              <div style="flex:1;height:8px;border-radius:2px;background:#0a1e35;"></div>
+            </div>
+            <div style="height:1px;background:var(--border-dim);margin:3px 0;"></div>
+            <div style="display:flex;align-items:center;gap:7px;">
+              <div style="width:16px;height:16px;border-radius:3px;background:#0a1e35;border:1px solid var(--border-dim);flex-shrink:0;"></div>
+              <div style="flex:1;height:8px;border-radius:2px;background:#0a1e35;"></div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-wip">⚙ WIP</div>
+          <div class="card-name">Editing<br>Framework</div>
+          <div class="card-desc">Guided editing checklist for short-form and long-form content. Pacing, cuts, captions, sound design, and final polish — nothing missed.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">Checklist</span>
+              <span class="tag">Pacing</span>
+              <span class="tag">Polish</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── GRAPHIC TOOLS ── -->
+  <div id="section-graphics" class="section">
+    <div class="section-header">
+      <span class="section-title">Graphic & Games Hubs</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="grid grid-2">
+
+      <!-- VIDEO GRAPHIC HUB -->
+      <a href="../nfl-stats-chart/index.html" class="card blue featured">
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;gap:8px;padding:16px 20px;">
+            <!-- mini tool rows -->
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:22px;border-radius:3px;background:#0d2a47;border:1px solid var(--blue);display:flex;align-items:flex-end;justify-content:center;gap:2px;padding:2px;">
+                <div style="width:5px;height:8px;border-radius:1px 1px 0 0;background:var(--blue);opacity:0.7;"></div>
+                <div style="width:5px;height:13px;border-radius:1px 1px 0 0;background:var(--pink);"></div>
+                <div style="width:5px;height:10px;border-radius:1px 1px 0 0;background:var(--blue);opacity:0.5;"></div>
+              </div>
+              <span style="font-size:10px;color:var(--text-muted);letter-spacing:0.5px;">Bar Graph Versus Stat</span>
+              <span style="margin-left:auto;font-size:8px;padding:1px 6px;border-radius:2px;background:rgba(237,10,115,0.15);color:var(--pink);font-weight:700;letter-spacing:1px;">LIVE</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:22px;border-radius:3px;background:#0d2a47;border:1px solid var(--blue);display:flex;align-items:center;justify-content:center;">
+                <div style="width:6px;height:6px;border-radius:50%;background:var(--pink);box-shadow:0 0 4px rgba(237,10,115,0.5);"></div>
+              </div>
+              <span style="font-size:10px;color:var(--text-muted);letter-spacing:0.5px;">Player Efficiency Scatter</span>
+              <span style="margin-left:auto;font-size:8px;padding:1px 6px;border-radius:2px;background:rgba(237,10,115,0.15);color:var(--pink);font-weight:700;letter-spacing:1px;">LIVE</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <div style="width:28px;height:22px;border-radius:3px;background:#0d2a47;border:1px solid var(--blue);display:flex;align-items:center;justify-content:space-evenly;padding:0 3px;">
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:var(--blue);">A</span>
+                <span style="font-size:7px;color:var(--text-dim);">vs</span>
+                <span style="font-family:'Oswald',sans-serif;font-size:8px;font-weight:700;color:var(--pink);">B</span>
+              </div>
+              <span style="font-size:10px;color:var(--text-muted);letter-spacing:0.5px;">Head-to-Head + more</span>
+              <span style="margin-left:auto;font-size:8px;padding:1px 6px;border-radius:2px;background:rgba(51,154,233,0.12);color:var(--blue);font-weight:700;letter-spacing:1px;">8 LIVE</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-blue"><span class="badge-dot"></span> 8 Live Tools</div>
+          <div class="card-name">Video Graphic<br>Hub</div>
+          <div class="card-desc">Professional-grade NFL stat graphics — bar charts, scatter plots, head-to-head, formations, leaderboards, contract cards, and more. PNG + video export.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">1:1</span>
+              <span class="tag">9:16</span>
+              <span class="tag">PNG</span>
+              <span class="tag">Video</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- CONTENT GAMES HUB -->
+      <a href="../nfl-stats-chart/games-hub.html" class="card orange">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+            <div style="display:flex;gap:10px;">
+              <!-- Find the Face mini -->
+              <div style="width:44px;height:44px;border-radius:8px;background:#0d1e35;border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;position:relative;">
+                <div style="width:18px;height:18px;border-radius:50%;background:linear-gradient(135deg,#5c0430,#ED0A73);border:1.5px solid #ED0A73;box-shadow:0 0 8px rgba(237,10,115,0.5);"></div>
+              </div>
+              <!-- Higher or Lower mini -->
+              <div style="width:44px;height:44px;border-radius:8px;background:#0d1e35;border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;gap:3px;">
+                <span style="font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--blue);">↑</span>
+                <span style="font-family:'Oswald',sans-serif;font-size:14px;font-weight:700;color:var(--pink);">↓</span>
+              </div>
+              <!-- Mystery mini -->
+              <div style="width:44px;height:44px;border-radius:8px;background:#0d1e35;border:1px solid rgba(255,107,53,0.3);display:flex;align-items:center;justify-content:center;">
+                <span style="font-family:'Oswald',sans-serif;font-size:20px;font-weight:700;color:rgba(51,154,233,0.4);">?</span>
+              </div>
+            </div>
+            <div style="font-family:'Oswald',sans-serif;font-size:10px;letter-spacing:2px;color:var(--orange);text-transform:uppercase;">Reel + YouTube Games</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-orange"><span class="badge-dot"></span> 2 Live Games</div>
+          <div class="card-name">Content<br>Games Hub</div>
+          <div class="card-desc">Short-form interactive games and engagement formats for Reels and YouTube. Find the Face, Higher or Lower, Mystery Player, and more coming.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">Reels</span>
+              <span class="tag">YouTube</span>
+              <span class="tag">Engagement</span>
+            </div>
+            <span class="card-arrow">&#8594;</span>
+          </div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- ── DATABASE (COMING SOON) ── -->
+  <div id="section-database" class="section">
+    <div class="section-header">
+      <span class="section-title">Database & Analytics</span>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="grid">
+
+      <div class="card locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div class="lock-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Content<br>Database</div>
+          <div class="card-desc">Track every reel you've created — topics, performance, hooks that worked, and ideas in the pipeline.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">History</span>
+              <span class="tag">Analytics</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card locked">
+        <div class="card-bar"></div>
+        <div class="card-preview">
+          <div class="card-preview-bg"></div>
+          <div class="lock-icon">
+            <svg viewBox="0 0 24 24"><path d="M18 8h-1V6A5 5 0 0 0 7 6v2H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V10a2 2 0 0 0-2-2zm-6 9a2 2 0 1 1 0-4 2 2 0 0 1 0 4zm3.1-9H8.9V6a3.1 3.1 0 0 1 6.2 0v2z"/></svg>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="card-badge badge-lock">Coming Soon</div>
+          <div class="card-name">Hook<br>Library</div>
+          <div class="card-desc">Centralized searchable library of your best-performing hooks across all content types and platforms.</div>
+          <div class="card-footer">
+            <div class="card-tags">
+              <span class="tag">Search</span>
+              <span class="tag">Filter</span>
+              <span class="tag">Templates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <span class="stat-num">3</span>
+      <span class="stat-lbl">Total Suites</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num blue">9</span>
+      <span class="stat-lbl">Live Tools</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num orange">1</span>
+      <span class="stat-lbl">In Progress</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-num muted">4</span>
+      <span class="stat-lbl">Coming Soon</span>
+    </div>
+  </div>
+
+</main>
+
+</body>
+</html>

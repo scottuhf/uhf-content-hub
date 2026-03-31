@@ -1,0 +1,1479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>🎬 Reels Creation Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+<style>
+:root {
+  --bg:       #061525;
+  --surface:  #0d2a47;
+  --surface2: #0a1e35;
+  --surface3: #090f1a;
+  --border:   #1a3a5c;
+  --border2:  #2d4a63;
+  --pink:     #ED0A73;
+  --blue:     #339AE9;
+  --orange:   #FF6B35;
+  --green:    #3ECF6A;
+  --text:     #FFFFFF;
+  --muted:    #5a8ab0;
+  --radius:   5px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--surface3);
+  border-bottom: 3px solid var(--pink);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.app-header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+#step-counter {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+/* ── PROGRESS ── */
+.progress-bar-wrap { background: var(--surface2); height: 3px; }
+.progress-bar-fill {
+  height: 3px;
+  background: linear-gradient(90deg, var(--pink), var(--blue));
+  transition: width 0.35s ease;
+}
+
+/* ── STEP NAV ── */
+.step-nav {
+  display: flex;
+  padding: 0 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface3);
+}
+.step-nav::-webkit-scrollbar { display: none; }
+.step-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+}
+.step-pill:hover { color: var(--text); }
+.step-pill.active  { color: var(--pink); border-bottom-color: var(--pink); }
+.step-pill.completed { color: var(--green); }
+.pill-num {
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid currentColor;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ── MAIN ── */
+.main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 30px 22px 100px;
+}
+
+/* ── STEP PANELS ── */
+.step-panel { display: none; }
+.step-panel.active { display: block; animation: fadeSlide 0.25s ease; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(7px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── STEP HEADER ── */
+.step-header { margin-bottom: 26px; }
+.step-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(237,10,115,0.1);
+  border: 1px solid rgba(237,10,115,0.3);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--pink);
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+}
+.step-header h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 7px;
+}
+.step-desc { color: var(--muted); font-size: 0.86rem; line-height: 1.6; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blue);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── FORM ELEMENTS ── */
+.field-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 6px;
+  display: block;
+}
+textarea, input[type="text"] {
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.88rem;
+  padding: 11px 13px;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.18s, box-shadow 0.18s;
+  line-height: 1.6;
+}
+textarea:focus, input[type="text"]:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 2px rgba(51,154,233,0.12);
+}
+textarea::placeholder, input[type="text"]::placeholder { color: var(--muted); opacity: 0.45; }
+textarea { min-height: 88px; }
+.field-group { margin-bottom: 16px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 540px) { .row2 { grid-template-columns: 1fr; } }
+
+/* ── MULTI-SELECT HINT ── */
+.ms-hint {
+  font-size: 0.72rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.ms-hint::before { content: '⊕'; color: var(--blue); font-style: normal; }
+
+/* ── OPTION GRID ── */
+.option-grid {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+.option-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.option-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+@media (max-width: 560px) {
+  .option-grid.cols-2, .option-grid.cols-3 { grid-template-columns: 1fr; }
+}
+.option-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 11px 13px;
+  cursor: pointer;
+  transition: all 0.18s;
+  user-select: none;
+  position: relative;
+}
+.option-card:hover {
+  border-color: var(--border2);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+  transform: translateY(-1px);
+}
+.option-card.selected {
+  background: rgba(51,154,233,0.08);
+  border-color: var(--blue);
+  box-shadow: 0 0 10px rgba(51,154,233,0.18);
+}
+.option-card.selected .opt-name { color: var(--blue); }
+.opt-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.opt-desc { font-size: 0.74rem; color: var(--muted); line-height: 1.45; }
+.check {
+  position: absolute;
+  top: 7px; right: 7px;
+  width: 15px; height: 15px;
+  border-radius: 50%;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.52rem;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+.option-card.selected .check { opacity: 1; }
+
+/* ── OTHER CARD ── */
+.other-card.selected {
+  background: rgba(237,10,115,0.07);
+  border-color: var(--pink);
+  box-shadow: 0 0 10px rgba(237,10,115,0.15);
+}
+.other-card.selected .opt-name { color: var(--pink); }
+.other-card.selected .check { background: var(--pink); }
+.other-input-wrap {
+  display: none;
+  margin-top: 8px;
+}
+.other-input-wrap.visible { display: block; }
+.other-input-wrap input {
+  border-color: var(--pink);
+  font-size: 0.84rem;
+  padding: 8px 11px;
+  min-height: unset;
+  resize: none;
+}
+.other-input-wrap input:focus {
+  border-color: var(--pink);
+  box-shadow: 0 0 0 2px rgba(237,10,115,0.12);
+}
+.other-required {
+  font-size: 0.68rem;
+  color: var(--pink);
+  font-style: italic;
+  margin-top: 4px;
+  display: none;
+}
+.other-required.show { display: block; }
+
+/* ── TAM SCALE ── */
+.tam-scale {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.tam-btn {
+  width: 48px; height: 48px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--muted);
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.18s;
+  flex-shrink: 0;
+}
+.tam-btn:hover { border-color: var(--border2); color: var(--text); transform: translateY(-1px); }
+.tam-btn.selected { color: #fff; border-color: transparent; }
+.tam-btn[data-v="1"].selected  { background: #1b2e6e; }
+.tam-btn[data-v="2"].selected  { background: #1a3a8c; }
+.tam-btn[data-v="3"].selected  { background: #1a4aac; }
+.tam-btn[data-v="4"].selected  { background: #1a6abf; }
+.tam-btn[data-v="5"].selected  { background: #339AE9; }
+.tam-btn[data-v="6"].selected  { background: #2d9aaa; }
+.tam-btn[data-v="7"].selected  { background: #e8920a; }
+.tam-btn[data-v="8"].selected  { background: #FF6B35; }
+.tam-btn[data-v="9"].selected  { background: #e83a73; }
+.tam-btn[data-v="10"].selected { background: linear-gradient(135deg, #ED0A73, #339AE9); }
+.tam-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.68rem;
+  color: var(--muted);
+  padding: 0 2px;
+  font-style: italic;
+}
+
+/* ── HOOK SECTIONS ── */
+.hook-section-block {
+  background: var(--surface3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.hook-section-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.hook-section-header:hover { background: rgba(255,255,255,0.03); }
+.hook-section-header.verbal  { color: #ff6b9a; border-left: 3px solid var(--pink); }
+.hook-section-header.onscreen{ color: #f5c842; border-left: 3px solid #F5A623; }
+.hook-section-header.hijack  { color: #4cd688; border-left: 3px solid var(--green); }
+.hook-collapse-icon { margin-left: auto; font-size: 0.7rem; transition: transform 0.2s; }
+.hook-section-block.collapsed .hook-collapse-icon { transform: rotate(-90deg); }
+.hook-section-body { padding: 12px; }
+.hook-section-block.collapsed .hook-section-body { display: none; }
+.hook-desc {
+  font-size: 0.76rem;
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  background: rgba(51,154,233,0.05);
+  border-left: 2px solid var(--blue);
+  border-radius: 3px;
+}
+
+/* ── HOOK BANK ── */
+.hook-bank {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 13px;
+  margin-top: 18px;
+}
+.hook-bank h4 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--orange);
+  margin-bottom: 10px;
+}
+.bank-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 11px;
+  margin-bottom: 5px;
+  font-size: 0.78rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.14s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bank-item:hover { background: rgba(51,154,233,0.08); color: var(--text); border-color: var(--border2); }
+.bank-item:last-child { margin-bottom: 0; }
+.use-btn {
+  margin-left: auto;
+  font-size: 0.64rem;
+  font-weight: 700;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.5px;
+  color: var(--blue);
+  background: rgba(51,154,233,0.1);
+  border-radius: 3px;
+  padding: 2px 7px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── ADD TO BANK BUTTON ── */
+.hook-script-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+.btn-add-bank {
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.35);
+  color: var(--blue);
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-bank:hover { background: rgba(51,154,233,0.18); border-color: var(--blue); }
+.btn-add-bank.confirmed { color: var(--green); border-color: rgba(62,207,106,0.4); background: rgba(62,207,106,0.08); }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 18px 0; }
+
+/* ── NAV BUTTONS ── */
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 26px;
+  justify-content: space-between;
+  align-items: center;
+}
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--radius);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-ghost:hover { border-color: var(--border2); color: var(--text); background: rgba(255,255,255,0.03); }
+.btn-primary {
+  background: linear-gradient(135deg, var(--pink) 0%, #c0306a 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(237,10,115,0.3);
+}
+.btn-primary:hover { filter: brightness(1.1); transform: translateY(-1px); box-shadow: 0 6px 18px rgba(237,10,115,0.4); }
+.btn-success {
+  background: linear-gradient(135deg, var(--blue) 0%, #1a7ac8 100%);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(51,154,233,0.3);
+}
+.btn-success:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-export {
+  background: linear-gradient(135deg, var(--pink) 0%, var(--blue) 100%);
+  color: #fff;
+  font-size: 0.82rem;
+  padding: 12px 26px;
+  box-shadow: 0 4px 18px rgba(237,10,115,0.35);
+}
+.btn-export:hover { filter: brightness(1.1); transform: translateY(-1px); }
+
+/* ── REVIEW PAGE ── */
+.doc-name-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-top: 3px solid var(--pink);
+  border-radius: var(--radius);
+  padding: 18px;
+  margin-bottom: 22px;
+}
+.doc-name-block > label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--pink);
+  display: block;
+  margin-bottom: 8px;
+}
+.doc-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.doc-name-row input { flex: 1; }
+.rcf-suffix {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: var(--pink);
+  padding: 11px 13px;
+  background: rgba(237,10,115,0.08);
+  border: 1px solid rgba(237,10,115,0.3);
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+.review-grid { display: grid; gap: 10px; }
+.review-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.review-card:nth-child(odd)  { border-left: 3px solid var(--pink); }
+.review-card:nth-child(even) { border-left: 3px solid var(--blue); }
+.rc-step {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--border);
+}
+.rc-row { margin-bottom: 9px; }
+.rc-row:last-child { margin-bottom: 0; }
+.rc-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.63rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  margin-bottom: 4px;
+}
+.rc-value {
+  font-size: 0.86rem;
+  color: var(--text);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.rc-value.empty { color: var(--muted); font-style: italic; font-size: 0.78rem; }
+.rc-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.rc-tag {
+  display: inline-block;
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.35);
+  color: var(--blue);
+  border-radius: 3px;
+  padding: 2px 9px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.rc-tag.other-tag {
+  background: rgba(237,10,115,0.08);
+  border-color: rgba(237,10,115,0.35);
+  color: var(--pink);
+}
+.rc-tam {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.3);
+  border-radius: 3px;
+  padding: 4px 12px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--blue);
+}
+.rc-tam .tam-n { font-size: 1.15rem; color: var(--text); margin: 0 2px; }
+
+.export-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+/* review cards must not break across PDF pages */
+.review-card { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div style="display:flex;align-items:center;gap:20px;">
+    <a href="index.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:4px;transition:all 0.18s;" onmouseover="this.style.color='#fff';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">← Hub</a>
+    <h1>🎬 Reels Creation Framework</h1>
+  </div>
+  <div id="step-counter">Step 1 of 6</div>
+</div>
+<div class="progress-bar-wrap">
+  <div class="progress-bar-fill" id="progress-fill" style="width:14.28%"></div>
+</div>
+
+<!-- STEP NAV -->
+<div class="step-nav" id="step-nav">
+  <div class="step-pill active" data-step="1" onclick="goToStep(1)"><span class="pill-num">1</span>Ideation</div>
+  <div class="step-pill" data-step="2" onclick="goToStep(2)"><span class="pill-num">2</span>Topic</div>
+  <div class="step-pill" data-step="3" onclick="goToStep(3)"><span class="pill-num">3</span>Recording</div>
+  <div class="step-pill" data-step="4" onclick="goToStep(4)"><span class="pill-num">4</span>Content Style</div>
+  <div class="step-pill" data-step="5" onclick="goToStep(5)"><span class="pill-num">5</span>Hook</div>
+  <div class="step-pill" data-step="6" onclick="goToStep(6)"><span class="pill-num">6</span>Editing</div>
+  <div class="step-pill" data-step="7" onclick="goToStep(7)"><span class="pill-num">✓</span>Review</div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+
+  <!-- ══ STEP 1: IDEATION ══ -->
+  <div class="step-panel active" id="step-1">
+    <div class="step-header">
+      <div class="step-badge">💡 Step 1</div>
+      <h2>Ideation</h2>
+      <p class="step-desc">The brainstorming phase. Identify what you want to say, why it matters, and who it's for — before committing to any format or style.</p>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Your Reel / Concept</label>
+      <textarea id="s1-idea" placeholder="Write your raw idea — a hot take, a question your audience keeps asking, a trend you want to react to…&#10;&#10;Example: Cam Skattebo's injury and whether the Giants should draft an RB high." rows="4"></textarea>
+    </div>
+    <div class="row2">
+      <div class="field-group">
+        <label class="field-label">Target Audience</label>
+        <input type="text" id="s1-audience" placeholder="e.g. Giants fans, fantasy players…" />
+      </div>
+      <div class="field-group">
+        <label class="field-label">Why Does This Matter Now?</label>
+        <input type="text" id="s1-why" placeholder="e.g. Draft is 2 weeks away…" />
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">TAM — Total Addressable Market <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(How large is the potential audience? 1 = niche, 10 = massive)</span></label>
+      <div class="tam-scale" id="tam-scale">
+        <button class="tam-btn" data-v="1"  onclick="selectTAM(1,this)">1</button>
+        <button class="tam-btn" data-v="2"  onclick="selectTAM(2,this)">2</button>
+        <button class="tam-btn" data-v="3"  onclick="selectTAM(3,this)">3</button>
+        <button class="tam-btn" data-v="4"  onclick="selectTAM(4,this)">4</button>
+        <button class="tam-btn" data-v="5"  onclick="selectTAM(5,this)">5</button>
+        <button class="tam-btn" data-v="6"  onclick="selectTAM(6,this)">6</button>
+        <button class="tam-btn" data-v="7"  onclick="selectTAM(7,this)">7</button>
+        <button class="tam-btn" data-v="8"  onclick="selectTAM(8,this)">8</button>
+        <button class="tam-btn" data-v="9"  onclick="selectTAM(9,this)">9</button>
+        <button class="tam-btn" data-v="10" onclick="selectTAM(10,this)">10</button>
+      </div>
+      <div class="tam-labels"><span>Niche</span><span>Mainstream</span><span>Mass Market</span></div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Additional Notes / Context</label>
+      <textarea id="s1-notes" placeholder="Any extra angles, research, or context you want to include…" rows="3"></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Topic →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: TOPIC ══ -->
+  <div class="step-panel" id="step-2">
+    <div class="step-header">
+      <div class="step-badge">🏷️ Step 2</div>
+      <h2>Topic</h2>
+      <p class="step-desc">The subject matter of your reel. Select one or more topic categories — or add your own.</p>
+    </div>
+    <p class="ms-hint">Select all that apply</p>
+    <div class="option-grid cols-2" id="grid-topics">
+      <div class="option-card" onclick="toggleOpt('topics',this,'Free Agency')"><div class="check">✓</div><div class="opt-name">🔓 Free Agency</div><div class="opt-desc">Player movement, signings, departures — the market is open.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Draft')"><div class="check">✓</div><div class="opt-name">📋 Draft</div><div class="opt-desc">Picks, prospects, mock drafts, live reactions to draft night.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Rookies')"><div class="check">✓</div><div class="opt-name">⭐ Rookies</div><div class="opt-desc">First-year players, debut performances, hype tracking.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Trade Rumors')"><div class="check">✓</div><div class="opt-name">🔄 Trade Rumors</div><div class="opt-desc">Breaking news, speculation, league insider intel.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Game Recap')"><div class="check">✓</div><div class="opt-name">🏟️ Game Recap</div><div class="opt-desc">Post-game analysis, highlights, turning point moments.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Rankings')"><div class="check">✓</div><div class="opt-name">📊 Rankings</div><div class="opt-desc">Power rankings, player tiers, best of lists.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Injuries')"><div class="check">✓</div><div class="opt-name">🩹 Injuries</div><div class="opt-desc">Updates, impact on team, fantasy implications.</div></div>
+      <div class="option-card" onclick="toggleOpt('topics',this,'Season Preview')"><div class="check">✓</div><div class="opt-name">🔮 Season Preview</div><div class="opt-desc">Predictions, expectations, bold takes before the season starts.</div></div>
+      <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('topics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Define a custom topic below.</div>
+        <div class="other-input-wrap" id="topics-other-wrap">
+          <input type="text" id="topics-other-input" placeholder="Describe your custom topic… (required)" oninput="state.topicsOther=this.value" />
+          <div class="other-required" id="topics-other-req">⚠ Please enter your custom topic.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group" style="margin-top:14px;">
+      <label class="field-label">Notes / Angle</label>
+      <textarea id="s2-notes" placeholder="Describe your specific angle or add any context…" rows="3"></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Recording →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 3: RECORDING STYLE ══ -->
+  <div class="step-panel" id="step-3">
+    <div class="step-header">
+      <div class="step-badge">🎥 Step 3</div>
+      <h2>Recording Style</h2>
+      <p class="step-desc">The physical format and camera setup. Shapes how personal, polished, or immersive the reel feels.</p>
+    </div>
+    <p class="ms-hint">Select all that apply</p>
+    <div class="option-grid cols-2" id="grid-recording">
+      <div class="option-card" onclick="toggleOpt('recording',this,'Talking Head')"><div class="check">✓</div><div class="opt-name">🙂 Talking Head</div><div class="opt-desc">Face-to-camera, direct address. Most personal, builds connection. Simple background.</div></div>
+      <div class="option-card" onclick="toggleOpt('recording',this,'Interview')"><div class="check">✓</div><div class="opt-name">🎙️ Interview</div><div class="opt-desc">Guest-style or reporter setup. Multi-perspective or solo Q&A format.</div></div>
+      <div class="option-card" onclick="toggleOpt('recording',this,'Entertainment')"><div class="check">✓</div><div class="opt-name">🎭 Entertainment</div><div class="opt-desc">Skits, characters, performance-based. Higher energy and production value.</div></div>
+      <div class="option-card" onclick="toggleOpt('recording',this,'Green Screen')"><div class="check">✓</div><div class="opt-name">🟩 Green Screen</div><div class="opt-desc">Virtual background — stats, highlights, or custom imagery behind you.</div></div>
+      <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('recording',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom recording style below.</div>
+        <div class="other-input-wrap" id="recording-other-wrap">
+          <input type="text" id="recording-other-input" placeholder="Describe your custom recording style… (required)" oninput="state.recordingOther=this.value" />
+          <div class="other-required" id="recording-other-req">⚠ Please enter your custom recording style.</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Content Style →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 4: CONTENT STYLE ══ -->
+  <div class="step-panel" id="step-4">
+    <div class="step-header">
+      <div class="step-badge">📋 Step 4</div>
+      <h2>Content Style</h2>
+      <p class="step-desc">The structural format — determines rhythm, viewer expectation, and how information is delivered.</p>
+    </div>
+    <p class="ms-hint">Select all that apply</p>
+    <div class="option-grid cols-2" id="grid-content">
+      <div class="option-card" onclick="toggleOpt('content',this,'Breakdown')"><div class="check">✓</div><div class="opt-name">🔬 Breakdown</div><div class="opt-desc">Deep dive analysis — dissect a play, stat, or situation piece by piece.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Countdown')"><div class="check">✓</div><div class="opt-name">🔢 Countdown</div><div class="opt-desc">Numbered list in descending order. Creates suspense — "and #1 is…"</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Ranking')"><div class="check">✓</div><div class="opt-name">🏆 Ranking</div><div class="opt-desc">Ordered tier list or comparative positioning. Sparks debate.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Reaction')"><div class="check">✓</div><div class="opt-name">😲 Reaction</div><div class="opt-desc">Your live or recorded response to news, a clip, or a hot take.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'This or That')"><div class="check">✓</div><div class="opt-name">⚖️ This or That</div><div class="opt-desc">Binary choice format. Forces audience to pick a side and comment.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Level of Concern')"><div class="check">✓</div><div class="opt-name">📉 Level of Concern</div><div class="opt-desc">Rate how worried you are (1–10 scale). Relatable and shareable.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Trivia')"><div class="check">✓</div><div class="opt-name">🧠 Trivia</div><div class="opt-desc">Quiz-style Q&A. Educates while entertaining. Great for retention.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Skit')"><div class="check">✓</div><div class="opt-name">🎬 Skit</div><div class="opt-desc">Short comedic or dramatic scene. Character-driven in under 60 seconds.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Interaction')"><div class="check">✓</div><div class="opt-name">💬 Interaction</div><div class="opt-desc">Reply to a comment, duet, or stitch. Directly engages community.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Ramble')"><div class="check">✓</div><div class="opt-name">🎤 Ramble</div><div class="opt-desc">Unstructured stream-of-consciousness. Raw and authentic.</div></div>
+      <div class="option-card" onclick="toggleOpt('content',this,'Game')"><div class="check">✓</div><div class="opt-name">🎮 Game</div><div class="opt-desc">Fun, nonsensical game to engage viewers on a topic.</div></div>
+      <div class="option-card other-card" onclick="toggleOther('content',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom content style below.</div>
+        <div class="other-input-wrap" id="content-other-wrap">
+          <input type="text" id="content-other-input" placeholder="Describe your custom content style… (required)" oninput="state.contentOther=this.value" />
+          <div class="other-required" id="content-other-req">⚠ Please enter your custom content style.</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Hook →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 5: HOOK ══ -->
+  <div class="step-panel" id="step-5">
+    <div class="step-header">
+      <div class="step-badge">🎣 Step 5</div>
+      <h2>Hook</h2>
+      <p class="step-desc">The first 1–3 seconds of your reel. Choose one or more tactics from any hook type, then write your opening line.</p>
+    </div>
+    <p class="ms-hint">Select any tactics across all hook types</p>
+
+    <!-- VERBAL -->
+    <div class="hook-section-block" id="block-verbal">
+      <div class="hook-section-header verbal" onclick="toggleHookBlock('verbal')">
+        🔴 Verbal Hook — What you say
+        <span class="hook-collapse-icon">▾</span>
+      </div>
+      <div class="hook-section-body">
+        <div class="hook-desc">The first words out of your mouth grab attention. No visual needed — your opening line is the hook.</div>
+        <div class="option-grid cols-2" id="grid-verbal">
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Shock')"><div class="check">✓</div><div class="opt-name">⚡ Shock</div><div class="opt-desc">A stat, fact, or claim so surprising the viewer has to keep watching.</div></div>
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Negative')"><div class="check">✓</div><div class="opt-name">🚫 Negative</div><div class="opt-desc">Lead with what's wrong or what NOT to do. Controversy holds attention.</div></div>
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Question')"><div class="check">✓</div><div class="opt-name">❓ Question</div><div class="opt-desc">Open with a question that makes the viewer want the answer.</div></div>
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Bold Claim')"><div class="check">✓</div><div class="opt-name">💥 Bold Claim</div><div class="opt-desc">State an opinion so confidently it demands a response.</div></div>
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Story Open')"><div class="check">✓</div><div class="opt-name">📖 Story Open</div><div class="opt-desc">Start mid-story. "So I'm watching film at 2am and I noticed something nobody else is talking about…"</div></div>
+          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Relatability')"><div class="check">✓</div><div class="opt-name">🤝 Relatability</div><div class="opt-desc">Makes the viewer feel seen. "If you watched last night's game you already know…"</div></div>
+          <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('verbalTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom verbal hook.</div>
+            <div class="other-input-wrap" id="verbalTactics-other-wrap">
+              <input type="text" id="verbalTactics-other-input" placeholder="Describe your custom verbal hook… (required)" oninput="state.verbalTacticsOther=this.value" />
+              <div class="other-required" id="verbalTactics-other-req">⚠ Please enter your custom verbal hook.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ON SCREEN -->
+    <div class="hook-section-block" id="block-onscreen">
+      <div class="hook-section-header onscreen" onclick="toggleHookBlock('onscreen')">
+        🟡 On Screen Hook — What they read
+        <span class="hook-collapse-icon">▾</span>
+      </div>
+      <div class="hook-section-body">
+        <div class="hook-desc">Text overlay, graphic, or visual element that stops scrollers who have their sound off.</div>
+        <div class="option-grid cols-2" id="grid-onscreen">
+          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Stat Overlay')"><div class="check">✓</div><div class="opt-name">📊 Stat Overlay</div><div class="opt-desc">Flash a hard-hitting number on screen. The visual alone earns the watch.</div></div>
+          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Text Tease')"><div class="check">✓</div><div class="opt-name">👀 Text Tease</div><div class="opt-desc">"Wait for it" or a preview of your conclusion. Creates curiosity loop.</div></div>
+          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'List Preview')"><div class="check">✓</div><div class="opt-name">📋 List Preview</div><div class="opt-desc">Show items quickly before diving in — viewer stays for #1.</div></div>
+          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Controversial Title')"><div class="check">✓</div><div class="opt-name">🔥 Controversial Title</div><div class="opt-desc">"The most overrated player in the league" displayed boldly on screen.</div></div>
+          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Visual Question')"><div class="check">✓</div><div class="opt-name">💭 Visual Question</div><div class="opt-desc">Question printed on screen — drives even silent viewers to engage.</div></div>
+          <div class="option-card other-card" onclick="toggleOther('onscreenTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom on-screen hook.</div>
+            <div class="other-input-wrap" id="onscreenTactics-other-wrap">
+              <input type="text" id="onscreenTactics-other-input" placeholder="Describe your custom on-screen hook… (required)" oninput="state.onscreenTacticsOther=this.value" />
+              <div class="other-required" id="onscreenTactics-other-req">⚠ Please enter your custom on-screen hook.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HIJACK -->
+    <div class="hook-section-block" id="block-hijack">
+      <div class="hook-section-header hijack" onclick="toggleHookBlock('hijack')">
+        🟢 Hijack Hook — Ride a trend
+        <span class="hook-collapse-icon">▾</span>
+      </div>
+      <div class="hook-section-body">
+        <div class="hook-desc">Borrow the energy of something trending — a sound, meme, or viral moment — and redirect it to your content.</div>
+        <div class="option-grid cols-2" id="grid-hijack">
+          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Trending Audio')"><div class="check">✓</div><div class="opt-name">🎵 Trending Audio</div><div class="opt-desc">Use a viral sound or song. Algorithm already has momentum — ride it.</div></div>
+          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Meme Format')"><div class="check">✓</div><div class="opt-name">😂 Meme Format</div><div class="opt-desc">Adapt a recognizable meme template to your sports take.</div></div>
+          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'News Cycle')"><div class="check">✓</div><div class="opt-name">📰 News Cycle</div><div class="opt-desc">Piggyback on breaking news. Post fast, while search volume is peaking.</div></div>
+          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Duet / Stitch')"><div class="check">✓</div><div class="opt-name">🔗 Duet / Stitch</div><div class="opt-desc">Respond to another creator's clip. Their existing views become your audience.</div></div>
+          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Challenge Format')"><div class="check">✓</div><div class="opt-name">🏅 Challenge Format</div><div class="opt-desc">Adapt a trending challenge to sports content.</div></div>
+          <div class="option-card other-card" onclick="toggleOther('hijackTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom hijack hook.</div>
+            <div class="other-input-wrap" id="hijackTactics-other-wrap">
+              <input type="text" id="hijackTactics-other-input" placeholder="Describe your custom hijack hook… (required)" oninput="state.hijackTacticsOther=this.value" />
+              <div class="other-required" id="hijackTactics-other-req">⚠ Please enter your custom hijack hook.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hook Bank -->
+    <div class="hook-bank">
+      <h4>⚡ Hook Bank — Click Any Template to Use</h4>
+      <div id="hook-bank-list"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-group">
+      <div class="hook-script-label">
+        <label class="field-label" style="margin-bottom:0;">Hook Script — Write Your Opening Line (first 3 seconds)</label>
+        <button class="btn-add-bank" id="btn-add-bank" onclick="addCurrentHookToBank()">+ Add to Bank</button>
+      </div>
+      <textarea id="s5-hook" placeholder="Write your exact hook here…&#10;&#10;Example: 'Cam Skattebo just got hurt — and the Giants' entire draft strategy just changed.'" rows="4"></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Editing →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 6: EDITING STYLE ══ -->
+  <div class="step-panel" id="step-6">
+    <div class="step-header">
+      <div class="step-badge">✂️ Step 6</div>
+      <h2>Editing Style</h2>
+      <p class="step-desc">The post-production aesthetic — how cuts, motion graphics, pacing, and sound design shape the viewer's emotional experience.</p>
+    </div>
+    <p class="ms-hint">Select all that apply</p>
+    <div class="option-grid cols-2" id="grid-editing">
+      <div class="option-card" onclick="toggleOpt('editing',this,'Breaking News')"><div class="check">✓</div><div class="opt-name">📡 Breaking News</div><div class="opt-desc">Lower thirds, news ticker, urgent red graphics. Creates urgency and authority.</div></div>
+      <div class="option-card" onclick="toggleOpt('editing',this,'Classic')"><div class="check">✓</div><div class="opt-name">🎯 Classic</div><div class="opt-desc">Clean text overlays, minimal cuts, natural talking pace. Timeless and reliable.</div></div>
+      <div class="option-card" onclick="toggleOpt('editing',this,'Storytelling')"><div class="check">✓</div><div class="opt-name">📽️ Storytelling</div><div class="opt-desc">Narrative arc, emotional pacing, musical score, cinematic b-roll.</div></div>
+      <div class="option-card" onclick="toggleOpt('editing',this,'Animation')"><div class="check">✓</div><div class="opt-name">✨ Animation</div><div class="opt-desc">Motion graphics, animated stats, kinetic text. High visual energy.</div></div>
+      <div class="option-card" onclick="toggleOpt('editing',this,'Reel Game')"><div class="check">✓</div><div class="opt-name">🎮 Reel Game</div><div class="opt-desc">Using the reel games tab on the video graphic hub. Fun, viewer-engagement focused.</div></div>
+      <div class="option-card other-card" onclick="toggleOther('editing',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom editing style.</div>
+        <div class="other-input-wrap" id="editing-other-wrap">
+          <input type="text" id="editing-other-input" placeholder="Describe your custom editing style… (required)" oninput="state.editingOther=this.value" />
+          <div class="other-required" id="editing-other-req">⚠ Please enter your custom editing style.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field-group" style="margin-top:14px;">
+      <label class="field-label">Edit Notes / Specific Techniques</label>
+      <textarea id="s6-notes" placeholder="Sound effects needed, color grade, transition style, specific overlays…&#10;&#10;Example: red lower thirds, injury stat card, 'BREAKING' ticker, quick-cut pacing." rows="4"></textarea>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
+      <button class="btn btn-success" onclick="nextStep()">Review &amp; Export →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 7: REVIEW ══ -->
+  <div class="step-panel" id="step-7">
+    <div class="step-header">
+      <div class="step-badge">✅ Review</div>
+      <h2>Your Reel Plan</h2>
+      <p class="step-desc">Everything in one place. Name your document, review your choices, then export.</p>
+    </div>
+
+    <!-- Document Name -->
+    <div class="doc-name-block">
+      <label>Document Name</label>
+      <div class="doc-name-row">
+        <input type="text" id="doc-name" placeholder="e.g. Cam Skattebo Injury — Giants Draft RB" oninput="state.docName=this.value" />
+        <div class="rcf-suffix">RCF</div>
+      </div>
+    </div>
+
+    <div id="pdf-capture-zone">
+      <div class="doc-name-display" id="doc-name-display" style="display:none;font-family:'Oswald',sans-serif;font-size:0.8rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--border);"></div>
+      <div class="review-grid" id="review-grid"></div>
+    </div>
+
+    <div class="export-actions">
+      <button class="btn btn-export" onclick="exportDOCX()">⬇️ Download Google Doc</button>
+      <button class="btn btn-ghost" onclick="startOver()">↺ New Reel</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+
+<script>
+// ══ STATE ══
+const state = {
+  // Step 1
+  idea:'', audience:'', why:'', tam:0, s1notes:'',
+  // Step 2
+  topics:[], topicsOther:'', s2notes:'',
+  // Step 3
+  recording:[], recordingOther:'',
+  // Step 4
+  content:[], contentOther:'',
+  // Step 5 - separate arrays per hook type
+  verbalTactics:[], verbalTacticsOther:'',
+  onscreenTactics:[], onscreenTacticsOther:'',
+  hijackTactics:[], hijackTacticsOther:'',
+  hookScript:'',
+  // Step 6
+  editing:[], editingOther:'', s6notes:'',
+  // Doc
+  docName:''
+};
+
+let currentStep = 1;
+const TOTAL = 7;
+
+// ══ NAVIGATION ══
+function goToStep(n) {
+  if (n < 1 || n > TOTAL) return;
+  syncTextFields();
+  document.getElementById('step-' + currentStep).classList.remove('active');
+  document.querySelector('.step-pill[data-step="' + currentStep + '"]').classList.remove('active');
+  currentStep = n;
+  document.getElementById('step-' + currentStep).classList.add('active');
+  document.querySelector('.step-pill[data-step="' + currentStep + '"]').classList.add('active');
+  updateProgress();
+  if (currentStep === TOTAL) buildReview();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+function nextStep() { goToStep(currentStep + 1); }
+function prevStep() { goToStep(currentStep - 1); }
+
+function updateProgress() {
+  document.getElementById('progress-fill').style.width = ((currentStep / TOTAL) * 100) + '%';
+  document.getElementById('step-counter').textContent = 'Step ' + currentStep + ' of ' + TOTAL;
+  document.querySelectorAll('.step-pill').forEach(p => {
+    const s = parseInt(p.dataset.step);
+    p.classList.remove('completed');
+    if (!isNaN(s) && s < currentStep) p.classList.add('completed');
+  });
+}
+
+// ══ SYNC TEXT FIELDS TO STATE ══
+function syncTextFields() {
+  const grab = (id, key) => { const el = document.getElementById(id); if (el) state[key] = el.value.trim(); };
+  grab('s1-idea','idea'); grab('s1-audience','audience');
+  grab('s1-why','why');   grab('s1-notes','s1notes');
+  grab('s2-notes','s2notes');
+  grab('s5-hook','hookScript');
+  grab('s6-notes','s6notes');
+  grab('doc-name','docName');
+  // other inputs
+  ['topics','recording','content','verbalTactics','onscreenTactics','hijackTactics','editing'].forEach(g => {
+    const el = document.getElementById(g + '-other-input');
+    if (el) state[g + 'Other'] = el.value.trim();
+  });
+}
+
+// ══ MULTI-SELECT TOGGLE ══
+function toggleOpt(group, el, value) {
+  // make sure not an other-card
+  if (el.classList.contains('other-card')) return;
+  const arr = state[group];
+  const idx = arr.indexOf(value);
+  if (idx === -1) { arr.push(value); el.classList.add('selected'); }
+  else            { arr.splice(idx, 1); el.classList.remove('selected'); }
+}
+
+// ══ OTHER TOGGLE ══
+function toggleOther(group, el) {
+  const wrap = document.getElementById(group + '-other-wrap');
+  const arr  = state[group];
+  const idx  = arr.indexOf('__other__');
+  if (idx === -1) {
+    arr.push('__other__');
+    el.classList.add('selected');
+    wrap.classList.add('visible');
+    const inp = document.getElementById(group + '-other-input');
+    if (inp) setTimeout(() => inp.focus(), 50);
+  } else {
+    arr.splice(idx, 1);
+    el.classList.remove('selected');
+    wrap.classList.remove('visible');
+    state[group + 'Other'] = '';
+  }
+}
+
+// Validate other inputs before proceeding
+function validateOthers() {
+  let ok = true;
+  ['topics','recording','content','verbalTactics','onscreenTactics','hijackTactics','editing'].forEach(g => {
+    const arr = state[g];
+    if (arr.includes('__other__')) {
+      const val = (document.getElementById(g + '-other-input') || {}).value || '';
+      const req = document.getElementById(g + '-other-req');
+      if (!val.trim()) {
+        if (req) req.classList.add('show');
+        ok = false;
+      } else {
+        if (req) req.classList.remove('show');
+        state[g + 'Other'] = val.trim();
+      }
+    }
+  });
+  return ok;
+}
+
+// ══ TAM ══
+function selectTAM(val, el) {
+  state.tam = val;
+  document.querySelectorAll('.tam-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ══ HOOK BLOCK COLLAPSE ══
+function toggleHookBlock(id) {
+  document.getElementById('block-' + id).classList.toggle('collapsed');
+}
+
+// ══ HOOK BANK ══
+const DEFAULT_BANK = [
+  "The quickest way to [X] is by [Y]",
+  "It's come to my attention that people don't know how to [X]",
+  "Most of you don't know how to [X]",
+  "This is 90 seconds of the best [X] advice you'll find on social media",
+  "The only [X] guide you need",
+  "[X] vs [Y] — what's the difference?",
+  "One of the top [niche] strategies of this year is [X]"
+];
+
+function loadBank() {
+  const custom = JSON.parse(localStorage.getItem('rcf-hook-bank') || '[]');
+  return [...DEFAULT_BANK, ...custom];
+}
+
+function renderBankList() {
+  const list = document.getElementById('hook-bank-list');
+  if (!list) return;
+  list.innerHTML = loadBank().map(item => {
+    const safe = item.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    return `<div class="bank-item" onclick="useBank('${safe}')">${item}<span class="use-btn">Use →</span></div>`;
+  }).join('');
+}
+
+function useBank(text) {
+  const ta = document.getElementById('s5-hook');
+  ta.value = text;
+  ta.focus();
+  state.hookScript = text;
+}
+
+function templatizeHook(text) {
+  const skipWords = new Set([
+    'The','A','An','It','This','That','These','Those','If','So','When',
+    'What','Who','And','But','For','Are','Was','Were','Has','Have','Had',
+    'Did','Do','Does','Not','Just','Only','Now','All','My','Your','Our'
+  ]);
+  const placeholders = ['[X]','[Y]','[Z]','[A]','[B]','[C]'];
+  const found = new Map();
+  let pIdx = 0;
+
+  // Match sequences of 1-3 Title Case words (proper nouns)
+  const re = /\b([A-Z][a-z]{1,}(?:[ \t]+[A-Z][a-z]{1,}){0,2})\b/g;
+  let m;
+  while ((m = re.exec(text)) !== null) {
+    const phrase = m[1];
+    if (!found.has(phrase) && !skipWords.has(phrase) && pIdx < placeholders.length) {
+      found.set(phrase, placeholders[pIdx++]);
+    }
+  }
+  // Replace longest matches first to avoid partial replacements
+  let result = text;
+  [...found.keys()].sort((a, b) => b.length - a.length).forEach(phrase => {
+    result = result.split(phrase).join(found.get(phrase));
+  });
+  return result;
+}
+
+function addCurrentHookToBank() {
+  const ta = document.getElementById('s5-hook');
+  const raw = (ta.value || '').trim();
+  if (!raw) { alert('Write a hook script first, then add it to the bank.'); return; }
+  const template = templatizeHook(raw);
+  const custom = JSON.parse(localStorage.getItem('rcf-hook-bank') || '[]');
+  if (!DEFAULT_BANK.includes(template) && !custom.includes(template)) {
+    custom.push(template);
+    localStorage.setItem('rcf-hook-bank', JSON.stringify(custom));
+    renderBankList();
+  }
+  const btn = document.getElementById('btn-add-bank');
+  btn.textContent = '✓ Added!';
+  btn.classList.add('confirmed');
+  setTimeout(() => { btn.textContent = '+ Add to Bank'; btn.classList.remove('confirmed'); }, 1800);
+}
+
+// ══ BUILD REVIEW ══
+function buildReview() {
+  syncTextFields();
+  const grid = document.getElementById('review-grid');
+
+  function tagsHTML(arr, otherKey) {
+    if (!arr || arr.length === 0) return '<span class="rc-value empty">— not selected —</span>';
+    const parts = arr.map(v => {
+      if (v === '__other__') {
+        const t = state[otherKey] || '...';
+        return `<span class="rc-tag other-tag">Other: ${t}</span>`;
+      }
+      return `<span class="rc-tag">${v}</span>`;
+    });
+    return `<div class="rc-tags">${parts.join('')}</div>`;
+  }
+  function valHTML(v) {
+    return v ? `<div class="rc-value">${v}</div>` : `<div class="rc-value empty">— not filled in —</div>`;
+  }
+
+  // Combine all hook tactics
+  const allTactics = [
+    ...state.verbalTactics.map(v => v === '__other__' ? `Other (Verbal): ${state.verbalTacticsOther}` : `[Verbal] ${v}`),
+    ...state.onscreenTactics.map(v => v === '__other__' ? `Other (On Screen): ${state.onscreenTacticsOther}` : `[On Screen] ${v}`),
+    ...state.hijackTactics.map(v => v === '__other__' ? `Other (Hijack): ${state.hijackTacticsOther}` : `[Hijack] ${v}`)
+  ];
+
+  const tamHTML = state.tam
+    ? `<div class="rc-tam"><span class="tam-n">${state.tam}</span>/10 — Total Addressable Market</div>`
+    : `<span class="rc-value empty">— not rated —</span>`;
+
+  grid.innerHTML = `
+    <div class="review-card">
+      <div class="rc-step">💡 Step 1 — Ideation</div>
+      <div class="rc-row"><div class="rc-label">Reel Concept</div>${valHTML(state.idea)}</div>
+      <div class="rc-row"><div class="rc-label">Target Audience</div>${valHTML(state.audience)}</div>
+      <div class="rc-row"><div class="rc-label">Why Now</div>${valHTML(state.why)}</div>
+      <div class="rc-row"><div class="rc-label">TAM Score</div>${tamHTML}</div>
+      <div class="rc-row"><div class="rc-label">Additional Notes</div>${valHTML(state.s1notes)}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">🏷️ Step 2 — Topic</div>
+      <div class="rc-row"><div class="rc-label">Selected Topics</div>${tagsHTML(state.topics,'topicsOther')}</div>
+      <div class="rc-row"><div class="rc-label">Notes / Angle</div>${valHTML(state.s2notes)}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">🎥 Step 3 — Recording Style</div>
+      <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.recording,'recordingOther')}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">📋 Step 4 — Content Style</div>
+      <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.content,'contentOther')}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">🎣 Step 5 — Hook</div>
+      <div class="rc-row"><div class="rc-label">Selected Tactics</div>${
+        allTactics.length
+          ? `<div class="rc-tags">${allTactics.map(t => `<span class="rc-tag">${t}</span>`).join('')}</div>`
+          : `<span class="rc-value empty">— not selected —</span>`
+      }</div>
+      <div class="rc-row"><div class="rc-label">Hook Script</div>${valHTML(state.hookScript)}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">✂️ Step 6 — Editing Style</div>
+      <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.editing,'editingOther')}</div>
+      <div class="rc-row"><div class="rc-label">Edit Notes / Techniques</div>${valHTML(state.s6notes)}</div>
+    </div>
+  `;
+}
+
+// ══ EXPORT DOCX ══
+async function exportDOCX() {
+  syncTextFields();
+  if (!validateOthers()) { alert('Please fill in all "Other" fields before exporting.'); return; }
+  if (!window.docx) { alert('Export library not loaded yet — please wait a moment and try again.'); return; }
+
+  try {
+
+  const {
+    Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
+    BorderStyle, ShadingType, WidthType
+  } = window.docx;
+
+  const docName = (state.docName ? state.docName + ' RCF' : 'Reels Creation Framework RCF');
+  const dateStr = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
+
+  // A4 = 11906 DXA wide. Margins 720 each side → usable = 10466 DXA.
+  // 3-cell table: col | gap | col  →  5083 | 300 | 5083
+  const PAGE_W  = 11906;
+  const MARGIN  = 720;
+  const USABLE  = PAGE_W - MARGIN * 2;   // 10466
+  const GAP_W   = 300;
+  const COL_W   = Math.floor((USABLE - GAP_W) / 2);  // 5083
+
+  const NO_BORDER = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
+  const noBorders = { top: NO_BORDER, bottom: NO_BORDER, left: NO_BORDER, right: NO_BORDER, insideH: NO_BORDER, insideV: NO_BORDER };
+
+  const PINK = 'ED0A73', BLUE = '339AE9', NAVY = '061525';
+  const WHITE = 'FFFFFF', LABEL_COL = '7A8FA6', MUTED = '9AABB8', DARK = '1a2535';
+
+  function sp(before, after) { return { before, after }; }
+
+  function sectionHeader(stepNum, title, accent) {
+    return new Paragraph({
+      spacing: sp(140, 60),
+      shading: { fill: NAVY, type: ShadingType.CLEAR },
+      border: { left: { style: BorderStyle.SINGLE, size: 28, color: accent, space: 0 } },
+      indent: { left: 140 },
+      children: [
+        new TextRun({ text: `STEP ${stepNum}`, bold: true, size: 15, color: accent }),
+        new TextRun({ text: `   —   ${title.toUpperCase()}`, bold: true, size: 15, color: WHITE }),
+      ],
+    });
+  }
+
+  function field(label, value, accent) {
+    return new Paragraph({
+      spacing: sp(50, 50),
+      indent: { left: 160 },
+      border: { left: { style: BorderStyle.SINGLE, size: 10, color: accent, space: 8 } },
+      children: [
+        new TextRun({ text: label.toUpperCase() + '   ', bold: true, size: 13, color: LABEL_COL }),
+        value
+          ? new TextRun({ text: String(value), size: 16, color: DARK })
+          : new TextRun({ text: '—', size: 15, color: MUTED, italics: true }),
+      ],
+    });
+  }
+
+  function tagsField(label, arr, otherKey, accent) {
+    const items = (arr || []).map(v =>
+      v === '__other__' ? (otherKey ? (state[otherKey] || 'Other') : 'Other') : v
+    );
+    return field(label, items.length ? items.join('  •  ') : null, accent);
+  }
+
+  function tamField(value) {
+    return new Paragraph({
+      spacing: sp(50, 50),
+      indent: { left: 160 },
+      border: { left: { style: BorderStyle.SINGLE, size: 10, color: BLUE, space: 8 } },
+      shading: { fill: 'EEF4FF', type: ShadingType.CLEAR },
+      children: [
+        new TextRun({ text: 'TAM   ', bold: true, size: 13, color: LABEL_COL }),
+        value
+          ? new TextRun({ text: `${value} / 10`, bold: true, size: 18, color: '1D4ED8' })
+          : new TextRun({ text: '—', size: 15, color: MUTED, italics: true }),
+        value
+          ? new TextRun({ text: '    Total Addressable Market', size: 13, color: LABEL_COL })
+          : new TextRun({ text: '' }),
+      ],
+    });
+  }
+
+  function gap(sz = 100) {
+    return new Paragraph({ text: '', spacing: sp(0, sz) });
+  }
+
+  function makeCell(w, children) {
+    return new TableCell({
+      width: { size: w, type: WidthType.DXA },
+      borders: noBorders,
+      children,
+    });
+  }
+
+  // Hook tactics
+  const allTactics = [
+    ...state.verbalTactics.map(v => v === '__other__' ? `Verbal: ${state.verbalTacticsOther}` : `[V] ${v}`),
+    ...state.onscreenTactics.map(v => v === '__other__' ? `On Screen: ${state.onscreenTacticsOther}` : `[OS] ${v}`),
+    ...state.hijackTactics.map(v => v === '__other__' ? `Hijack: ${state.hijackTacticsOther}` : `[HJ] ${v}`),
+  ];
+
+  // ── LEFT: Steps 1–2 ──
+  const leftChildren = [
+    sectionHeader(1, 'Ideation', PINK),
+    field('Concept', state.idea, PINK),
+    field('Audience', state.audience, PINK),
+    field('Why Now', state.why, PINK),
+    tamField(state.tam || null),
+    field('Notes', state.s1notes, PINK),
+    gap(160),
+    sectionHeader(2, 'Topic', BLUE),
+    tagsField('Topics', state.topics, 'topicsOther', BLUE),
+    field('Angle', state.s2notes, BLUE),
+  ];
+
+  // ── RIGHT: Steps 3–6 ──
+  const rightChildren = [
+    sectionHeader(3, 'Recording Style', PINK),
+    tagsField('Style', state.recording, 'recordingOther', PINK),
+    gap(160),
+    sectionHeader(4, 'Content Style', BLUE),
+    tagsField('Style', state.content, 'contentOther', BLUE),
+    gap(160),
+    sectionHeader(5, 'Hook', PINK),
+    tagsField('Tactics', allTactics, null, PINK),
+    field('Hook Script', state.hookScript, PINK),
+    gap(160),
+    sectionHeader(6, 'Editing Style', BLUE),
+    tagsField('Style', state.editing, 'editingOther', BLUE),
+    field('Edit Notes', state.s6notes, BLUE),
+  ];
+
+  // ── 2-column table: LEFT | gap | RIGHT ──
+  const layoutTable = new Table({
+    width: { size: USABLE, type: WidthType.DXA },
+    columnWidths: [COL_W, GAP_W, COL_W],
+    borders: noBorders,
+    rows: [
+      new TableRow({
+        children: [
+          makeCell(COL_W, leftChildren),
+          makeCell(GAP_W, [new Paragraph({ text: '' })]),
+          makeCell(COL_W, rightChildren),
+        ],
+      }),
+    ],
+  });
+
+  const doc = new Document({
+    creator: 'Reels Creation Framework',
+    title: docName,
+    sections: [{
+      properties: {
+        page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } },
+      },
+      children: [
+        new Paragraph({
+          spacing: sp(0, 40),
+          children: [new TextRun({ text: docName, bold: true, size: 44, color: NAVY })],
+        }),
+        new Paragraph({
+          spacing: sp(0, 200),
+          border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: PINK, space: 6 } },
+          children: [
+            new TextRun({ text: 'REELS CREATION FRAMEWORK  •  RCF', bold: true, size: 15, color: PINK }),
+            new TextRun({ text: `        ${dateStr}`, size: 14, color: LABEL_COL }),
+          ],
+        }),
+        layoutTable,
+        new Paragraph({
+          spacing: sp(240, 0),
+          border: { top: { style: BorderStyle.SINGLE, size: 4, color: 'D1D5DB', space: 6 } },
+          children: [
+            new TextRun({ text: 'Reels Creation Framework  •  RCF        ', size: 13, color: MUTED }),
+            new TextRun({ text: `Generated ${dateStr}`, size: 13, color: MUTED }),
+          ],
+        }),
+      ],
+    }],
+  });
+
+  const blob = await Packer.toBlob(doc);
+  const url  = URL.createObjectURL(blob);
+  const a    = Object.assign(document.createElement('a'), { href: url, download: docName + '.docx' });
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+
+  } catch(err) {
+    console.error('DOCX export error:', err);
+    alert('Export failed: ' + err.message);
+  }
+}
+
+// ══ INIT ══
+document.addEventListener('DOMContentLoaded', () => {
+  renderBankList();
+});
+
+// ══ START OVER ══
+function startOver() {
+  if (!confirm('Start a new reel? All current entries will be cleared.')) return;
+  // reset state arrays/strings
+  Object.keys(state).forEach(k => {
+    state[k] = Array.isArray(state[k]) ? [] : (k === 'tam' ? 0 : '');
+  });
+  document.querySelectorAll('textarea, input[type="text"]').forEach(el => el.value = '');
+  document.querySelectorAll('.option-card.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.other-input-wrap.visible').forEach(el => el.classList.remove('visible'));
+  document.querySelectorAll('.other-required.show').forEach(el => el.classList.remove('show'));
+  document.querySelectorAll('.tam-btn.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.hook-section-block.collapsed').forEach(el => el.classList.remove('collapsed'));
+  goToStep(1);
+}
+</script>
+</body>
+</html>
