@@ -263,6 +263,10 @@ button:hover { opacity: 0.85; }
       <input type="checkbox" id="f-do-reveal" checked>
       <span class="checkbox-label">Reveal at end</span>
     </label>
+    <label class="checkbox-wrap">
+      <input type="checkbox" id="f-show-hint">
+      <span class="checkbox-label">Show who to find</span>
+    </label>
     <div id="reveal-options" class="form-group">
       <label>Reveal Text</label>
       <input type="text" id="f-reveal-text" value="THERE HE IS!">
@@ -580,6 +584,7 @@ function getData() {
     headR:       parseInt(get('f-head-size').value) || 72,
     duration:    parseInt(get('f-duration').value) || 10,
     doReveal:    get('f-do-reveal').checked,
+    showHint:    get('f-show-hint').checked,
     difficulty:  get('f-difficulty').value || 'easy',
     slots: [
       { id: 'target', url: get('target-url').value.trim(), name: get('target-name').value.trim(), count: 1,  isTarget: true  },
@@ -919,6 +924,62 @@ function drawLowerThird(ctx, data, alpha) {
   ctx.restore();
 }
 
+// ─── DRAW: FACE HINT ──────────────────────────────────────────────────────────
+// Small target-face badge in the top-right so viewers know which face to find.
+function drawFaceHint(ctx, target, alpha) {
+  if (!target || alpha <= 0) return;
+
+  const hintR = 62;
+  const hintX = W - hintR - 44;
+  const hintY = 158;
+
+  ctx.save();
+  ctx.globalAlpha = alpha;
+
+  // "FIND THIS" label above the circle
+  ctx.font = '700 21px Oswald';
+  ctx.letterSpacing = '2px';
+  ctx.textAlign = 'center';
+  shadowDark(ctx);
+  ctx.fillStyle = PINK;
+  ctx.fillText('FIND THIS', hintX, hintY - hintR - 12);
+  shadowClear(ctx);
+
+  // Dark backing + pink border ring
+  ctx.shadowColor = 'rgba(0,0,0,0.6)';
+  ctx.shadowBlur = 12;
+  ctx.strokeStyle = PINK;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(hintX, hintY, hintR + 3, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(6,21,37,0.7)';
+  ctx.fill();
+  ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Face clipped to circle
+  ctx.beginPath();
+  ctx.arc(hintX, hintY, hintR, 0, Math.PI * 2);
+  ctx.clip();
+
+  if (target.img) {
+    const iw = target.img.naturalWidth, ih = target.img.naturalHeight;
+    const side = Math.min(iw, ih);
+    const sx = (iw - side) / 2, sy = (ih - side) / 2;
+    ctx.drawImage(target.img, sx, sy, side, side, hintX - hintR, hintY - hintR, hintR * 2, hintR * 2);
+  } else {
+    ctx.fillStyle = BLUE_MID;
+    ctx.fillRect(hintX - hintR, hintY - hintR, hintR * 2, hintR * 2);
+    ctx.fillStyle = BLUE_MUTED;
+    ctx.font = `bold ${hintR * 0.6}px Roboto`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('?', hintX, hintY);
+  }
+
+  ctx.restore();
+}
+
 // ─── DRAW: DIFFICULTY BADGE ───────────────────────────────────────────────────
 function drawDifficultyBadge(ctx, difficulty, t, alpha) {
   const diff = DIFF_CFG[difficulty] || DIFF_CFG.easy;
@@ -1049,6 +1110,7 @@ function drawFrame(ctx, data, heads, t) {
   const headerAlpha = data.doReveal ? easeOut(tween(t, T_INTRO, 0.7)) : 1;
   const lowerAlpha  = data.doReveal ? easeOut(tween(t, T_INTRO + 0.3, 0.7)) : 1;
   drawHeader(ctx, data, headerAlpha);
+  if (data.showHint) drawFaceHint(ctx, target, headerAlpha * (1 - revealP));
   drawLowerThird(ctx, data, lowerAlpha);
 }
 
