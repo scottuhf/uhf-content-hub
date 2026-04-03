@@ -824,13 +824,10 @@ function exportVideo(canvasId, recBadgeId) {
   const rec = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25_000_000 });
   const chunks = [];
   rec.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  rec.onstop = () => {
+  rec.onstop = async () => {
     const blob = new Blob(chunks, { type: mime });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
     const filename = `contract-spotlight-${isSquare ? '1x1' : '9x16'}.${ext}`;
-    a.download = filename;
-    a.click();
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
     badge.className = 'rec-badge rec-idle';
     badge.textContent = 'REC';
@@ -917,5 +914,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>

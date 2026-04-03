@@ -840,16 +840,11 @@ function downloadVideo(mode) {
   const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 25_000_000 });
 
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  recorder.onstop = () => {
+  recorder.onstop = async () => {
     badge.style.display = 'none';
     const blob = new Blob(chunks, { type: mime });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url;
     const filename = `nfl-stats-${mode}.${ext}`;
-    a.download = filename;
-    a.click();
-    URL.revokeObjectURL(url);
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
     // Replay normal animation after recording
     runAnimation(id, data, L, mode === 'sq' ? frameSq : frameRl, null);
@@ -904,5 +899,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>

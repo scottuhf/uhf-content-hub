@@ -852,11 +852,10 @@ function startRecord(fmt) {
   const recorder = new MediaRecorder(canvas.captureStream(60), { mimeType: mime, videoBitsPerSecond: 25_000_000 });
   const chunks = [];
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  recorder.onstop = () => {
-    const url = URL.createObjectURL(new Blob(chunks, { type: mime }));
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: mime });
     const filename = `name-that-stat-${fmt}.${ext}`;
-    Object.assign(document.createElement('a'), { href: url, download: filename }).click();
-    URL.revokeObjectURL(url);
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
     badge.textContent = 'REC'; badge.className = 'rec-badge rec-idle';
     delete recorders[fmt];
@@ -917,5 +916,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>

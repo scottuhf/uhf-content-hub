@@ -1236,13 +1236,10 @@ function startRecord(fmt) {
   const chunks   = [];
 
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  recorder.onstop = () => {
+  recorder.onstop = async () => {
     const blob = new Blob(chunks, { type: mimeType });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
     const filename = `stat-explainer-${fmt}.${ext}`;
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
     badge.textContent = 'IDLE';
     badge.className = 'rec-badge rec-idle';
@@ -1298,5 +1295,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>

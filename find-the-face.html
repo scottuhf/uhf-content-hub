@@ -1200,14 +1200,11 @@ async function downloadVideo() {
   const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 12_000_000 });
 
   recorder.ondataavailable = e => { if (e.data.size > 0) chunks.push(e.data); };
-  recorder.onstop = () => {
+  recorder.onstop = async () => {
     badge.style.display = 'none';
     const blob = new Blob(chunks, { type: mime });
-    const url  = URL.createObjectURL(blob);
-    const a = document.createElement('a');
     const filename = `find-the-face.${ext}`;
-    a.href = url; a.download = filename; a.click();
-    URL.revokeObjectURL(url);
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
     // Restart preview loop
     generate();
@@ -1268,5 +1265,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>

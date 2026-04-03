@@ -942,14 +942,11 @@ function downloadVideo(mode) {
   const rec=new MediaRecorder(stream,{mimeType:mime,videoBitsPerSecond:25_000_000});
   recorders[mode]=rec;
   rec.ondataavailable=e=>{if(e.data.size>0)chunks.push(e.data);};
-  rec.onstop=()=>{
+  rec.onstop=async ()=>{
     badge.style.display='none'; recorders[mode]=null;
     const blob=new Blob(chunks,{type:mime});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
     const filename=`personnel-${currentData.personnel}-${mode}.${ext}`;
-    a.href=url; a.download=filename; a.click();
-    URL.revokeObjectURL(url);
+    await saveVideoBlob(blob, filename);
     showFFmpegModal(filename, 60);
   };
   badge.style.display='inline-block';
@@ -1139,5 +1136,6 @@ function showFFmpegModal(filename, fps) {
     </div>
   </div>
 </div>
+<script src="js/save-video.js"></script>
 </body>
 </html>
