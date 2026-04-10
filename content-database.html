@@ -1,0 +1,1203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Content Database — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --orange:     #FF6B35;
+  --green:      #3ECF6A;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --bg-card-cs: #090f1a;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 60%, var(--orange) 100%);
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 4px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(6, 21, 37, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-dim);
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-top {
+  font-family: 'Oswald', sans-serif;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid var(--border-dim);
+  padding-left: 20px;
+  height: 100%;
+}
+.nav-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-tab.active {
+  color: var(--orange);
+  background: rgba(255,107,53,0.1);
+  border-color: rgba(255,107,53,0.3);
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.btn-add {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.btn-add:hover { background: #c4085f; transform: translateY(-1px); }
+
+/* ── MAIN ── */
+.main {
+  padding: 88px 40px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-top: 20px;
+}
+.page-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 36px; font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.page-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── ANALYTICS BAR ── */
+.analytics-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--orange);
+}
+.stat-card-label {
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-card-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-card-value.pink { color: var(--pink); }
+.stat-card-value.blue { color: var(--blue); }
+.stat-card-value.green { color: var(--green); }
+.stat-card-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-bar input,
+.filter-bar select {
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.filter-bar input:focus,
+.filter-bar select:focus { border-color: var(--orange); }
+.filter-bar input { flex: 1; min-width: 200px; }
+.filter-bar select { min-width: 140px; cursor: pointer; }
+.filter-bar select option { background: #0d1e35; }
+.results-count {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+/* ── TABLE WRAPPER ── */
+.table-wrap {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  overflow: hidden;
+  overflow-x: auto;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+.data-table th {
+  font-family: 'Oswald', sans-serif;
+  font-size: 10px; font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 12px 14px;
+  text-align: left;
+  background: rgba(0,0,0,0.2);
+  border-bottom: 1px solid var(--border-dim);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s;
+}
+.data-table th:hover { color: #fff; }
+.data-table th.sort-asc::after { content: ' ↑'; color: var(--orange); }
+.data-table th.sort-desc::after { content: ' ↓'; color: var(--orange); }
+.data-table td {
+  padding: 11px 14px;
+  font-size: 13px;
+  border-bottom: 1px solid rgba(26,58,92,0.5);
+  vertical-align: middle;
+  color: #cde;
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tbody tr {
+  transition: background 0.12s;
+  cursor: default;
+}
+.data-table tbody tr:hover { background: rgba(255,255,255,0.03); }
+.data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.08); }
+.data-table tbody tr:nth-child(even):hover { background: rgba(255,255,255,0.03); }
+
+.col-num { color: var(--text-dim); font-size: 11px; text-align: center; width: 36px; }
+.col-date { white-space: nowrap; font-size: 11px; color: var(--text-muted); }
+.col-title { max-width: 200px; }
+.col-title strong { color: #fff; font-size: 13px; font-weight: 500; display: block; margin-bottom: 2px; }
+.col-title span { font-size: 11px; color: var(--text-muted); }
+.col-hook { max-width: 220px; font-size: 12px; color: var(--text-muted); font-style: italic; }
+.col-hook-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.col-num-val { text-align: right; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 500; white-space: nowrap; }
+.col-eng { text-align: right; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: var(--green); }
+.col-actions { white-space: nowrap; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.badge-published { background: rgba(237,10,115,0.15); color: var(--pink); }
+.badge-draft     { background: rgba(90,138,176,0.12); color: var(--text-muted); }
+.badge-idea      { background: rgba(51,154,233,0.12); color: var(--blue); }
+.badge-archived  { background: rgba(45,74,99,0.3);    color: var(--text-dim); }
+
+.type-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(255,107,53,0.1);
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+/* ── ACTION BUTTONS ── */
+.action-btn {
+  background: none;
+  border: 1px solid var(--border-dim);
+  color: var(--text-muted);
+  border-radius: 5px;
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+  margin-right: 4px;
+}
+.action-btn:hover { border-color: #fff; color: #fff; }
+.action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
+.action-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-muted);
+}
+.empty-state svg { width: 48px; height: 48px; fill: var(--text-dim); margin-bottom: 16px; }
+.empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
+.empty-state p { font-size: 13px; color: var(--text-dim); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal {
+  background: #0d1e35;
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(16px);
+  transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: #fff;
+}
+.modal-close {
+  background: none; border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 20px 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.form-control {
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.18s;
+  width: 100%;
+}
+.form-control:focus { border-color: var(--orange); }
+.form-control option { background: #0d1e35; }
+textarea.form-control { resize: vertical; min-height: 70px; }
+.eng-display {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px; font-weight: 700;
+  color: var(--green);
+  margin-top: 2px;
+}
+.modal-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--border-dim);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-primary { background: var(--pink); color: #fff; }
+.btn-primary:hover { background: #c4085f; }
+.btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
+.btn-secondary:hover { color: #fff; border-color: #fff; }
+
+/* ── CONFIRM DIALOG ── */
+.confirm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s;
+}
+.confirm-overlay.open { opacity: 1; visibility: visible; }
+.confirm-box {
+  background: #0d1e35;
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 28px 32px;
+  max-width: 380px;
+  text-align: center;
+}
+.confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
+.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.confirm-btns { display: flex; gap: 10px; justify-content: center; }
+.btn-danger { background: #c0392b; color: #fff; }
+.btn-danger:hover { background: #e74c3c; }
+
+/* ── SORT INDICATORS ── */
+.data-table th.sortable { cursor: pointer; user-select: none; }
+.data-table th.sortable:hover { color: #fff; }
+.sort-indicator { color: var(--text-dim); margin-left: 4px; font-size: 9px; }
+.data-table th.sort-active { color: var(--pink); border-bottom: 2px solid var(--pink); }
+.data-table th.sort-active .sort-indicator { color: var(--pink); }
+
+/* ── CHART SECTION ── */
+.chart-section {
+  margin-bottom: 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.chart-toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  cursor: pointer;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid transparent;
+  transition: color 0.15s;
+}
+.chart-toggle:hover { color: #fff; }
+.chart-toggle.open { border-bottom-color: var(--border-dim); }
+#chartContainer { padding: 20px; }
+
+/* ── DETAIL ROW ── */
+.detail-row td { background: #061f38; border-top: none; padding: 16px 20px; }
+.detail-grid { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; }
+.ratio-display { text-align: center; padding-top: 8px; }
+.ratio-num { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; color: var(--orange); }
+.ratio-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+.stat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.stat-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); border-radius: 4px; padding: 4px 10px; font-size: 10px; color: var(--text-muted); }
+.stat-pill strong { color: #fff; font-size: 12px; display: block; }
+.mini-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.mini-bar-label { font-size: 10px; color: var(--text-muted); width: 80px; text-align: right; }
+.mini-bar-track { flex: 1; height: 6px; background: var(--border-dim); border-radius: 3px; overflow: hidden; }
+.mini-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+.mini-bar-val { font-size: 10px; color: var(--white); width: 60px; }
+
+@media (max-width: 900px) {
+  .site-header { padding: 0 20px; }
+  .main { padding: 88px 20px 60px; }
+  .analytics-row { grid-template-columns: repeat(2, 1fr); }
+  .header-nav { gap: 2px; padding-left: 12px; }
+  .nav-tab { padding: 5px 8px; font-size: 10px; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-mark">
+      <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/8558213/6a3c83e6313d4b649d48148158a8804b/eyJoIjozNjAsInciOjM2MH0%3D/1.jpeg?token-hash=fORyWgkKV7uzcJEahyyHUn27tPrt2FmCGHiDuYRJBOg%3D&token-time=1774828800" alt="Upper Hand Fantasy">
+    </div>
+    <div class="logo-text">
+      <span class="logo-top">Upper Hand Fantasy</span>
+      <span class="logo-sub">Content Hub</span>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-tab">Content Hub</a>
+    <a href="graphic-index.html" class="nav-tab">Graphic Hub</a>
+    <a href="games-hub.html" class="nav-tab">Game Hub</a>
+    <a href="reels-framework.html" class="nav-tab">Reels Framework</a>
+    <a href="video-converter.html" class="nav-tab">Video Converter</a>
+    <a href="content-database.html" class="nav-tab active">Database</a>
+  </nav>
+  <div class="header-right">
+    <button class="btn-add" onclick="openModal()">+ Add Reel</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Content Database</div>
+      <div class="page-sub">Track every reel — performance, hooks, topics, and status</div>
+    </div>
+  </div>
+
+  <!-- ANALYTICS ROW -->
+  <div class="analytics-row" id="analyticsRow">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Reels</div>
+      <div class="stat-card-value" id="statTotal">—</div>
+      <div class="stat-card-sub">in database</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Views</div>
+      <div class="stat-card-value pink" id="statAvgViews">—</div>
+      <div class="stat-card-sub">per reel</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Engagement</div>
+      <div class="stat-card-value blue" id="statAvgEng">—</div>
+      <div class="stat-card-sub">likes + comments / views</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Top Performer</div>
+      <div class="stat-card-value green" id="statTopViews">—</div>
+      <div class="stat-card-sub" id="statTopTitle">most views</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search title, hook, topic..." oninput="applyFilters()">
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option>Breakdown</option>
+      <option>Countdown</option>
+      <option>Curiosity</option>
+      <option>Engaging</option>
+      <option>Highlight</option>
+      <option>Meme</option>
+      <option>Preview</option>
+      <option>Promo</option>
+      <option>React</option>
+      <option>Recap</option>
+      <option>Spotlight</option>
+      <option>Tweet Reel</option>
+    </select>
+    <span class="results-count" id="resultsCount">Showing 0 of 0 reels</span>
+  </div>
+
+  <!-- CHART SECTION -->
+  <div class="chart-section">
+    <div class="chart-toggle" id="chartToggle" onclick="toggleChart()">
+      <span>📊 Views → Followers Chart</span>
+      <span id="chartToggleIcon">▼</span>
+    </div>
+    <div id="chartContainer" style="display:none;">
+      <canvas id="reelChart" height="300"></canvas>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-wrap">
+    <table class="data-table" id="dataTable">
+      <thead>
+        <tr>
+          <th class="col-num">#</th>
+          <th class="sortable" id="th-date" onclick="sortBy('date')">Date<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-title" onclick="sortBy('title')">Title / Topic<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-hook" onclick="sortBy('hook')">Hook<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-type" onclick="sortBy('type')">Type<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-follows" onclick="sortBy('follows')" style="text-align:right;">Follows<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-views" onclick="sortBy('views')" style="text-align:right;">Views<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-threeSecRTR" onclick="sortBy('threeSecRTR')" style="text-align:right;">3 Sec RTR<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-skipPct" onclick="sortBy('skipPct')" style="text-align:right;">Skip%<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-likes" onclick="sortBy('likes')" style="text-align:right;">Likes<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-comments" onclick="sortBy('comments')" style="text-align:right;">Comments<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-shares" onclick="sortBy('shares')" style="text-align:right;">Shares<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-length" onclick="sortBy('length')" style="text-align:center;">Length<span class="sort-indicator">⇅</span></th>
+          <th class="sortable" id="th-eng" onclick="sortBy('eng')" style="text-align:right;">Eng%<span class="sort-indicator">⇅</span></th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+</main>
+
+<!-- ADD/EDIT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add Reel</div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="date" id="fDate" class="form-control">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Content Type</label>
+          <select id="fType" class="form-control">
+            <option>Breakdown</option>
+            <option>Countdown</option>
+            <option>Curiosity</option>
+            <option>Engaging</option>
+            <option>Highlight</option>
+            <option>Meme</option>
+            <option>Preview</option>
+            <option>Promo</option>
+            <option>React</option>
+            <option>Recap</option>
+            <option>Spotlight</option>
+            <option>Tweet Reel</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Title / Topic</label>
+        <input type="text" id="fTitle" class="form-control" placeholder="e.g. The RB Nobody Is Rostering">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Hook</label>
+        <textarea id="fHook" class="form-control" placeholder="Opening hook line..."></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Views</label>
+          <input type="number" id="fViews" class="form-control" placeholder="0" oninput="calcEng()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Follows Gained</label>
+          <input type="number" id="fFollows" class="form-control" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Likes</label>
+          <input type="number" id="fLikes" class="form-control" placeholder="0" oninput="calcEng()">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Comments</label>
+          <input type="number" id="fComments" class="form-control" placeholder="0" oninput="calcEng()">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">3 Sec RTR %</label>
+          <input type="number" step="0.1" id="fThreeSecRTR" class="form-control" placeholder="e.g. 42.0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Skip %</label>
+          <input type="number" step="0.1" id="fSkipPct" class="form-control" placeholder="e.g. 65.1">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Engagement Rate</label>
+          <div class="eng-display" id="engDisplay">0.00%</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <textarea id="fNotes" class="form-control" placeholder="Additional notes, ideas, context..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveReel()">Save Reel</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Delete Reel?</h3>
+    <p>This action cannot be undone. The reel and all its data will be permanently removed.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'uhf_content_db_v3';
+let reels = [];
+let deleteTargetId = null;
+let currentSort = { col: 'date', dir: 'desc' };
+let chartInstance = null;
+let chartBuilt = false;
+let expandedRowId = null;
+
+const SEED_DATA = [
+  { id: 1,  date: '2026-04-02', title: 'Early Draft Trends',                hook: '', type: 'Countdown',  views: 35600,   likes: 637,   comments: 9,   shares: 40,    avgWatchTime: '0.0%',   length: '2:10', notes: '', follows: 6,  threeSecRTR: 42.0, skipPct: 65.1 },
+  { id: 2,  date: '2026-04-02', title: 'Kirk Cousins Week 1',               hook: '', type: 'Tweet Reel', views: 59000,   likes: 856,   comments: 30,  shares: 242,   avgWatchTime: '0.0%',   length: '0:08', notes: '', follows: 1,  threeSecRTR: 55.0, skipPct: 55.0 },
+  { id: 3,  date: '2026-04-01', title: '3 Rookie Sleepers',                 hook: '', type: 'Countdown',  views: 29000,   likes: 644,   comments: 17,  shares: 55,    avgWatchTime: '0.0%',   length: '1:49', notes: '', follows: 4,  threeSecRTR: 41.6, skipPct: 65.4 },
+  { id: 4,  date: '2026-03-31', title: 'Jeremiyah Love to the Giants?',     hook: '', type: 'Breakdown',  views: 31000,   likes: 541,   comments: 44,  shares: 153,   avgWatchTime: '0.0%',   length: '1:51', notes: '', follows: 1,  threeSecRTR: 46.9, skipPct: 61.4 },
+  { id: 5,  date: '2026-03-30', title: 'Fixing the Dolphins',               hook: '', type: 'Countdown',  views: 30000,   likes: 552,   comments: 18,  shares: 57,    avgWatchTime: '0.0%',   length: '1:38', notes: '', follows: 0,  threeSecRTR: 44.3, skipPct: 63.5 },
+  { id: 6,  date: '2026-03-27', title: 'Buy, Sell, Hold',                   hook: '', type: 'Countdown',  views: 34000,   likes: 499,   comments: 23,  shares: 41,    avgWatchTime: '0.0%',   length: '1:54', notes: '', follows: 0,  threeSecRTR: 45.2, skipPct: 63.6 },
+  { id: 7,  date: '2026-03-26', title: 'Age of Peak Production',            hook: '', type: 'Breakdown',  views: 33000,   likes: 630,   comments: 33,  shares: 52,    avgWatchTime: '23.6%',  length: '1:29', notes: '', follows: 3,  threeSecRTR: 42.4, skipPct: 65.8 },
+  { id: 8,  date: '2026-03-25', title: 'Dynasty WR Stat Tiers',             hook: '', type: 'Engaging',   views: 25000,   likes: 411,   comments: 12,  shares: 35,    avgWatchTime: '9.9%',   length: '2:32', notes: '', follows: 1,  threeSecRTR: 39.0, skipPct: 67.8 },
+  { id: 9,  date: '2026-03-24', title: 'Free Agents Remaining',             hook: '', type: 'Tweet Reel', views: 78000,   likes: 792,   comments: 47,  shares: 155,   avgWatchTime: '63.6%',  length: '0:11', notes: '', follows: 0,  threeSecRTR: 66.3, skipPct: 44.0 },
+  { id: 10, date: '2026-03-24', title: 'B. Robinson Dilemma',               hook: '', type: 'Meme',       views: 61000,   likes: 1200,  comments: 11,  shares: 1800,  avgWatchTime: '66.7%',  length: '0:09', notes: '', follows: 0,  threeSecRTR: 54.0, skipPct: 57.9 },
+  { id: 11, date: '2026-03-23', title: 'Steelers Backfield',                hook: '', type: 'Breakdown',  views: 43000,   likes: 866,   comments: 14,  shares: 53,    avgWatchTime: '20.0%',  length: '1:10', notes: '', follows: 7,  threeSecRTR: 48.4, skipPct: 60.7 },
+  { id: 12, date: '2026-03-22', title: 'Chig Okonkwo Breakout',             hook: '', type: 'Breakdown',  views: 54000,   likes: 2300,  comments: 59,  shares: 357,   avgWatchTime: '20.0%',  length: '1:50', notes: '', follows: 41, threeSecRTR: 53.0, skipPct: 57.3 },
+  { id: 13, date: '2026-03-22', title: 'Mike Evans Comeback',               hook: '', type: 'Breakdown',  views: 24000,   likes: 379,   comments: 3,   shares: 27,    avgWatchTime: '11.5%',  length: '1:27', notes: '', follows: 0,  threeSecRTR: 37.8, skipPct: 68.7 },
+  { id: 14, date: '2026-03-20', title: '5 Sneaky Free Agency Winners',      hook: '', type: 'Countdown',  views: 38000,   likes: 599,   comments: 5,   shares: 22,    avgWatchTime: '21.3%',  length: '1:29', notes: '', follows: 2,  threeSecRTR: null, skipPct: 65.5 },
+  { id: 15, date: '2026-03-19', title: 'Bhayshul Tuten in Trouble',        hook: '', type: 'Breakdown',  views: 36000,   likes: 634,   comments: 32,  shares: 87,    avgWatchTime: '17.5%',  length: '1:43', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.1 },
+  { id: 16, date: '2026-03-18', title: 'Jaylen Waddle Fallout',            hook: '', type: 'Breakdown',  views: 29000,   likes: 735,   comments: 27,  shares: 105,   avgWatchTime: '13.5%',  length: '2:58', notes: '', follows: 0,  threeSecRTR: null, skipPct: 66.0 },
+  { id: 17, date: '2026-03-16', title: 'Dynasty Classes',                  hook: '', type: 'Promo',      views: 44000,   likes: 496,   comments: 673, shares: 34,    avgWatchTime: '13.2%',  length: '1:31', notes: '', follows: 1,  threeSecRTR: null, skipPct: 71.7 },
+  { id: 18, date: '2026-03-14', title: 'Two Running Backs (Emergent)',      hook: '', type: 'Promo',      views: 57000,   likes: 1200,  comments: 63,  shares: 101,   avgWatchTime: '18.3%',  length: '2:49', notes: '', follows: 2,  threeSecRTR: null, skipPct: 60.4 },
+  { id: 19, date: '2026-03-13', title: 'Kenneth Walker React',              hook: '', type: 'React',      views: 29000,   likes: 371,   comments: 32,  shares: 18,    avgWatchTime: '14.2%',  length: '1:46', notes: '', follows: 2,  threeSecRTR: null, skipPct: 60.8 },
+  { id: 20, date: '2026-03-12', title: 'Luther Burden Fallout',             hook: '', type: 'Breakdown',  views: 46000,   likes: 890,   comments: 36,  shares: 110,   avgWatchTime: '14.0%',  length: '1:33', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.7 },
+  { id: 21, date: '2026-03-10', title: 'Free Agency Winners',               hook: '', type: 'Countdown',  views: 45000,   likes: 794,   comments: 39,  shares: 50,    avgWatchTime: '20.3%',  length: '2:52', notes: '', follows: 3,  threeSecRTR: null, skipPct: 61.2 },
+  { id: 22, date: '2026-03-09', title: 'New WRs for Top QBs',               hook: '', type: 'Countdown',  views: 32000,   likes: 348,   comments: 36,  shares: 3,     avgWatchTime: '9.4%',   length: '2:07', notes: '', follows: 1,  threeSecRTR: null, skipPct: 71.1 },
+  { id: 23, date: '2026-03-08', title: 'Stocks Set to Soar',                hook: '', type: 'Countdown',  views: 37000,   likes: 748,   comments: 29,  shares: 32,    avgWatchTime: '16.1%',  length: '3:00', notes: '', follows: 1,  threeSecRTR: null, skipPct: 65.4 },
+  { id: 24, date: '2026-03-08', title: 'Stock Falling',                     hook: '', type: 'Countdown',  views: 33000,   likes: 477,   comments: 12,  shares: 7,     avgWatchTime: '15.2%',  length: '2:18', notes: '', follows: 0,  threeSecRTR: null, skipPct: 68.8 },
+  { id: 25, date: '2026-03-07', title: 'Buy or Sell Rumors',                hook: '', type: 'Engaging',   views: 34000,   likes: 531,   comments: 18,  shares: 15,    avgWatchTime: '15.9%',  length: '1:47', notes: '', follows: 0,  threeSecRTR: null, skipPct: 59.5 },
+  { id: 26, date: '2026-03-06', title: 'Free Agent RB Fits',                hook: '', type: 'Countdown',  views: 30000,   likes: 452,   comments: 9,   shares: 33,    avgWatchTime: '9.8%',   length: '1:52', notes: '', follows: 1,  threeSecRTR: null, skipPct: 55.9 },
+  { id: 27, date: '2026-03-05', title: 'RJ Harvey Downfall',                hook: '', type: 'Breakdown',  views: 43000,   likes: 757,   comments: 41,  shares: 160,   avgWatchTime: '22.2%',  length: '1:21', notes: '', follows: 4,  threeSecRTR: null, skipPct: 55.3 },
+  { id: 28, date: '2026-03-04', title: 'David Montgomery Houston',          hook: '', type: 'Countdown',  views: 39000,   likes: 782,   comments: 14,  shares: 42,    avgWatchTime: '24.3%',  length: '1:14', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.8 },
+  { id: 29, date: '2026-03-04', title: '6 New Homes for Players',           hook: '', type: 'Countdown',  views: 41000,   likes: 858,   comments: 55,  shares: 44,    avgWatchTime: '20.8%',  length: '2:39', notes: '', follows: 0,  threeSecRTR: null, skipPct: 65.1 },
+  { id: 30, date: '2026-03-01', title: 'WR Prospect Overview',              hook: '', type: 'Engaging',   views: 40000,   likes: 616,   comments: 16,  shares: 20,    avgWatchTime: '9.8%',   length: '2:33', notes: '', follows: 4,  threeSecRTR: null, skipPct: 68.6 },
+  { id: 31, date: '2026-02-28', title: 'Combine Breakdown',                 hook: '', type: 'Recap',      views: 17000,   likes: 267,   comments: 7,   shares: 7,     avgWatchTime: '10.4%',  length: '1:17', notes: '', follows: 0,  threeSecRTR: null, skipPct: 75.6 },
+  { id: 32, date: '2026-02-27', title: '40 Yard Dash (Emergent)',           hook: '', type: 'Promo',      views: 23000,   likes: 351,   comments: 18,  shares: 84,    avgWatchTime: '12.2%',  length: '1:30', notes: '', follows: 1,  threeSecRTR: null, skipPct: 68.5 },
+  { id: 33, date: '2026-02-27', title: '3 Prospects Draft Stock Climbing',  hook: '', type: 'Countdown',  views: 22000,   likes: 384,   comments: 6,   shares: 7,     avgWatchTime: '14.5%',  length: '1:57', notes: '', follows: 0,  threeSecRTR: null, skipPct: 69.3 },
+  { id: 34, date: '2026-02-25', title: 'Post-Cut Winners',                  hook: '', type: 'Engaging',   views: 29000,   likes: 314,   comments: 5,   shares: 10,    avgWatchTime: '25.0%',  length: '0:44', notes: '', follows: 0,  threeSecRTR: null, skipPct: 69.3 },
+  { id: 35, date: '2026-02-24', title: 'Jets and Breece Hall',              hook: '', type: 'Meme',       views: 52000,   likes: 1100,  comments: 25,  shares: 1100,  avgWatchTime: '50.0%',  length: '0:10', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.0 },
+  { id: 36, date: '2026-02-19', title: 'Colston Loveland Elite',            hook: '', type: 'Breakdown',  views: 29000,   likes: 368,   comments: 11,  shares: 7,     avgWatchTime: '25.0%',  length: '0:32', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 37, date: '2026-02-18', title: 'Players on the Rise',               hook: '', type: 'Countdown',  views: 31000,   likes: 462,   comments: 10,  shares: 25,    avgWatchTime: '16.9%',  length: '1:58', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 38, date: '2026-02-17', title: 'Time to Panic Dynasty',             hook: '', type: 'Countdown',  views: 55000,   likes: 727,   comments: 23,  shares: 75,    avgWatchTime: '22.4%',  length: '1:25', notes: '', follows: 2,  threeSecRTR: null, skipPct: null },
+  { id: 39, date: '2026-02-16', title: 'Potential Risers',                  hook: '', type: 'Countdown',  views: 68000,   likes: 1000,  comments: 40,  shares: 79,    avgWatchTime: '27.1%',  length: '1:10', notes: '', follows: 5,  threeSecRTR: null, skipPct: null },
+  { id: 40, date: '2026-02-15', title: 'Rhamondre Stevenson New RB1',      hook: '', type: 'Breakdown',  views: 35000,   likes: 454,   comments: 9,   shares: 46,    avgWatchTime: '11.5%',  length: '1:18', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 41, date: '2026-02-12', title: 'Klint Kubiak Hired Winners',        hook: '', type: 'Countdown',  views: 72000,   likes: 3500,  comments: 42,  shares: 901,   avgWatchTime: '31.6%',  length: '1:35', notes: '', follows: 52, threeSecRTR: null, skipPct: null },
+  { id: 42, date: '2026-02-10', title: '2016 NFL Trivia',                   hook: '', type: 'Engaging',   views: 23000,   likes: 242,   comments: 7,   shares: 23,    avgWatchTime: '15.1%',  length: '2:06', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 43, date: '2026-02-08', title: 'JSN Historic Season (OG)',          hook: '', type: 'Promo',      views: 31000,   likes: 558,   comments: 16,  shares: 10,    avgWatchTime: '10.5%',  length: '1:35', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 44, date: '2026-02-07', title: 'Sam Darnold Comeback (OG)',         hook: '', type: 'Promo',      views: 30000,   likes: 391,   comments: 3,   shares: 12,    avgWatchTime: '11.7%',  length: '1:34', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 45, date: '2026-02-06', title: 'Drake Maye Crush Seattle (AC)',     hook: '', type: 'Promo',      views: 57000,   likes: 1300,  comments: 174, shares: 589,   avgWatchTime: '17.3%',  length: '1:21', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 46, date: '2026-02-05', title: 'Coaching Carousel',                 hook: '', type: 'Countdown',  views: 24000,   likes: 492,   comments: 27,  shares: 64,    avgWatchTime: '14.6%',  length: '2:37', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 47, date: '2026-02-02', title: 'Can I Gain One Yard',               hook: '', type: 'Engaging',   views: 56000,   likes: 572,   comments: 11,  shares: 28,    avgWatchTime: '31.8%',  length: '0:44', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 48, date: '2026-01-31', title: 'Senior Bowl Highlights',            hook: '', type: 'Highlight',  views: 22000,   likes: 259,   comments: 2,   shares: 39,    avgWatchTime: '8.0%',   length: '1:40', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 49, date: '2026-01-30', title: 'Tanner Koziol UH Fan',              hook: '', type: 'Spotlight',  views: 46000,   likes: 1100,  comments: 48,  shares: 183,   avgWatchTime: '16.7%',  length: '1:12', notes: '', follows: 5,  threeSecRTR: null, skipPct: null },
+  { id: 50, date: '2026-01-29', title: 'Tyren Montgomery Backstory',        hook: '', type: 'Spotlight',  views: 56000,   likes: 1800,  comments: 18,  shares: 718,   avgWatchTime: '22.0%',  length: '1:31', notes: '', follows: 11, threeSecRTR: null, skipPct: null },
+  { id: 51, date: '2026-01-28', title: '4 WRs Making Names Senior Bowl',    hook: '', type: 'Countdown',  views: 21000,   likes: 581,   comments: 19,  shares: 76,    avgWatchTime: '22.1%',  length: '1:17', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 52, date: '2026-01-27', title: "Who's Leading These Backfields",    hook: '', type: 'Engaging',   views: 27000,   likes: 230,   comments: 13,  shares: 9,     avgWatchTime: '9.7%',   length: '2:25', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 53, date: '2026-01-27', title: 'Senior Bowl Hype Reel',             hook: '', type: 'Preview',    views: 17000,   likes: 278,   comments: 11,  shares: 10,    avgWatchTime: '11.3%',  length: '1:02', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 54, date: '2026-01-25', title: 'Arthur Smith Terrorizing',          hook: '', type: 'Meme',       views: 35000,   likes: 837,   comments: 13,  shares: 308,   avgWatchTime: '60.0%',  length: '0:10', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 55, date: '2026-01-24', title: 'Dalton Kincaid Recap',              hook: '', type: 'Breakdown',  views: 41000,   likes: 659,   comments: 10,  shares: 136,   avgWatchTime: '15.4%',  length: '1:05', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 56, date: '2026-01-23', title: 'Drew Petzing Hate',                 hook: '', type: 'Breakdown',  views: 30000,   likes: 637,   comments: 30,  shares: 490,   avgWatchTime: '11.8%',  length: '2:33', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 57, date: '2026-01-22', title: 'Mike McDaniel Changes Everything',  hook: '', type: 'Breakdown',  views: 49000,   likes: 1400,  comments: 46,  shares: 191,   avgWatchTime: '18.4%',  length: '2:38', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 58, date: '2026-01-21', title: 'Kenneth Walker Off-Season',         hook: '', type: 'Curiosity',  views: 37000,   likes: 616,   comments: 20,  shares: 35,    avgWatchTime: '16.3%',  length: '1:44', notes: '', follows: 2,  threeSecRTR: null, skipPct: null },
+  { id: 59, date: '2026-01-20', title: 'Coaching Carousel January',         hook: '', type: 'Countdown',  views: 39000,   likes: 682,   comments: 17,  shares: 67,    avgWatchTime: '14.9%',  length: '2:21', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 60, date: '2026-01-19', title: '4 Tough Truths',                    hook: '', type: 'Countdown',  views: 44000,   likes: 508,   comments: 7,   shares: 6,     avgWatchTime: '9.8%',   length: '2:43', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
+  { id: 61, date: '2026-01-18', title: 'CJ Stroud Truthers',                hook: '', type: 'Meme',       views: 75000,   likes: 3100,  comments: 20,  shares: 2600,  avgWatchTime: '62.5%',  length: '0:08', notes: '', follows: 3,  threeSecRTR: null, skipPct: null },
+  { id: 62, date: '2026-01-17', title: 'The Bills Leaving the Playoffs',    hook: '', type: 'Meme',       views: 1150000, likes: 77000, comments: 273, shares: 59000, avgWatchTime: '111.1%', length: '0:09', notes: '🔥 Viral', follows: 71, threeSecRTR: null, skipPct: null },
+  { id: 63, date: '2026-01-16', title: 'Ricky Pearsall Alpha Receiver',     hook: '', type: 'Curiosity',  views: 38000,   likes: 572,   comments: 21,  shares: 90,    avgWatchTime: '9.8%',   length: '1:52', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+  { id: 64, date: '2026-01-15', title: 'Cardinals Receiver Decision',       hook: '', type: 'Curiosity',  views: 32000,   likes: 431,   comments: 14,  shares: 16,    avgWatchTime: '17.1%',  length: '1:10', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
+];
+
+function loadData() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    reels = JSON.parse(stored);
+  } else {
+    reels = SEED_DATA.map(r => ({ ...r }));
+    saveData();
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(reels));
+}
+
+function engRate(r) {
+  if (!r.views || r.views === 0) return 0;
+  return ((r.likes + r.comments) / r.views) * 100;
+}
+
+function fmt(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function updateAnalytics() {
+  document.getElementById('statTotal').textContent = reels.length;
+  if (reels.length === 0) {
+    document.getElementById('statAvgViews').textContent = '—';
+    document.getElementById('statAvgEng').textContent = '—';
+    document.getElementById('statTopViews').textContent = '—';
+    document.getElementById('statTopTitle').textContent = 'most views';
+    return;
+  }
+  const avgV = Math.round(reels.reduce((a, r) => a + r.views, 0) / reels.length);
+  const avgE = reels.reduce((a, r) => a + engRate(r), 0) / reels.length;
+  const top = reels.reduce((a, b) => a.views > b.views ? a : b);
+  document.getElementById('statAvgViews').textContent = fmt(avgV);
+  document.getElementById('statAvgEng').textContent = avgE.toFixed(2) + '%';
+  document.getElementById('statTopViews').textContent = fmt(top.views);
+  document.getElementById('statTopTitle').textContent = top.title;
+}
+
+// ── SORT ──
+function sortBy(col) {
+  if (currentSort.col === col) {
+    currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    currentSort.col = col;
+    const textCols = ['date', 'title', 'hook', 'type', 'length'];
+    currentSort.dir = textCols.includes(col) ? 'asc' : 'desc';
+  }
+  updateSortHeaders();
+  renderTable();
+}
+
+function updateSortHeaders() {
+  document.querySelectorAll('.data-table th.sortable').forEach(th => {
+    th.classList.remove('sort-active');
+    const ind = th.querySelector('.sort-indicator');
+    if (ind) ind.textContent = '⇅';
+  });
+  const active = document.getElementById('th-' + currentSort.col);
+  if (active) {
+    active.classList.add('sort-active');
+    const ind = active.querySelector('.sort-indicator');
+    if (ind) ind.textContent = currentSort.dir === 'asc' ? ' ▲' : ' ▼';
+  }
+}
+
+function getFiltered() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const typeF = document.getElementById('filterType').value;
+
+  let filtered = reels.filter(r => {
+    const matchSearch = !search ||
+      r.title.toLowerCase().includes(search) ||
+      (r.hook || '').toLowerCase().includes(search) ||
+      r.type.toLowerCase().includes(search);
+    const matchType = !typeF || r.type === typeF;
+    return matchSearch && matchType;
+  });
+
+  const col = currentSort.col;
+  const dir = currentSort.dir;
+  const numericCols = ['follows', 'views', 'threeSecRTR', 'skipPct', 'likes', 'comments', 'shares', 'eng'];
+
+  filtered.sort((a, b) => {
+    let va, vb;
+    if (col === 'eng') { va = engRate(a); vb = engRate(b); }
+    else if (col === 'threeSecRTR' || col === 'skipPct') {
+      va = a[col]; vb = b[col];
+      if (va === null && vb === null) return 0;
+      if (va === null) return 1;
+      if (vb === null) return -1;
+    } else {
+      va = a[col] !== undefined ? a[col] : '';
+      vb = b[col] !== undefined ? b[col] : '';
+    }
+    if (numericCols.includes(col)) { va = Number(va) || 0; vb = Number(vb) || 0; }
+    if (dir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
+    return va < vb ? 1 : va > vb ? -1 : 0;
+  });
+
+  return filtered;
+}
+
+function renderTable() {
+  const filtered = getFiltered();
+  const tbody = document.getElementById('tableBody');
+  document.getElementById('resultsCount').textContent = `Showing ${filtered.length} of ${reels.length} reels`;
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="15"><div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      <h3>No reels found</h3>
+      <p>Try adjusting your search or filters.</p>
+    </div></td></tr>`;
+    return;
+  }
+
+  const maxFollows = Math.max(...reels.map(r => r.follows || 0), 1);
+  const maxViews   = Math.max(...reels.map(r => r.views || 0), 1);
+  const maxRTR     = Math.max(...reels.filter(r => r.threeSecRTR !== null).map(r => r.threeSecRTR), 1);
+  const maxSkip    = Math.max(...reels.filter(r => r.skipPct !== null).map(r => r.skipPct), 1);
+
+  tbody.innerHTML = filtered.map((r, i) => {
+    const eng = engRate(r).toFixed(2);
+    const rtrDisplay  = r.threeSecRTR !== null ? r.threeSecRTR.toFixed(1) + '%' : '—';
+    const skipDisplay = r.skipPct !== null ? r.skipPct.toFixed(1) + '%' : '—';
+    const skipColor   = (r.skipPct !== null && r.skipPct > 65) ? 'var(--pink)' : 'var(--text-muted)';
+    const ratio       = r.follows > 0 ? Math.round(r.views / r.follows).toLocaleString() : 'N/A';
+    const fPct        = Math.round((r.follows || 0) / maxFollows * 100);
+    const vPct        = Math.round((r.views   || 0) / maxViews   * 100);
+    const rtrPct      = r.threeSecRTR !== null ? Math.round(r.threeSecRTR / maxRTR * 100) : 0;
+    const skipPctBar  = r.skipPct     !== null ? Math.round((maxSkip - r.skipPct) / maxSkip * 100) : 0;
+
+    return `<tr onclick="toggleRowChart(${r.id})" style="cursor:pointer;">
+      <td class="col-num">${i + 1}</td>
+      <td class="col-date">${r.date}</td>
+      <td class="col-title"><strong>${escHtml(r.title)}</strong></td>
+      <td class="col-hook"><span class="col-hook-text">${escHtml(r.hook || '')}</span></td>
+      <td><span class="type-badge">${escHtml(r.type)}</span></td>
+      <td class="col-num-val" style="color:var(--orange);">${r.follows != null ? r.follows : 0}</td>
+      <td class="col-num-val">${fmt(r.views)}</td>
+      <td class="col-num-val" style="color:var(--blue);">${rtrDisplay}</td>
+      <td class="col-num-val" style="color:${skipColor};">${skipDisplay}</td>
+      <td class="col-num-val" style="color:var(--pink);">${fmt(r.likes)}</td>
+      <td class="col-num-val" style="color:var(--blue);">${r.comments}</td>
+      <td class="col-num-val" style="color:var(--green);">${fmt(r.shares || 0)}</td>
+      <td style="text-align:center;color:var(--text-muted);font-size:12px;">${r.length || '—'}</td>
+      <td class="col-eng" style="color:var(--text-muted);">${eng}%</td>
+      <td class="col-actions" onclick="event.stopPropagation()">
+        <button class="action-btn" onclick="editReel(${r.id})" title="Edit">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+        <button class="action-btn delete" onclick="requestDelete(${r.id})" title="Delete">
+          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </button>
+      </td>
+    </tr>
+    <tr class="detail-row" id="detail-${r.id}" style="display:none;">
+      <td colspan="15">
+        <div class="detail-grid">
+          <div class="ratio-display">
+            <div class="ratio-num">${ratio}</div>
+            <div class="ratio-label">Views per Follower</div>
+          </div>
+          <div>
+            <div class="stat-pills">
+              <div class="stat-pill"><strong style="color:var(--orange);">${r.follows != null ? r.follows : 0}</strong>Follows</div>
+              <div class="stat-pill"><strong>${fmt(r.views)}</strong>Views</div>
+              <div class="stat-pill"><strong style="color:var(--blue);">${rtrDisplay}</strong>3 Sec RTR</div>
+              <div class="stat-pill"><strong style="color:${skipColor};">${skipDisplay}</strong>Skip%</div>
+            </div>
+            <div class="mini-bar-wrap">
+              <span class="mini-bar-label">Follows</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${fPct}%;background:var(--orange);"></div></div>
+              <span class="mini-bar-val">${r.follows != null ? r.follows : 0}</span>
+            </div>
+            <div class="mini-bar-wrap">
+              <span class="mini-bar-label">Views</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${vPct}%;background:var(--blue);"></div></div>
+              <span class="mini-bar-val">${fmt(r.views)}</span>
+            </div>
+            <div class="mini-bar-wrap">
+              <span class="mini-bar-label">3 Sec RTR</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${rtrPct}%;background:var(--green);"></div></div>
+              <span class="mini-bar-val">${rtrDisplay}</span>
+            </div>
+            <div class="mini-bar-wrap">
+              <span class="mini-bar-label">Skip% (inv)</span>
+              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${skipPctBar}%;background:var(--pink);"></div></div>
+              <span class="mini-bar-val">${skipDisplay}</span>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  if (chartBuilt) buildChart();
+}
+
+function toggleRowChart(id) {
+  const detailRow = document.getElementById('detail-' + id);
+  if (!detailRow) return;
+  if (expandedRowId !== null && expandedRowId !== id) {
+    const prev = document.getElementById('detail-' + expandedRowId);
+    if (prev) prev.style.display = 'none';
+  }
+  if (detailRow.style.display === 'none') {
+    detailRow.style.display = '';
+    expandedRowId = id;
+  } else {
+    detailRow.style.display = 'none';
+    expandedRowId = null;
+  }
+}
+
+function applyFilters() {
+  expandedRowId = null;
+  renderTable();
+  if (chartBuilt) buildChart();
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── CHART ──
+function toggleChart() {
+  const container = document.getElementById('chartContainer');
+  const icon      = document.getElementById('chartToggleIcon');
+  const toggle    = document.getElementById('chartToggle');
+  const isOpen    = container.style.display !== 'none';
+  container.style.display = isOpen ? 'none' : '';
+  icon.textContent = isOpen ? '▼' : '▲';
+  toggle.classList.toggle('open', !isOpen);
+  if (!isOpen && !chartBuilt) { buildChart(); chartBuilt = true; }
+}
+
+function buildChart() {
+  const filtered = getFiltered();
+  const sorted   = [...filtered].sort((a, b) => a.date.localeCompare(b.date));
+  const labels      = sorted.map(r => r.title.length > 20 ? r.title.slice(0, 20) + '...' : r.title);
+  const followsData = sorted.map(r => r.follows || 0);
+  const viewsScaled = sorted.map(r => (r.views || 0) / 1000);
+  const barColors   = sorted.map(r => (r.follows || 0) > 0 ? 'rgba(255,107,53,0.8)' : 'rgba(45,74,99,0.5)');
+
+  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
+  chartInstance = new Chart(document.getElementById('reelChart'), {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { label: 'Followers Gained', data: followsData, backgroundColor: barColors, borderRadius: 3, order: 2 },
+        { label: 'Views (÷1000)', data: viewsScaled, type: 'line', borderColor: 'rgba(51,154,233,0.7)', backgroundColor: 'rgba(51,154,233,0.1)', pointBackgroundColor: 'rgba(51,154,233,0.9)', pointRadius: 3, borderWidth: 1.5, tension: 0.3, order: 1, yAxisID: 'y2' }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: true,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#5a8ab0', font: { family: 'Roboto', size: 11 } } },
+        tooltip: { backgroundColor: '#0d2a47', borderColor: '#1a3a5c', borderWidth: 1, titleColor: '#fff', bodyColor: '#5a8ab0' }
+      },
+      scales: {
+        x:  { ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 }, maxRotation: 45 }, grid: { color: '#1a3a5c' } },
+        y:  { ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 } }, grid: { color: '#1a3a5c' }, title: { display: true, text: 'Followers', color: '#5a8ab0', font: { size: 10 } } },
+        y2: { position: 'right', ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 } }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Views (K)', color: '#5a8ab0', font: { size: 10 } } }
+      }
+    }
+  });
+}
+
+// ── MODAL ──
+function openModal(reel) {
+  document.getElementById('editId').value = reel ? reel.id : '';
+  document.getElementById('modalTitle').textContent = reel ? 'Edit Reel' : 'Add Reel';
+  document.getElementById('fDate').value = reel ? reel.date : new Date().toISOString().split('T')[0];
+  document.getElementById('fTitle').value = reel ? reel.title : '';
+  document.getElementById('fHook').value = reel ? (reel.hook || '') : '';
+  document.getElementById('fType').value = reel ? reel.type : 'Breakdown';
+  document.getElementById('fViews').value = reel ? reel.views : '';
+  document.getElementById('fFollows').value = reel && reel.follows != null ? reel.follows : '';
+  document.getElementById('fLikes').value = reel ? reel.likes : '';
+  document.getElementById('fComments').value = reel ? reel.comments : '';
+  document.getElementById('fThreeSecRTR').value = reel && reel.threeSecRTR != null ? reel.threeSecRTR : '';
+  document.getElementById('fSkipPct').value = reel && reel.skipPct != null ? reel.skipPct : '';
+  document.getElementById('fNotes').value = reel ? (reel.notes || '') : '';
+  calcEng();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function calcEng() {
+  const v = parseFloat(document.getElementById('fViews').value) || 0;
+  const l = parseFloat(document.getElementById('fLikes').value) || 0;
+  const c = parseFloat(document.getElementById('fComments').value) || 0;
+  const eng = v > 0 ? (((l + c) / v) * 100).toFixed(2) : '0.00';
+  document.getElementById('engDisplay').textContent = eng + '%';
+}
+
+function saveReel() {
+  const id = document.getElementById('editId').value;
+  const threeSecRTRVal = document.getElementById('fThreeSecRTR').value;
+  const skipPctVal     = document.getElementById('fSkipPct').value;
+  const reel = {
+    id: id ? parseInt(id) : Date.now(),
+    date: document.getElementById('fDate').value,
+    title: document.getElementById('fTitle').value.trim(),
+    hook: document.getElementById('fHook').value.trim(),
+    type: document.getElementById('fType').value,
+    views:       parseInt(document.getElementById('fViews').value)    || 0,
+    follows:     parseInt(document.getElementById('fFollows').value)  || 0,
+    likes:       parseInt(document.getElementById('fLikes').value)    || 0,
+    comments:    parseInt(document.getElementById('fComments').value) || 0,
+    threeSecRTR: threeSecRTRVal !== '' ? parseFloat(threeSecRTRVal) : null,
+    skipPct:     skipPctVal     !== '' ? parseFloat(skipPctVal)     : null,
+    notes: document.getElementById('fNotes').value.trim(),
+  };
+  if (!reel.title) { alert('Title is required.'); return; }
+  if (id) {
+    const idx = reels.findIndex(r => r.id === parseInt(id));
+    if (idx >= 0) reels[idx] = { ...reels[idx], ...reel };
+  } else {
+    reels.push(reel);
+  }
+  saveData();
+  updateAnalytics();
+  renderTable();
+  closeModal();
+  if (chartBuilt) buildChart();
+}
+
+function editReel(id) {
+  const reel = reels.find(r => r.id === id);
+  if (reel) openModal(reel);
+}
+
+// ── DELETE ──
+function requestDelete(id) {
+  deleteTargetId = id;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  deleteTargetId = null;
+  document.getElementById('confirmOverlay').classList.remove('open');
+}
+
+function confirmDelete() {
+  if (deleteTargetId !== null) {
+    reels = reels.filter(r => r.id !== deleteTargetId);
+    saveData();
+    updateAnalytics();
+    renderTable();
+    if (chartBuilt) buildChart();
+  }
+  closeConfirm();
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); }
+});
+
+// ── INIT ──
+loadData();
+updateAnalytics();
+updateSortHeaders();
+renderTable();
+</script>
+</body>
+</html>

@@ -317,11 +317,11 @@ textarea { min-height: 88px; }
 .tam-scale {
   display: flex;
   gap: 5px;
-  flex-wrap: wrap;
-  margin-bottom: 6px;
+  margin-bottom: 0;
 }
 .tam-btn {
-  width: 48px; height: 48px;
+  flex: 1;
+  height: 48px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   background: var(--surface);
@@ -332,7 +332,6 @@ textarea { min-height: 88px; }
   cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: all 0.18s;
-  flex-shrink: 0;
 }
 .tam-btn:hover { border-color: var(--border2); color: var(--text); transform: translateY(-1px); }
 .tam-btn.selected { color: #fff; border-color: transparent; }
@@ -347,13 +346,135 @@ textarea { min-height: 88px; }
 .tam-btn[data-v="9"].selected  { background: #e83a73; }
 .tam-btn[data-v="10"].selected { background: linear-gradient(135deg, #ED0A73, #339AE9); }
 .tam-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.68rem;
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  font-size: 0.64rem;
   color: var(--muted);
-  padding: 0 2px;
+  margin-top: 4px;
   font-style: italic;
 }
+.tam-labels span { text-align: center; }
+.tam-labels .tl-unknown { grid-column: 1 / 2; }
+.tam-labels .tl-niche   { grid-column: 3 / 6; }
+.tam-labels .tl-known   { grid-column: 6 / 9; }
+.tam-labels .tl-mass    { grid-column: 9 / 11; }
+
+/* ── 3-COLUMN GRID ── */
+.row3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+@media (max-width: 600px) { .row3 { grid-template-columns: 1fr; } }
+
+/* ── CCN LABELS ── */
+.ccn-label-tag {
+  display: inline-block;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  cursor: help;
+  position: relative;
+}
+.ccn-label-tag::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 7px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface3);
+  border: 1px solid var(--border2);
+  color: var(--text);
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  padding: 6px 11px;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  z-index: 20;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+}
+.ccn-label-tag:hover::after { opacity: 1; }
+.ccn-core  { background: rgba(237,10,115,0.12); color: var(--pink);  border: 1px solid rgba(237,10,115,0.3); }
+.ccn-casual{ background: rgba(51,154,233,0.12);  color: var(--blue);  border: 1px solid rgba(51,154,233,0.3);  }
+.ccn-new   { background: rgba(62,207,106,0.12);  color: var(--green); border: 1px solid rgba(62,207,106,0.3);  }
+
+/* ── 70/20/10 MIX BUTTONS ── */
+.content-mix-scale {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.mix-btn {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--muted);
+  font-family: 'Oswald', sans-serif;
+  cursor: pointer;
+  padding: 12px 8px;
+  text-align: center;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+}
+.mix-btn:hover { border-color: var(--border2); color: var(--text); transform: translateY(-1px); }
+.mix-btn.selected { color: #fff; border-color: transparent; }
+.mix-btn[data-mix="70"].selected { background: var(--green); box-shadow: 0 0 14px rgba(62,207,106,0.3); }
+.mix-btn[data-mix="20"].selected { background: var(--blue);  box-shadow: 0 0 14px rgba(51,154,233,0.3); }
+.mix-btn[data-mix="10"].selected { background: var(--orange);box-shadow: 0 0 14px rgba(255,107,53,0.3);  }
+.mix-pct   { font-size: 1.4rem; font-weight: 700; line-height: 1; }
+.mix-label { font-size: 0.72rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+.mix-desc  { font-size: 0.64rem; opacity: 0.72; font-family: 'Roboto', sans-serif; font-style: italic; }
+
+/* ── PRE-VALIDATED CONTENT ── */
+.pvc-wrap {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.pvc-check-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+.pvc-check-row input[type="checkbox"] {
+  width: 17px; height: 17px;
+  cursor: pointer;
+  accent-color: var(--pink);
+  flex-shrink: 0;
+}
+.pvc-check-name {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text);
+}
+.pvc-check-hint {
+  font-size: 0.68rem;
+  color: var(--muted);
+  font-style: italic;
+  margin-left: 27px;
+  margin-top: 3px;
+}
+.pvc-conditional { margin-top: 11px; display: none; }
+.pvc-conditional.visible { display: block; }
 
 /* ── HOOK SECTIONS ── */
 .hook-section-block {
@@ -685,19 +806,71 @@ textarea { min-height: 88px; }
       <label class="field-label">Your Reel / Concept</label>
       <textarea id="s1-idea" placeholder="Write your raw idea — a hot take, a question your audience keeps asking, a trend you want to react to…&#10;&#10;Example: Cam Skattebo's injury and whether the Giants should draft an RB high." rows="4"></textarea>
     </div>
-    <div class="row2">
-      <div class="field-group">
-        <label class="field-label">Target Audience</label>
-        <input type="text" id="s1-audience" placeholder="e.g. Giants fans, fantasy players…" />
-      </div>
-      <div class="field-group">
-        <label class="field-label">Why Does This Matter Now?</label>
-        <input type="text" id="s1-why" placeholder="e.g. Draft is 2 weeks away…" />
+    <div class="field-group">
+      <label class="section-label">CCN — Audience Fit</label>
+      <div class="row3">
+        <div>
+          <div class="ccn-label-tag ccn-core" data-tooltip="Big fans and product buyers">Core</div>
+          <input type="text" id="s1-ccn-core" placeholder="Who is the core audience for this reel?" oninput="state.ccnCore=this.value" />
+        </div>
+        <div>
+          <div class="ccn-label-tag ccn-casual" data-tooltip="Familiar with UHF, but not invested">Casual</div>
+          <input type="text" id="s1-ccn-casual" placeholder="Who is the casual audience for this reel?" oninput="state.ccnCasual=this.value" />
+        </div>
+        <div>
+          <div class="ccn-label-tag ccn-new" data-tooltip="No prior awareness or knowledge of UHF">New</div>
+          <input type="text" id="s1-ccn-new" placeholder="Who is the new audience for this reel?" oninput="state.ccnNew=this.value" />
+        </div>
       </div>
     </div>
 
     <div class="field-group">
-      <label class="field-label">TAM — Total Addressable Market <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(How large is the potential audience? 1 = niche, 10 = massive)</span></label>
+      <label class="field-label">Why Does This Matter Now?</label>
+      <input type="text" id="s1-why" placeholder="e.g. Draft is 2 weeks away…" />
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">Content Mix — 70 / 20 / 10 <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">Which bucket does this content fall into?</span></label>
+      <div class="content-mix-scale">
+        <button class="mix-btn" data-mix="70" onclick="selectMix(70,this)">
+          <div class="mix-pct">70%</div>
+          <div class="mix-label">Proven</div>
+          <div class="mix-desc">Reliable, consistent material</div>
+        </button>
+        <button class="mix-btn" data-mix="20" onclick="selectMix(20,this)">
+          <div class="mix-pct">20%</div>
+          <div class="mix-label">Iteration</div>
+          <div class="mix-desc">Tweaks of successful content</div>
+        </button>
+        <button class="mix-btn" data-mix="10" onclick="selectMix(10,this)">
+          <div class="mix-pct">10%</div>
+          <div class="mix-label">Experimental</div>
+          <div class="mix-desc">New, unproven ideas</div>
+        </button>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <div class="pvc-wrap">
+        <label class="pvc-check-row" for="pvc-checkbox">
+          <input type="checkbox" id="pvc-checkbox" onchange="togglePVC(this)" />
+          <span class="pvc-check-name">Pre-validated Content</span>
+        </label>
+        <div class="pvc-check-hint">Check if this content is based on proven, pre-validated material.</div>
+        <div class="pvc-conditional" id="pvc-link-wrap">
+          <label class="field-label" style="margin-top:2px;">Link to Pre-validated Content <span style="color:var(--pink)">*</span></label>
+          <input type="text" id="s1-pvc-link" placeholder="https://…" oninput="state.pvcLink=this.value;hidePVCError()" />
+        </div>
+        <div class="pvc-conditional visible" id="pvc-reason-wrap">
+          <label class="field-label" style="margin-top:2px;">Why aren't we using pre-validated content? <span style="color:var(--pink)">*</span></label>
+          <input type="text" id="s1-pvc-reason" placeholder="Explain why this content hasn't been pre-validated…" oninput="state.pvcReason=this.value;hidePVCError()" />
+        </div>
+        <div id="pvc-error" style="display:none;color:var(--pink);font-size:0.72rem;font-style:italic;margin-top:8px;"></div>
+      </div>
+    </div>
+
+    <div class="field-group">
+      <label class="field-label">TAM — Total Addressable Market <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(How large is the potential audience?)</span></label>
       <div class="tam-scale" id="tam-scale">
         <button class="tam-btn" data-v="1"  onclick="selectTAM(1,this)">1</button>
         <button class="tam-btn" data-v="2"  onclick="selectTAM(2,this)">2</button>
@@ -710,7 +883,12 @@ textarea { min-height: 88px; }
         <button class="tam-btn" data-v="9"  onclick="selectTAM(9,this)">9</button>
         <button class="tam-btn" data-v="10" onclick="selectTAM(10,this)">10</button>
       </div>
-      <div class="tam-labels"><span>Niche</span><span>Mainstream</span><span>Mass Market</span></div>
+      <div class="tam-labels">
+        <span class="tl-unknown">Unknown</span>
+        <span class="tl-niche">Niche</span>
+        <span class="tl-known">Known</span>
+        <span class="tl-mass">Mass Market</span>
+      </div>
     </div>
 
     <div class="field-group">
@@ -991,7 +1169,12 @@ textarea { min-height: 88px; }
 // ══ STATE ══
 const state = {
   // Step 1
-  idea:'', audience:'', why:'', tam:0, s1notes:'',
+  idea:'',
+  ccnCore:'', ccnCasual:'', ccnNew:'',
+  why:'',
+  contentMix: 0,
+  pvcChecked: false, pvcLink:'', pvcReason:'',
+  tam:0, s1notes:'',
   // Step 2
   topics:[], topicsOther:'', s2notes:'',
   // Step 3
@@ -1025,8 +1208,30 @@ function goToStep(n) {
   if (currentStep === TOTAL) buildReview();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-function nextStep() { goToStep(currentStep + 1); }
+function nextStep() {
+  if (currentStep === 1) {
+    syncTextFields();
+    const cb = document.getElementById('pvc-checkbox');
+    if (cb.checked) {
+      if (!state.pvcLink) { showPVCError('⚠ Please add a link to the pre-validated content before continuing.'); return; }
+    } else {
+      if (!state.pvcReason) { showPVCError('⚠ Please explain why you aren\'t using pre-validated content before continuing.'); return; }
+    }
+    hidePVCError();
+  }
+  goToStep(currentStep + 1);
+}
 function prevStep() { goToStep(currentStep - 1); }
+
+function showPVCError(msg) {
+  const el = document.getElementById('pvc-error');
+  if (el) { el.textContent = msg; el.style.display = 'block'; }
+  document.querySelector('.pvc-wrap').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+function hidePVCError() {
+  const el = document.getElementById('pvc-error');
+  if (el) el.style.display = 'none';
+}
 
 function updateProgress() {
   document.getElementById('progress-fill').style.width = ((currentStep / TOTAL) * 100) + '%';
@@ -1041,8 +1246,11 @@ function updateProgress() {
 // ══ SYNC TEXT FIELDS TO STATE ══
 function syncTextFields() {
   const grab = (id, key) => { const el = document.getElementById(id); if (el) state[key] = el.value.trim(); };
-  grab('s1-idea','idea'); grab('s1-audience','audience');
-  grab('s1-why','why');   grab('s1-notes','s1notes');
+  grab('s1-idea','idea');
+  grab('s1-ccn-core','ccnCore'); grab('s1-ccn-casual','ccnCasual'); grab('s1-ccn-new','ccnNew');
+  grab('s1-why','why');
+  grab('s1-pvc-link','pvcLink'); grab('s1-pvc-reason','pvcReason');
+  grab('s1-notes','s1notes');
   grab('s2-notes','s2notes');
   grab('s5-hook','hookScript');
   grab('s6-notes','s6notes');
@@ -1108,6 +1316,27 @@ function selectTAM(val, el) {
   state.tam = val;
   document.querySelectorAll('.tam-btn').forEach(b => b.classList.remove('selected'));
   el.classList.add('selected');
+}
+
+// ══ 70/20/10 MIX ══
+function selectMix(val, el) {
+  state.contentMix = val;
+  document.querySelectorAll('.mix-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+// ══ PRE-VALIDATED CONTENT ══
+function togglePVC(checkbox) {
+  state.pvcChecked = checkbox.checked;
+  const linkWrap   = document.getElementById('pvc-link-wrap');
+  const reasonWrap = document.getElementById('pvc-reason-wrap');
+  if (checkbox.checked) {
+    linkWrap.classList.add('visible');
+    reasonWrap.classList.remove('visible');
+  } else {
+    linkWrap.classList.remove('visible');
+    reasonWrap.classList.add('visible');
+  }
 }
 
 // ══ HOOK BLOCK COLLAPSE ══
@@ -1218,16 +1447,30 @@ function buildReview() {
     ...state.hijackTactics.map(v => v === '__other__' ? `Other (Hijack): ${state.hijackTacticsOther}` : `[Hijack] ${v}`)
   ];
 
+  const tamLabel = state.tam >= 8 ? 'Mass Market' : state.tam >= 5 ? 'Known' : state.tam >= 2 ? 'Niche' : state.tam === 1 ? 'Unknown' : '';
   const tamHTML = state.tam
-    ? `<div class="rc-tam"><span class="tam-n">${state.tam}</span>/10 — Total Addressable Market</div>`
+    ? `<div class="rc-tam"><span class="tam-n">${state.tam}</span>/10 — ${tamLabel}</div>`
     : `<span class="rc-value empty">— not rated —</span>`;
+
+  const mixLabels = { 70:'Proven (70%)', 20:'Iteration (20%)', 10:'Experimental (10%)' };
+  const mixHTML = state.contentMix
+    ? `<div class="rc-value">${mixLabels[state.contentMix] || state.contentMix + '%'}</div>`
+    : `<span class="rc-value empty">— not selected —</span>`;
+
+  const pvcHTML = state.pvcChecked
+    ? `<div class="rc-value">✓ Yes — <a href="${state.pvcLink}" style="color:var(--blue)">${state.pvcLink || 'link not provided'}</a></div>`
+    : `<div class="rc-value">✗ No — ${state.pvcReason || '<span class="rc-value empty" style="display:inline">reason not provided</span>'}</div>`;
 
   grid.innerHTML = `
     <div class="review-card">
       <div class="rc-step">💡 Step 1 — Ideation</div>
       <div class="rc-row"><div class="rc-label">Reel Concept</div>${valHTML(state.idea)}</div>
-      <div class="rc-row"><div class="rc-label">Target Audience</div>${valHTML(state.audience)}</div>
+      <div class="rc-row"><div class="rc-label">CCN — Core</div>${valHTML(state.ccnCore)}</div>
+      <div class="rc-row"><div class="rc-label">CCN — Casual</div>${valHTML(state.ccnCasual)}</div>
+      <div class="rc-row"><div class="rc-label">CCN — New</div>${valHTML(state.ccnNew)}</div>
       <div class="rc-row"><div class="rc-label">Why Now</div>${valHTML(state.why)}</div>
+      <div class="rc-row"><div class="rc-label">Content Mix</div>${mixHTML}</div>
+      <div class="rc-row"><div class="rc-label">Pre-validated Content</div>${pvcHTML}</div>
       <div class="rc-row"><div class="rc-label">TAM Score</div>${tamHTML}</div>
       <div class="rc-row"><div class="rc-label">Additional Notes</div>${valHTML(state.s1notes)}</div>
     </div>
@@ -1328,6 +1571,7 @@ async function exportDOCX() {
   }
 
   function tamField(value) {
+    const tier = value >= 8 ? 'Mass Market' : value >= 5 ? 'Known' : value >= 2 ? 'Niche' : value === 1 ? 'Unknown' : '';
     return new Paragraph({
       spacing: sp(50, 50),
       indent: { left: 160 },
@@ -1339,7 +1583,7 @@ async function exportDOCX() {
           ? new TextRun({ text: `${value} / 10`, bold: true, size: 18, color: '1D4ED8' })
           : new TextRun({ text: '—', size: 15, color: MUTED, italics: true }),
         value
-          ? new TextRun({ text: '    Total Addressable Market', size: 13, color: LABEL_COL })
+          ? new TextRun({ text: `    ${tier}`, size: 13, color: LABEL_COL })
           : new TextRun({ text: '' }),
       ],
     });
@@ -1364,12 +1608,21 @@ async function exportDOCX() {
     ...state.hijackTactics.map(v => v === '__other__' ? `Hijack: ${state.hijackTacticsOther}` : `[HJ] ${v}`),
   ];
 
+  // ── TAM label helper ──
+  const tamLabelStr = state.tam >= 8 ? 'Mass Market' : state.tam >= 5 ? 'Known' : state.tam >= 2 ? 'Niche' : state.tam === 1 ? 'Unknown' : '';
+  const mixLabelStr = state.contentMix === 70 ? 'Proven (70%)' : state.contentMix === 20 ? 'Iteration (20%)' : state.contentMix === 10 ? 'Experimental (10%)' : null;
+  const pvcStr = state.pvcChecked ? `Yes — ${state.pvcLink || 'link not provided'}` : `No — ${state.pvcReason || 'reason not provided'}`;
+
   // ── LEFT: Steps 1–2 ──
   const leftChildren = [
     sectionHeader(1, 'Ideation', PINK),
     field('Concept', state.idea, PINK),
-    field('Audience', state.audience, PINK),
+    field('CCN · Core', state.ccnCore, PINK),
+    field('CCN · Casual', state.ccnCasual, PINK),
+    field('CCN · New', state.ccnNew, PINK),
     field('Why Now', state.why, PINK),
+    field('Content Mix', mixLabelStr, PINK),
+    field('Pre-validated', pvcStr, PINK),
     tamField(state.tam || null),
     field('Notes', state.s1notes, PINK),
     gap(160),
@@ -1468,14 +1721,24 @@ function startOver() {
   if (!confirm('Start a new reel? All current entries will be cleared.')) return;
   // reset state arrays/strings
   Object.keys(state).forEach(k => {
-    state[k] = Array.isArray(state[k]) ? [] : (k === 'tam' ? 0 : '');
+    if (Array.isArray(state[k]))       state[k] = [];
+    else if (k === 'tam' || k === 'contentMix') state[k] = 0;
+    else if (k === 'pvcChecked')       state[k] = false;
+    else                               state[k] = '';
   });
   document.querySelectorAll('textarea, input[type="text"]').forEach(el => el.value = '');
+  document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
   document.querySelectorAll('.option-card.selected').forEach(el => el.classList.remove('selected'));
   document.querySelectorAll('.other-input-wrap.visible').forEach(el => el.classList.remove('visible'));
   document.querySelectorAll('.other-required.show').forEach(el => el.classList.remove('show'));
   document.querySelectorAll('.tam-btn.selected').forEach(el => el.classList.remove('selected'));
+  document.querySelectorAll('.mix-btn.selected').forEach(el => el.classList.remove('selected'));
   document.querySelectorAll('.hook-section-block.collapsed').forEach(el => el.classList.remove('collapsed'));
+  // Reset PVC UI to default (unchecked = show reason input)
+  const linkWrap = document.getElementById('pvc-link-wrap');
+  const reasonWrap = document.getElementById('pvc-reason-wrap');
+  if (linkWrap) linkWrap.classList.remove('visible');
+  if (reasonWrap) reasonWrap.classList.add('visible');
   goToStep(1);
 }
 </script>

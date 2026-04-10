@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>✂️ Editing Framework</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:       #061525;
+  --surface:  #0d2a47;
+  --surface2: #0a1e35;
+  --surface3: #090f1a;
+  --border:   #1a3a5c;
+  --border2:  #2d4a63;
+  --pink:     #ED0A73;
+  --blue:     #339AE9;
+  --orange:   #FF6B35;
+  --green:    #3ECF6A;
+  --yellow:   #F5C518;
+  --red:      #EF4444;
+  --text:     #FFFFFF;
+  --muted:    #5a8ab0;
+  --radius:   5px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.app-header {
+  background: var(--surface3);
+  border-bottom: 3px solid var(--pink);
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(12px);
+}
+.app-header h1 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.nav-links { display: flex; gap: 6px; flex-wrap: wrap; }
+.nav-link {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 4px;
+  transition: all 0.18s;
+}
+.nav-link:hover { color: #fff; border-color: var(--border2); }
+.nav-link.active { color: var(--pink); border-color: rgba(237,10,115,0.4); background: rgba(237,10,115,0.1); }
+
+/* ── STYLE TABS ── */
+.style-nav {
+  display: flex;
+  padding: 0 28px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface3);
+  gap: 4px;
+}
+.style-nav::-webkit-scrollbar { display: none; }
+.style-tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 18px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.18s;
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  user-select: none;
+}
+.style-tab:hover { color: var(--text); }
+.style-tab.active { color: var(--pink); border-bottom-color: var(--pink); }
+.style-tab.approved .tab-badge { background: rgba(62,207,106,0.15); color: var(--green); border-color: rgba(62,207,106,0.35); }
+.style-tab.on-hold .tab-badge { background: rgba(255,107,53,0.12); color: var(--orange); border-color: rgba(255,107,53,0.35); }
+.style-tab.universal .tab-badge { background: rgba(51,154,233,0.12); color: var(--blue); border-color: rgba(51,154,233,0.35); }
+.tab-badge {
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid;
+}
+
+/* ── MAIN ── */
+.main { max-width: 900px; margin: 0 auto; padding: 30px 22px 100px; }
+
+/* ── PANELS ── */
+.style-panel { display: none; }
+.style-panel.active { display: block; animation: fadeSlide 0.22s ease; }
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── PANEL HEADER ── */
+.panel-header { margin-bottom: 30px; }
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+  border: 1px solid;
+}
+.status-badge.approved { background: rgba(62,207,106,0.1); color: var(--green); border-color: rgba(62,207,106,0.3); }
+.status-badge.on-hold  { background: rgba(255,107,53,0.1); color: var(--orange); border-color: rgba(255,107,53,0.3); }
+.status-badge.pending  { background: rgba(245,197,24,0.1); color: var(--yellow); border-color: rgba(245,197,24,0.3); }
+.status-badge.info     { background: rgba(51,154,233,0.1); color: var(--blue); border-color: rgba(51,154,233,0.3); }
+
+.panel-header h2 {
+  font-family: 'Oswald', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+.panel-header .vibe {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 620px;
+}
+.vibe strong { color: var(--text); }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--blue);
+  margin-bottom: 12px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── RULE GRID ── */
+.rule-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.rule-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.rule-grid.cols-1 { grid-template-columns: 1fr; }
+@media (max-width: 600px) { .rule-grid.cols-2 { grid-template-columns: 1fr; } }
+
+.rule-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.rule-card.do   { border-left: 3px solid var(--green); }
+.rule-card.dont { border-left: 3px solid var(--red); }
+.rule-card.note { border-left: 3px solid var(--blue); }
+.rule-card.warn { border-left: 3px solid var(--yellow); }
+
+.rule-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.rule-card.do   .rule-label { color: var(--green); }
+.rule-card.dont .rule-label { color: var(--red); }
+.rule-card.note .rule-label { color: var(--blue); }
+.rule-card.warn .rule-label { color: var(--yellow); }
+
+.rule-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+.rule-body {
+  font-size: 0.83rem;
+  color: var(--muted);
+  line-height: 1.55;
+}
+.rule-body strong { color: var(--text); }
+.rule-body code {
+  display: inline-block;
+  background: rgba(51,154,233,0.1);
+  border: 1px solid rgba(51,154,233,0.2);
+  border-radius: 3px;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: 0.82em;
+  color: var(--blue);
+  white-space: nowrap;
+}
+
+/* ── COLOR MEANING CHIPS ── */
+.color-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border: 1px solid;
+}
+.chip.green  { color: var(--green);  background: rgba(62,207,106,0.08);  border-color: rgba(62,207,106,0.3);  }
+.chip.red    { color: var(--red);    background: rgba(239,68,68,0.08);   border-color: rgba(239,68,68,0.3);   }
+.chip.yellow { color: var(--yellow); background: rgba(245,197,24,0.08);  border-color: rgba(245,197,24,0.3);  }
+.chip.orange { color: var(--orange); background: rgba(255,107,53,0.08);  border-color: rgba(255,107,53,0.3);  }
+.chip.white  { color: #bbb;          background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.15); }
+
+/* ── FORMULA EXAMPLE ── */
+.formula-example {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  text-align: center;
+  font-family: 'Oswald', sans-serif;
+  margin-top: 8px;
+}
+.formula-example .frow { display: flex; justify-content: center; gap: 40px; margin-bottom: 6px; }
+.formula-example .fcell { font-size: 0.95rem; color: var(--text); }
+.formula-example .fline {
+  border-top: 2px solid var(--muted);
+  padding-top: 6px;
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+.formula-example .fresult { margin-top: 6px; font-size: 0.78rem; color: var(--muted); font-style: italic; }
+
+/* ── TEXT EXAMPLE BLOCK ── */
+.text-example {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 16px;
+  margin-top: 8px;
+  font-size: 0.82rem;
+  line-height: 1.8;
+}
+.text-example .ex-row { display: flex; align-items: baseline; gap: 10px; }
+.text-example .ex-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  min-width: 36px;
+}
+.text-example .ex-label.good { color: var(--green); }
+.text-example .ex-label.bad  { color: var(--red); }
+.text-example .ex-text { color: var(--text); }
+.text-example .ex-text.bad  { color: var(--muted); text-decoration: line-through; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 28px 0; }
+
+/* ── CHECKLIST ── */
+.checklist-header {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--pink);
+  margin-bottom: 12px;
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.checklist-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.checklist { display: flex; flex-direction: column; gap: 7px; }
+.check-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all 0.16s;
+  user-select: none;
+}
+.check-item:hover { border-color: var(--border2); }
+.check-item.checked { background: rgba(62,207,106,0.06); border-color: rgba(62,207,106,0.3); }
+.check-item.checked .check-box { background: var(--green); border-color: var(--green); }
+.check-item.checked .check-box::after { opacity: 1; }
+.check-item.checked .check-text { color: var(--muted); text-decoration: line-through; }
+.check-box {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid var(--border2);
+  flex-shrink: 0;
+  margin-top: 1px;
+  position: relative;
+  transition: all 0.16s;
+}
+.check-box::after {
+  content: '✓';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--bg);
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+.check-text {
+  font-size: 0.85rem;
+  color: var(--text);
+  line-height: 1.5;
+  transition: color 0.16s;
+}
+.check-text .sub {
+  display: block;
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-top: 2px;
+}
+.check-group-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 4px 0 2px 2px;
+  margin-top: 4px;
+}
+
+/* ── CHECKLIST PROGRESS ── */
+.checklist-progress {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.checklist-progress .progress-wrap {
+  flex: 1;
+  height: 4px;
+  background: var(--surface);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.checklist-progress .progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--pink), var(--green));
+  border-radius: 2px;
+  transition: width 0.3s ease;
+  width: 0%;
+}
+.checklist-progress .progress-label {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.reset-btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.65rem;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.16s;
+}
+.reset-btn:hover { color: var(--text); border-color: var(--border2); }
+
+/* ── UNIVERSAL RULE NUMBERING ── */
+.uni-rules { display: flex; flex-direction: column; gap: 10px; }
+.uni-rule {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+}
+.uni-num {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--pink);
+  min-width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.uni-content { flex: 1; }
+.uni-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+.uni-body { font-size: 0.83rem; color: var(--muted); line-height: 1.55; }
+.uni-body strong { color: var(--text); }
+
+/* ── HOLD OVERLAY ── */
+.on-hold-banner {
+  background: rgba(255,107,53,0.08);
+  border: 1px solid rgba(255,107,53,0.3);
+  border-radius: var(--radius);
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 0.85rem;
+  color: var(--orange);
+  line-height: 1.6;
+}
+.on-hold-banner strong { color: #fff; }
+
+/* ── TIMESTAMP REF ── */
+.ts-ref {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(245,197,24,0.08);
+  border: 1px solid rgba(245,197,24,0.2);
+  border-radius: 3px;
+  padding: 1px 7px;
+  font-family: monospace;
+  font-size: 0.78em;
+  color: var(--yellow);
+  white-space: nowrap;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <h1>✂️ Editing Framework</h1>
+  <nav class="nav-links">
+    <a href="index.html" class="nav-link">Content Hub</a>
+    <a href="graphic-index.html" class="nav-link">Graphic Hub</a>
+    <a href="games-hub.html" class="nav-link">Game Hub</a>
+    <a href="reels-framework.html" class="nav-link">Reels Framework</a>
+    <a href="video-converter.html" class="nav-link">Video Converter</a>
+    <a href="editing-framework.html" class="nav-link active">Editing Framework</a>
+  </nav>
+</div>
+
+<!-- STYLE TABS -->
+<div class="style-nav" id="style-nav">
+  <div class="style-tab universal active" data-panel="universal" onclick="switchPanel('universal')">
+    Universal Rules <span class="tab-badge">10</span>
+  </div>
+  <div class="style-tab on-hold" data-panel="style1" onclick="switchPanel('style1')">
+    Style 1 — Editorial <span class="tab-badge">On Hold</span>
+  </div>
+  <div class="style-tab" data-panel="style2" onclick="switchPanel('style2')">
+    Style 2 — Analytical <span class="tab-badge approved">Nearly Approved</span>
+  </div>
+  <div class="style-tab" data-panel="style3" onclick="switchPanel('style3')">
+    Style 3 — Cinematic <span class="tab-badge approved">Approved ✓</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ══════════════════════════════════════════
+       UNIVERSAL RULES
+  ══════════════════════════════════════════ -->
+  <div class="style-panel active" id="panel-universal">
+    <div class="panel-header">
+      <div class="status-badge info">⚡ Applies to All Styles</div>
+      <h2>Universal Rules</h2>
+      <p class="vibe">Non-negotiable standards that apply to every video regardless of style. These exist because the same mistakes kept appearing across rounds. Know them before you open the project.</p>
+    </div>
+
+    <div class="uni-rules">
+      <div class="uni-rule">
+        <div class="uni-num">01</div>
+        <div class="uni-content">
+          <div class="uni-title">Hook First — 0:00–0:04 Is Your Most Important Work</div>
+          <div class="uni-body">The first 2–4 seconds need to be your <strong>best work every time</strong>. 90% of the rest matters a whole lot less. If the hook is weak, nothing else saves the video. Spend disproportionate effort here.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">02</div>
+        <div class="uni-content">
+          <div class="uni-title">Text Color = Meaning — Never Decoration</div>
+          <div class="uni-body">Color only appears when it <strong>means something</strong>. Never use it just to have it. Never default to UHF pink or blue in captions or body text.</div>
+          <div class="color-chips" style="margin-top:10px;">
+            <span class="chip green">🟢 Green = Good / Positive</span>
+            <span class="chip red">🔴 Red = Bad / Negative</span>
+            <span class="chip yellow">🟡 Yellow/Orange = Cautious / Middle Ground</span>
+            <span class="chip white">⬜ White = Default / Neutral</span>
+          </div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">03</div>
+        <div class="uni-content">
+          <div class="uni-title">CAPS = Emphasis Only — Not the Default</div>
+          <div class="uni-body"><strong>80% of any video should be lowercase white text.</strong> All caps is reserved for words or phrases that require emphasis. Using caps everywhere makes nothing feel emphasized — it kills the effect. This rule was violated repeatedly across multiple rounds.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">04</div>
+        <div class="uni-content">
+          <div class="uni-title">No Text Outline — Use Shadow Instead</div>
+          <div class="uni-body">When text needs contrast from a background, use a <strong>drop shadow</strong>, not an outline/stroke. Outlines look cheap and were flagged from Round 1 of Style 1.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">05</div>
+        <div class="uni-content">
+          <div class="uni-title">Always Have Movement — Nothing Fully Static</div>
+          <div class="uni-body">At all times, something on screen should be <strong>animating or moving</strong>. Even subtle element drift or entrance animations count. A fully static frame reads as dead. Elements animate in/out; the screen is never frozen.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">06</div>
+        <div class="uni-content">
+          <div class="uni-title">Sound Design Is Part of the Edit — Not an Afterthought</div>
+          <div class="uni-body">SFX, impacts, whooshes, and thematic audio are <strong>integral to the style</strong>, not added at the end. Think about sound from the start of the edit. Each style has its own SFX approach — see individual style rules.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">07</div>
+        <div class="uni-content">
+          <div class="uni-title">Camera Pans the Scene — Elements Don't Shrink</div>
+          <div class="uni-body">To create depth or a pan-out effect, <strong>the camera moves</strong> — not the graphics scaling down. The whole scene pans together. Shrinking individual elements does not replicate this and looks wrong. A reference video (Pan out.mp4) was sent for Style 3.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">08</div>
+        <div class="uni-content">
+          <div class="uni-title">Real Headshots Over Animated Clip Art (Style 2+)</div>
+          <div class="uni-body">Use <strong>actual player headshots</strong> — not animated clip art characters or illustrated figures. This applies to Style 2 and Style 3. Round 1 of Style 2 flagged this immediately.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">09</div>
+        <div class="uni-content">
+          <div class="uni-title">Read Revisions Closely — Repeat Errors Are Tracked</div>
+          <div class="uni-body">UHF colors in text, wrong caps usage, and outline vs shadow were flagged <strong>across multiple rounds</strong>. These are not one-time notes — they're documented patterns. If a note appears in Round 1 and again in Round 2, it will be noted.</div>
+        </div>
+      </div>
+      <div class="uni-rule">
+        <div class="uni-num">10</div>
+        <div class="uni-content">
+          <div class="uni-title">Turnaround Standards Will Be Calibrated Per Style</div>
+          <div class="uni-body">Editing a 2–3 minute video in a detailed style (particularly Style 2) in 1–2 hours is a tight standard. <strong>Time expectations will be adjusted per style</strong> after completing each a few times. Communicate proactively if timing is a concern.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       STYLE 1 — EDITORIAL
+  ══════════════════════════════════════════ -->
+  <div class="style-panel" id="panel-style1">
+    <div class="panel-header">
+      <div class="status-badge on-hold">⏸ On Hold — Needs Heavy Rework</div>
+      <h2>Style 1 — Editorial</h2>
+      <p class="vibe">Vibe: <strong>Subtle, editorial, clean.</strong> Think high-end magazine layout in motion. Quiet confidence — nothing forced. This style lives or dies by restraint.</p>
+    </div>
+
+    <div class="on-hold-banner">
+      <strong>Status: Paused after Round 1.</strong> Style 1 has not been approved and needs a full visual rework before the next session. Styles 2 and 3 take priority. The round 1 sample had the wrong footage, wrong gradient direction, UHF colors forced into text, outlines instead of shadows, and no text variety. A reference reel exists at the link on file. Do not begin a Style 1 edit without new direction from Scott.
+    </div>
+
+    <div class="section-label">🎨 Visual Direction</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">White → Light Gray Gradient Background</div>
+        <div class="rule-body">Very subtle gradient — <strong>no punch, no drama</strong>. The background should almost feel white. The gradient direction matters — reference the approved direction when this style is revisited.</div>
+      </div>
+      <div class="rule-card dont">
+        <div class="rule-label">✗ Don't</div>
+        <div class="rule-title">No UHF Brand Colors in Text</div>
+        <div class="rule-body"><strong>Zero pink. Zero blue.</strong> This is a neutral palette only style. The UHF brand palette feels forced here and was called out in Round 1 immediately.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Shadow for Text Contrast</div>
+        <div class="rule-body">When text needs to be readable over background, use a <strong>drop shadow</strong>. Not an outline. Not a stroke. Shadow only.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Mix Multiple Text Styles and Sizes</div>
+        <div class="rule-body">Typography hierarchy matters here. Use <strong>multiple font weights, sizes, and styles</strong> throughout — not just one weight repeated. Reference the approved Instagram reel for texture.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Note</div>
+        <div class="rule-title">Footage Selection Is Critical</div>
+        <div class="rule-body">The clip used in Round 1 was flagged as the <strong>wrong footage for this style</strong>. Selection must match the mood and aesthetic — not just the topic. Subtle, editorial footage. No high-energy game highlights.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Note</div>
+        <div class="rule-title">Intentional Capitalization Only</div>
+        <div class="rule-body">Every capitalization choice must be <strong>deliberate</strong>. No random mixed caps. No sentence case that's inconsistent. This style is controlled — every detail is intentional.</div>
+      </div>
+    </div>
+
+    <div class="section-label">📋 Pre-Edit Checklist — Style 1</div>
+    <div class="checklist-progress">
+      <div class="progress-wrap"><div class="progress-fill" id="prog-style1"></div></div>
+      <div class="progress-label" id="prog-label-style1">0 / 6</div>
+      <button class="reset-btn" onclick="resetChecklist('style1')">Reset</button>
+    </div>
+    <div class="checklist" id="checklist-style1">
+      <div class="check-group-label">Before You Start</div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">⚠️ Have you received new direction from Scott for this style?
+          <span class="sub">Style 1 is ON HOLD. Do not begin without explicit new instructions.</span>
+        </div>
+      </div>
+      <div class="check-group-label">Visuals</div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">Background is white → light gray gradient — subtle, no punch
+          <span class="sub">Gradient direction matches the reference. Not dark. Not colorful.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">Footage selected matches the editorial mood — not just the topic</div>
+      </div>
+      <div class="check-group-label">Text</div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">Zero UHF pink or blue in any text element
+          <span class="sub">Neutral palette only. No brand colors.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">Text uses shadow for contrast — no outline or stroke</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style1')">
+        <div class="check-box"></div>
+        <div class="check-text">Multiple text styles and sizes used — not one weight throughout
+          <span class="sub">Typography has hierarchy: large/small, bold/light, varied spacing.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       STYLE 2 — ANALYTICAL
+  ══════════════════════════════════════════ -->
+  <div class="style-panel" id="panel-style2">
+    <div class="panel-header">
+      <div class="status-badge pending">🔄 Nearly Approved — Final Round Pending</div>
+      <h2>Style 2 — Analytical</h2>
+      <p class="vibe">Vibe: <strong>Clean, professional, data-driven.</strong> Think ESPN analytics segment — structured, smart, confident. Logic is visualized. Players are real, not illustrated. Color earns its place.</p>
+    </div>
+
+    <div class="section-label">🎨 Visual Direction</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Uniform, Consistent Background</div>
+        <div class="rule-body">Clean solid or minimal background. <strong>No crumpled paper, no texture, no busy patterns.</strong> The background should not compete with the data and graphics.</div>
+      </div>
+      <div class="rule-card dont">
+        <div class="rule-label">✗ Don't</div>
+        <div class="rule-title">No Text Animation on Body Text</div>
+        <div class="rule-body">Text animation on body content = <strong>too much</strong>. Static clean text only for body. Only use motion for graphic elements (player headshots, icons, data visuals) — not the words themselves.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Real Player Headshots</div>
+        <div class="rule-body">Use <strong>actual headshots</strong> — not animated clip art. Flagged in Round 1. If a headshot isn't available, find the closest real photo. Never use illustrated player figures.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Visual Wordplay on Player Names</div>
+        <div class="rule-body">When a player's name allows it, use literal visual wordplay. <strong>Example: Makai Lemon</strong> = player headshot with an actual lemon beside him. Creative but restrained.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Always Have Movement on Screen</div>
+        <div class="rule-body">Elements should always be <strong>animating in some way</strong>. Reference: <span class="ts-ref">0:17</span> — move lemon/player up, text down to middle. Nothing should sit fully static on screen at any moment.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Note</div>
+        <div class="rule-title">Proportional, Restrained Graphics</div>
+        <div class="rule-body">No super-large graphics. <strong>Scale is proportional</strong> — elements should feel like they belong in a structured layout, not dominating the frame. Apply this logic consistently throughout.</div>
+      </div>
+    </div>
+
+    <div class="section-label">📊 Data Visualization</div>
+    <div class="rule-grid cols-1">
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Data Logic</div>
+        <div class="rule-title">Show Stats as Structured Math Formulas</div>
+        <div class="rule-body">When the script references a stat relationship, <strong>show it as a formula with a dividing line</strong> — like a math problem on a whiteboard. Not plain text, not a list.</div>
+        <div class="formula-example">
+          <div class="frow">
+            <div class="fcell">Yards</div>
+            <div class="fcell">1st Downs</div>
+          </div>
+          <div class="fline">Route Run</div>
+          <div class="fresult">→ Structured formula layout. Line drawn between numerator and denominator.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">🔤 Text Rules</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Body Text = Lowercase</div>
+        <div class="rule-body">Default text is <strong>lowercase</strong>. No sentence case, no title case, no all caps for regular body copy. This is the baseline for Style 2.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Names, Stats, Places = First Letter Cap Only</div>
+        <div class="rule-body">Use <strong>title case</strong> (e.g., <code>Makai Lemon</code>, <code>At #11</code>) — not all-caps. Not <code>MAKAI LEMON</code>. Not <code>AT #11</code>. First letter capital on each word that's a proper noun or stat.</div>
+      </div>
+      <div class="rule-card dont">
+        <div class="rule-label">✗ Don't</div>
+        <div class="rule-title">No UHF Brand Colors in Text</div>
+        <div class="rule-body">Pink and blue are <strong>not default text colors</strong>. They appear only if they are contextually meaningful to the specific content — which is rare. Assume no UHF colors unless there is a specific reason.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Color Rule</div>
+        <div class="rule-title">Color Only When It Means Something</div>
+        <div class="rule-body">
+          <strong>Very few scenes need color.</strong> Not every sentence. Use color only on words where the meaning matters.
+          <div class="color-chips" style="margin-top:8px;">
+            <span class="chip green">Green = Good</span>
+            <span class="chip red">Red = Bad</span>
+            <span class="chip yellow">Yellow/Orange = Middle Ground</span>
+          </div>
+        </div>
+      </div>
+      <div class="rule-card dont">
+        <div class="rule-label">✗ Don't</div>
+        <div class="rule-title">Don't Color Player Names</div>
+        <div class="rule-body">Names stay <strong>white</strong> unless the name itself is the emphasis. Color on a name is only justified if the name is the point — not just because a player is being mentioned.</div>
+      </div>
+    </div>
+
+    <div class="section-label">✏️ Text Case Examples</div>
+    <div class="rule-grid cols-1">
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Reference</div>
+        <div class="rule-title">What Correct Casing Looks Like</div>
+        <div class="rule-body">
+          <div class="text-example">
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text">draft Makai Lemon at #11</span></div>
+            <div class="ex-row"><span class="ex-label bad">✗</span><span class="ex-text bad">DRAFT MAKAI LEMON AT 11TH PICK</span></div>
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text">he didn't have the catches</span></div>
+            <div class="ex-row"><span class="ex-label bad">✗</span><span class="ex-text bad">He Didn't Have The Catches</span></div>
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text">playing a slot role</span></div>
+            <div class="ex-row"><span class="ex-label bad">✗</span><span class="ex-text bad">Playing A Slot Role</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">🪝 Hook Guidance</div>
+    <div class="rule-grid cols-1">
+      <div class="rule-card warn">
+        <div class="rule-label">⚠ Round 4 Note</div>
+        <div class="rule-title">Hook Must Have Visual Impact — Something That Jumps at the Viewer</div>
+        <div class="rule-body">The hook was flagged as too soft in Round 4. For topic-appropriate content, use a <strong>physical visual metaphor</strong>. Example for "Dolphins Offense is a WRECK": a wrecking ball hits the background. When it lands, <strong>nothing else should be on screen</strong>. Slow the ball or adjust timing so the impact lands clean. Future experiment (not now): key frame text onto the wrecking ball itself.</div>
+      </div>
+    </div>
+
+    <div class="section-label">🔊 Sound Design</div>
+    <div class="rule-grid cols-1">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Sound Effects Throughout for All Graphics</div>
+        <div class="rule-body">Every graphic, stat, or visual element that enters the screen should have a <strong>sound effect</strong> tied to it. Whooshes, impacts, data popups — all need audio. Round 4 feedback noted this was missing. Sound is not optional.</div>
+      </div>
+    </div>
+
+    <div class="section-label">📋 Pre-Edit Checklist — Style 2</div>
+    <div class="checklist-progress">
+      <div class="progress-wrap"><div class="progress-fill" id="prog-style2"></div></div>
+      <div class="progress-label" id="prog-label-style2">0 / 16</div>
+      <button class="reset-btn" onclick="resetChecklist('style2')">Reset</button>
+    </div>
+    <div class="checklist" id="checklist-style2">
+      <div class="check-group-label">Hook (0:00–0:04)</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Hook has strong visual impact — something that physically jumps at the viewer
+          <span class="sub">Wrecking ball, explosion, dramatic graphic hit — not just text appearing.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">When hook impact lands, nothing else is on screen
+          <span class="sub">Timing adjusted so the impact moment is clean and uncluttered.</span>
+        </div>
+      </div>
+      <div class="check-group-label">Background</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Background is uniform and consistent — no crumpled paper, texture, or pattern</div>
+      </div>
+      <div class="check-group-label">Text</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Body text is lowercase throughout</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Names, stats, places = first letter capitalized only (not ALL CAPS)
+          <span class="sub">e.g. "Makai Lemon" not "MAKAI LEMON"</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Zero UHF pink or blue in text (unless contextually required)</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Text animation is NOT on body text — only on graphic elements</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Color used only where it has meaning (green/red/yellow) — very few scenes</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Player names left white unless the name itself is the emphasis</div>
+      </div>
+      <div class="check-group-label">Graphics &amp; Visuals</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Real player headshots used — no animated clip art</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Graphics are proportional and restrained — nothing oversized</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Visual wordplay applied if player name allows it (e.g. Lemon → actual lemon)
+          <span class="sub">Creative detail — look for the opportunity, don't force it.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Stat relationship shown as a structured formula with a dividing line
+          <span class="sub">Not plain text. Formatted like a math problem: top / line / bottom.</span>
+        </div>
+      </div>
+      <div class="check-group-label">Motion &amp; Sound</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Something is always moving on screen — no fully static frames
+          <span class="sub">Elements animate in/out. Example: move player up, text down to middle.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Sound effects applied to all graphics throughout — not just the hook</div>
+      </div>
+      <div class="check-group-label">Final Review</div>
+      <div class="check-item" onclick="toggleCheck(this,'style2')">
+        <div class="check-box"></div>
+        <div class="check-text">Script reviewed for exact wording (e.g. "at #11" not "at 11th pick", "have" not "gave")
+          <span class="sub">Small wording errors appeared in multiple rounds — read the script carefully.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       STYLE 3 — CINEMATIC
+  ══════════════════════════════════════════ -->
+  <div class="style-panel" id="panel-style3">
+    <div class="panel-header">
+      <div class="status-badge approved">✅ Approved — April 7, 2026</div>
+      <h2>Style 3 — Cinematic</h2>
+      <p class="vibe">Vibe: <strong>Cinematic, high-impact, news/injury storytelling.</strong> Think documentary intro meets sports news broadcast. Dark, dramatic, purposeful. Every visual choice tells part of the story.</p>
+    </div>
+
+    <div class="section-label">🎨 Visual Direction</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Dark, Dramatic Background</div>
+        <div class="rule-body">The background should feel <strong>cinematic and moody</strong>. Dark tones. The kind of visual weight you see in injury reports or big game previews. Not plain black — textured darkness with depth.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Camera Pans the Whole Scene</div>
+        <div class="rule-body">For pan-out effects, <strong>the camera moves — not the graphics</strong>. The entire scene (players, text, graphics) moves together as if filmed. Individual elements do not scale down or shrink. Reference: Pan out.mp4.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Player Cutouts With Dramatic Framing</div>
+        <div class="rule-body">Use <strong>cutout style</strong> players — spotlight, silhouette, cinematic framing. Not headshots in boxes. The player should feel like they're part of the scene, not pasted on top.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Lineup Storytelling: Highlight vs. Shadow</div>
+        <div class="rule-body">Use <strong>lighting as narrative</strong>:
+          <div class="color-chips" style="margin-top:8px;">
+            <span class="chip green">💡 Highlighted = Rising / Relevant</span>
+            <span class="chip white">🌑 Shadowed = Downgraded / Out</span>
+          </div>
+          <div style="margin-top:8px; font-size:0.82rem;">Jersey swaps (old team → new team) <strong>always happen in the shadowed state</strong> — the faded/dimmed version, not the lit version.</div>
+        </div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Hook Is Always Your Best Work</div>
+        <div class="rule-body">The approved sample's <span class="ts-ref">0:01–0:05</span> was specifically praised: <em>"Very strong hook editing."</em> <strong>The first 2–4 seconds need to be your best work every time.</strong> Ambulance should appear as early as possible. Don't delay the visual hit.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Note</div>
+        <div class="rule-title">Thematic Props and Graphics</div>
+        <div class="rule-body">Props like the <strong>ambulance</strong> are part of the storytelling — they set tone and context. Don't remove thematic elements unless there's a specific conflict with the transition. Communicate before removing.</div>
+      </div>
+    </div>
+
+    <div class="section-label">🔤 Text Rules</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">80% of Video = White, Lowercase, No Emphasis</div>
+        <div class="rule-body">The <strong>default state is white, lowercase</strong>. Most sentences, most words, most of the video. Emphasis is rare and earned — not the baseline.</div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Caps + Color = Surgical Emphasis</div>
+        <div class="rule-body">Only use caps or color on <strong>specific key words</strong> where meaning needs to land hard. Not on full sentences. Not on names. Not every scene. Example:
+          <div class="text-example" style="margin-top:8px;">
+            <div class="ex-row"><span class="ex-text" style="color:var(--muted)">had similar</span></div>
+            <div class="ex-row"><span class="ex-text" style="color:var(--yellow);font-weight:700;">but LESS</span></div>
+            <div class="ex-row"><span class="ex-text" style="color:var(--yellow);font-weight:700;">SEVERE</span></div>
+            <div class="ex-row"><span class="ex-text" style="color:var(--muted)">injuries</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">Names, Teams, Places = Proper Title Case</div>
+        <div class="rule-body">Proper nouns use <strong>title case</strong>: <code>Giants</code> not <code>GIANTS</code>. <code>New York</code> not <code>NEW YORK</code>. Title case for proper nouns — not all caps, not lowercase.</div>
+      </div>
+      <div class="rule-card dont">
+        <div class="rule-label">✗ Don't</div>
+        <div class="rule-title">No UHF Brand Colors in Text</div>
+        <div class="rule-body">Pink and blue stay out. This style uses <strong>yellow for caution/middle ground</strong> as the primary emphasis color. No UHF brand palette in captions or body text.</div>
+      </div>
+    </div>
+
+    <div class="section-label">✏️ Text Emphasis Examples</div>
+    <div class="rule-grid cols-1">
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Reference</div>
+        <div class="rule-title">What Correct Emphasis Looks Like in Style 3</div>
+        <div class="rule-body">
+          <div class="text-example">
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text" style="color:var(--muted)">had similar</span><span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">← white, lowercase</span></div>
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text" style="color:var(--yellow);font-weight:700;">but LESS SEVERE</span><span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">← yellow, caps on key words</span></div>
+            <div class="ex-row"><span class="ex-label good">✓</span><span class="ex-text" style="color:var(--muted)">injuries</span><span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">← back to white, lowercase</span></div>
+            <div style="margin-top:10px;"></div>
+            <div class="ex-row"><span class="ex-label bad">✗</span><span class="ex-text bad">GIANTS STAR GOES DOWN WITH KNEE INJURY</span></div>
+            <div class="ex-row"><span class="ex-label bad">✗</span><span class="ex-text bad" style="color:var(--pink);text-decoration:line-through;">LESS SEVERE</span><span style="color:var(--muted);font-size:0.75rem;margin-left:8px;">← pink = wrong</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">🔊 Sound Design</div>
+    <div class="rule-grid cols-2">
+      <div class="rule-card do">
+        <div class="rule-label">✓ Do</div>
+        <div class="rule-title">SFX Are Integral — Thematic and Volume-Controlled</div>
+        <div class="rule-body">Sound is a <strong>core part of this style</strong>. Ambulance SFX (not too loud), impact sounds on bone/hit moments, whoosh SFX throughout for transitions. Purposeful — not random.</div>
+      </div>
+      <div class="rule-card note">
+        <div class="rule-label">ℹ Reference</div>
+        <div class="rule-title">Specific SFX From Approved Sample</div>
+        <div class="rule-body">
+          <span class="ts-ref">Hook</span> Ambulance SFX — bring in early, not too loud<br>
+          <span class="ts-ref">0:10</span> Bone crush / impact sound on the two hits<br>
+          <span class="ts-ref">Throughout</span> More whoosh SFX on all transitions
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">📋 Pre-Edit Checklist — Style 3</div>
+    <div class="checklist-progress">
+      <div class="progress-wrap"><div class="progress-fill" id="prog-style3"></div></div>
+      <div class="progress-label" id="prog-label-style3">0 / 16</div>
+      <button class="reset-btn" onclick="resetChecklist('style3')">Reset</button>
+    </div>
+    <div class="checklist" id="checklist-style3">
+      <div class="check-group-label">Hook (0:00–0:04)</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Hook is the best 2–4 seconds of the entire video
+          <span class="sub">Cinematic, impactful, pulls the viewer in immediately. Best work goes here.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Thematic prop (e.g. ambulance) appears as early as possible in the hook</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Ambulance SFX (or scene-appropriate sound) is in — volume controlled</div>
+      </div>
+      <div class="check-group-label">Camera &amp; Movement</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Camera pans the whole scene — not individual elements shrinking
+          <span class="sub">The entire scene moves together. Ref: Pan out.mp4</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Pan-out moments are present at key scene transitions (e.g. 0:01, 0:18)</div>
+      </div>
+      <div class="check-group-label">Player Visuals</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Players use cutout style — spotlight/silhouette framing, not boxed headshots</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Lineup storytelling: highlighted = rising, shadowed = downgraded
+          <span class="sub">Lit players are relevant. Dimmed players are out or uncertain.</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Jersey swaps happen in the shadowed (dimmed) state — not the lit state</div>
+      </div>
+      <div class="check-group-label">Text</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">80% of video text is white, lowercase, no emphasis</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Caps and color used surgically — only on specific key words, not sentences</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Proper nouns (names, teams, places) in title case — not all caps
+          <span class="sub">e.g. "Giants" not "GIANTS"</span>
+        </div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Zero UHF pink or blue in any text element</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Color meaning applied correctly: yellow = cautious/middle, not random
+          <span class="sub">Example: "LESS SEVERE" in yellow — less severe = middle ground, not good or bad.</span>
+        </div>
+      </div>
+      <div class="check-group-label">Sound Design</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Impact/bone crush sound on hit moments</div>
+      </div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Whoosh SFX on transitions throughout — not just the hook</div>
+      </div>
+      <div class="check-group-label">Final Review</div>
+      <div class="check-item" onclick="toggleCheck(this,'style3')">
+        <div class="check-box"></div>
+        <div class="check-text">Reviewed for scenes with unnecessary emphasis (remove caps/color where not needed)
+          <span class="sub">Excess emphasis was flagged in Round 2 and 3. When in doubt, white + lowercase.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script>
+// ── PANEL SWITCHING ──
+function switchPanel(id) {
+  document.querySelectorAll('.style-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.style-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  document.querySelector('.style-tab[data-panel="' + id + '"]').classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── CHECKLIST ──
+const checklistCounts = {
+  style1: 6,
+  style2: 16,
+  style3: 16
+};
+
+function toggleCheck(el, listId) {
+  el.classList.toggle('checked');
+  updateProgress(listId);
+}
+
+function updateProgress(listId) {
+  const list = document.getElementById('checklist-' + listId);
+  const all = list.querySelectorAll('.check-item');
+  const done = list.querySelectorAll('.check-item.checked');
+  const pct = all.length ? (done.length / all.length) * 100 : 0;
+  const fill = document.getElementById('prog-' + listId);
+  const label = document.getElementById('prog-label-' + listId);
+  if (fill) fill.style.width = pct + '%';
+  if (label) label.textContent = done.length + ' / ' + all.length;
+}
+
+function resetChecklist(listId) {
+  const list = document.getElementById('checklist-' + listId);
+  list.querySelectorAll('.check-item.checked').forEach(el => el.classList.remove('checked'));
+  updateProgress(listId);
+}
+</script>
+</body>
+</html>

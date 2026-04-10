@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hook Library — Upper Hand Fantasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --pink:       #ED0A73;
+  --blue:       #339AE9;
+  --orange:     #FF6B35;
+  --green:      #3ECF6A;
+  --purple:     #9B59B6;
+  --white:      #FFFFFF;
+  --bg:         #061525;
+  --bg-card:    #0d2a47;
+  --bg-card-cs: #090f1a;
+  --border-dim: #1a3a5c;
+  --text-muted: #5a8ab0;
+  --text-dim:   #2d4a63;
+}
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Roboto', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 60%, var(--orange) 100%);
+  width: 100%;
+  position: fixed;
+  top: 0; left: 0;
+  z-index: 100;
+}
+
+/* ── HEADER ── */
+.site-header {
+  position: fixed;
+  top: 4px; left: 0; right: 0;
+  z-index: 99;
+  background: rgba(6, 21, 37, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  height: 64px;
+  gap: 24px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+.logo-mark {
+  width: 48px; height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid var(--border-dim);
+}
+.logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.logo-text { display: flex; flex-direction: column; line-height: 1; }
+.logo-top {
+  font-family: 'Oswald', sans-serif;
+  font-size: 17px; font-weight: 700;
+  letter-spacing: 2px;
+  color: #fff;
+  text-transform: uppercase;
+}
+.logo-sub {
+  font-size: 10px; letter-spacing: 3px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border-left: 1px solid var(--border-dim);
+  padding-left: 20px;
+  height: 100%;
+}
+.nav-tab {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  text-decoration: none;
+  padding: 6px 14px;
+  border-radius: 4px;
+  border: 1px solid transparent;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+}
+.nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.nav-tab.active {
+  color: var(--orange);
+  background: rgba(255,107,53,0.1);
+  border-color: rgba(255,107,53,0.3);
+}
+
+.header-right {
+  display: flex; align-items: center; gap: 12px;
+}
+.btn-add {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: var(--pink);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 18px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.btn-add:hover { background: #c4085f; transform: translateY(-1px); }
+
+/* ── MAIN ── */
+.main {
+  padding: 88px 40px 80px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 28px;
+  padding-top: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.page-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 36px; font-weight: 700;
+  color: #fff;
+  letter-spacing: 1px;
+}
+.page-sub {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 18px 20px;
+  border-left: 3px solid var(--orange);
+}
+.stat-card-label {
+  font-size: 10px; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.stat-card-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 28px; font-weight: 700;
+  color: var(--orange);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.stat-card-value.pink { color: var(--pink); }
+.stat-card-value.blue { color: var(--blue); }
+.stat-card-value.green { color: var(--green); }
+.stat-card-sub {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 14px 20px;
+  margin-bottom: 24px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-bar input,
+.filter-bar select {
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 6px;
+  padding: 8px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.18s;
+}
+.filter-bar input:focus,
+.filter-bar select:focus { border-color: var(--orange); }
+.filter-bar input { flex: 1; min-width: 200px; }
+.filter-bar select { min-width: 140px; cursor: pointer; }
+.filter-bar select option { background: #0d1e35; }
+
+.view-toggle {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+.view-btn {
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  color: var(--text-muted);
+  border-radius: 5px;
+  width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
+.view-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.results-label {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── GRID VIEW ── */
+.hooks-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 16px;
+}
+.hook-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  position: relative;
+}
+.hook-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  border-color: rgba(255,107,53,0.3);
+}
+.hook-card-top { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.hook-card-body {
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  line-height: 1.5;
+  flex: 1;
+}
+.hook-card-meta {
+  display: flex;
+  gap: 16px;
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.hook-meta-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.hook-meta-label {
+  font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.hook-meta-value {
+  font-family: 'Oswald', sans-serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--white);
+}
+.hook-meta-value.orange { color: var(--orange); }
+.hook-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-dim);
+}
+.tier-badge {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+.tier-high { color: var(--orange); }
+.tier-mid  { color: var(--blue); }
+.tier-low  { color: var(--text-dim); }
+
+.hook-actions { display: flex; gap: 6px; }
+
+/* ── LIST VIEW ── */
+.hooks-list { display: flex; flex-direction: column; gap: 10px; }
+.hook-list-item {
+  background: var(--bg-card);
+  border: 1px solid var(--border-dim);
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto auto auto;
+  align-items: center;
+  gap: 16px;
+  transition: background 0.12s, border-color 0.2s;
+  cursor: default;
+}
+.hook-list-item:hover { border-color: rgba(255,107,53,0.3); }
+.hook-list-text {
+  font-size: 14px;
+  color: #fff;
+  font-weight: 500;
+}
+.hook-list-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hook-list-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+.hook-list-stat-val {
+  font-family: 'Oswald', sans-serif;
+  font-size: 14px; font-weight: 600;
+  color: #fff;
+}
+.hook-list-stat-lbl {
+  font-size: 9px; letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── BADGES ── */
+.type-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.type-q       { background: rgba(51,154,233,0.15);  color: var(--blue); }
+.type-s       { background: rgba(237,10,115,0.15);  color: var(--pink); }
+.type-w       { background: rgba(255,107,53,0.15);  color: var(--orange); }
+.type-n       { background: rgba(62,207,106,0.12);  color: var(--green); }
+.type-c       { background: rgba(155,89,182,0.15);  color: var(--purple); }
+
+.cat-badge {
+  display: inline-block;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* ── ACTION BUTTONS ── */
+.action-btn {
+  background: none;
+  border: 1px solid var(--border-dim);
+  color: var(--text-muted);
+  border-radius: 5px;
+  width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.action-btn:hover { border-color: #fff; color: #fff; }
+.action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
+.action-btn.copy:hover { border-color: var(--green); color: var(--green); }
+.action-btn.copy.copied { border-color: var(--green); color: var(--green); }
+.action-btn svg { width: 13px; height: 13px; fill: currentColor; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  color: var(--text-muted);
+}
+.empty-state svg { width: 48px; height: 48px; fill: var(--text-dim); margin-bottom: 16px; }
+.empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
+.empty-state p { font-size: 13px; color: var(--text-dim); }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.7);
+  z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  padding: 20px;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s;
+}
+.modal-overlay.open { opacity: 1; visibility: visible; }
+.modal {
+  background: #0d1e35;
+  border: 1px solid var(--border-dim);
+  border-radius: 12px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(16px);
+  transition: transform 0.2s;
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-header {
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid var(--border-dim);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px; font-weight: 700;
+  color: #fff;
+}
+.modal-close {
+  background: none; border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 22px;
+  line-height: 1;
+  padding: 4px;
+  transition: color 0.15s;
+}
+.modal-close:hover { color: #fff; }
+.modal-body { padding: 20px 24px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.form-group:last-child { margin-bottom: 0; }
+.form-label {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.form-control {
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.18s;
+  width: 100%;
+}
+.form-control:focus { border-color: var(--orange); }
+.form-control option { background: #0d1e35; }
+textarea.form-control { resize: vertical; min-height: 90px; }
+.modal-footer {
+  padding: 16px 24px 20px;
+  border-top: 1px solid var(--border-dim);
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.btn {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.btn-primary { background: var(--pink); color: #fff; }
+.btn-primary:hover { background: #c4085f; }
+.btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
+.btn-secondary:hover { color: #fff; border-color: #fff; }
+
+/* ── CONFIRM ── */
+.confirm-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  z-index: 300;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.15s;
+}
+.confirm-overlay.open { opacity: 1; visibility: visible; }
+.confirm-box {
+  background: #0d1e35;
+  border: 1px solid var(--border-dim);
+  border-radius: 10px;
+  padding: 28px 32px;
+  max-width: 380px;
+  text-align: center;
+}
+.confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
+.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.confirm-btns { display: flex; gap: 10px; justify-content: center; }
+.btn-danger { background: #c0392b; color: #fff; }
+.btn-danger:hover { background: #e74c3c; }
+
+@media (max-width: 900px) {
+  .site-header { padding: 0 20px; }
+  .main { padding: 88px 20px 60px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .hooks-grid { grid-template-columns: 1fr; }
+  .header-nav { gap: 2px; padding-left: 12px; }
+  .nav-tab { padding: 5px 8px; font-size: 10px; }
+  .hook-list-item { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="logo" href="index.html">
+    <div class="logo-mark">
+      <img src="https://c10.patreonusercontent.com/4/patreon-media/p/campaign/8558213/6a3c83e6313d4b649d48148158a8804b/eyJoIjozNjAsInciOjM2MH0%3D/1.jpeg?token-hash=fORyWgkKV7uzcJEahyyHUn27tPrt2FmCGHiDuYRJBOg%3D&token-time=1774828800" alt="Upper Hand Fantasy">
+    </div>
+    <div class="logo-text">
+      <span class="logo-top">Upper Hand Fantasy</span>
+      <span class="logo-sub">Content Hub</span>
+    </div>
+  </a>
+  <nav class="header-nav">
+    <a href="index.html" class="nav-tab">Content Hub</a>
+    <a href="graphic-index.html" class="nav-tab">Graphic Hub</a>
+    <a href="games-hub.html" class="nav-tab">Game Hub</a>
+    <a href="reels-framework.html" class="nav-tab">Reels Framework</a>
+    <a href="video-converter.html" class="nav-tab">Video Converter</a>
+    <a href="content-database.html" class="nav-tab">Database</a>
+  </nav>
+  <div class="header-right">
+    <button class="btn-add" onclick="openModal()">+ Add Hook</button>
+  </div>
+</header>
+
+<main class="main">
+  <div class="page-header">
+    <div>
+      <div class="page-title">Hook Library</div>
+      <div class="page-sub">Your high-performing opening lines — searchable, filterable, copyable</div>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-card-label">Total Hooks</div>
+      <div class="stat-card-value" id="statTotal">—</div>
+      <div class="stat-card-sub">in library</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Hook Types</div>
+      <div class="stat-card-value pink" id="statTypes">—</div>
+      <div class="stat-card-sub">distinct types</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Avg Score</div>
+      <div class="stat-card-value blue" id="statAvgScore">—</div>
+      <div class="stat-card-sub">performance score</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-card-label">Top Hook Score</div>
+      <div class="stat-card-value green" id="statTopScore">—</div>
+      <div class="stat-card-sub" id="statTopHook" style="font-style:italic;">—</div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="Search hooks..." oninput="applyFilters()">
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">All Types</option>
+      <option>Question</option>
+      <option>Statement</option>
+      <option>Warning</option>
+      <option>Number</option>
+      <option>Curiosity</option>
+    </select>
+    <select id="filterCat" onchange="applyFilters()">
+      <option value="">All Categories</option>
+      <option>Waiver Wire</option>
+      <option>Trade Advice</option>
+      <option>Sleeper</option>
+      <option>Rankings</option>
+      <option>Buy/Sell</option>
+      <option>Start/Sit</option>
+      <option>DFS</option>
+      <option>Injury</option>
+      <option>Player Analysis</option>
+    </select>
+    <select id="filterTier" onchange="applyFilters()">
+      <option value="">All Tiers</option>
+      <option value="high">🔥 High (8.5+)</option>
+      <option value="mid">⚡ Mid (7.0–8.4)</option>
+      <option value="low">💤 Low (below 7.0)</option>
+    </select>
+    <span class="results-label" id="resultsCount">0 hooks</span>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid view">
+        <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+      </button>
+      <button class="view-btn" id="btnList" onclick="setView('list')" title="List view">
+        <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- HOOKS CONTAINER -->
+  <div id="hooksContainer"></div>
+</main>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modalBox">
+    <div class="modal-header">
+      <div class="modal-title" id="modalTitle">Add Hook</div>
+      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label class="form-label">Hook Text</label>
+        <textarea id="fText" class="form-control" placeholder="Your opening hook line..." style="min-height:100px;font-size:15px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select id="fType" class="form-control">
+            <option>Question</option>
+            <option>Statement</option>
+            <option>Warning</option>
+            <option>Number</option>
+            <option>Curiosity</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Content Category</label>
+          <select id="fCat" class="form-control">
+            <option>Waiver Wire</option>
+            <option>Trade Advice</option>
+            <option>Sleeper</option>
+            <option>Rankings</option>
+            <option>Buy/Sell</option>
+            <option>Start/Sit</option>
+            <option>DFS</option>
+            <option>Injury</option>
+            <option>Player Analysis</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Performance Score (1–10)</label>
+          <input type="number" id="fScore" class="form-control" min="1" max="10" step="0.1" placeholder="8.5">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Times Used</label>
+          <input type="number" id="fUses" class="form-control" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Avg Views When Used</label>
+          <input type="number" id="fAvgViews" class="form-control" min="0" placeholder="0">
+        </div>
+        <div class="form-group" style="visibility:hidden;"></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes / Context</label>
+        <textarea id="fNotes" class="form-control" placeholder="When does this hook work best? Any context..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveHook()">Save Hook</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3>Delete Hook?</h3>
+    <p>This hook will be permanently removed from your library.</p>
+    <div class="confirm-btns">
+      <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'uhf_hook_library';
+let hooks = [];
+let deleteTargetId = null;
+let currentView = 'grid';
+
+const TYPE_CLASSES = {
+  Question: 'type-q',
+  Statement: 'type-s',
+  Warning:   'type-w',
+  Number:    'type-n',
+  Curiosity: 'type-c',
+};
+
+const SEED_DATA = [
+  { id: 1,  text: "If your league still has this guy available, you're stealing...", type: 'Statement', category: 'Waiver Wire',    score: 9.2, uses: 8,  avgViews: 87400,  notes: '' },
+  { id: 2,  text: "Stop holding these guys — the market is about to collapse",       type: 'Warning',   category: 'Trade Advice',   score: 8.8, uses: 12, avgViews: 102300, notes: '' },
+  { id: 3,  text: "This name will be everywhere come September...",                  type: 'Curiosity', category: 'Sleeper',        score: 8.1, uses: 6,  avgViews: 74200,  notes: '' },
+  { id: 4,  text: "Everyone loves him — that's exactly why you should fade",         type: 'Statement', category: 'Rankings',       score: 7.9, uses: 9,  avgViews: 91800,  notes: '' },
+  { id: 5,  text: "The combine just changed EVERYTHING for these guys",              type: 'Statement', category: 'Buy/Sell',       score: 9.4, uses: 5,  avgViews: 128600, notes: '' },
+  { id: 6,  text: "You WILL bench the wrong guy if you don't watch this first",      type: 'Warning',   category: 'Start/Sit',     score: 9.1, uses: 14, avgViews: 108900, notes: '' },
+  { id: 7,  text: "The window to sell these guys closes THIS WEEK",                  type: 'Warning',   category: 'Trade Advice',   score: 8.6, uses: 11, avgViews: 96400,  notes: '' },
+  { id: 8,  text: "Championship runs are won on the waiver wire. Grab these now",    type: 'Statement', category: 'Waiver Wire',    score: 8.9, uses: 7,  avgViews: 99200,  notes: '' },
+  { id: 9,  text: "It's never too early. Your league mates aren't paying attention yet", type: 'Statement', category: 'Rankings',  score: 7.7, uses: 4,  avgViews: 68900,  notes: '' },
+  { id: 10, text: "The tape doesn't lie — this receiver is about to EXPLODE",        type: 'Statement', category: 'Player Analysis', score: 8.4, uses: 10, avgViews: 89100, notes: '' },
+  { id: 11, text: "One injury and this guy is an RB1. Don't wait",                   type: 'Warning',   category: 'Sleeper',        score: 8.2, uses: 9,  avgViews: 71300,  notes: '' },
+  { id: 12, text: "Stop winging it. Here is the exact process I use every year",     type: 'Statement', category: 'Start/Sit',     score: 9.3, uses: 6,  avgViews: 131200, notes: '' },
+  { id: 13, text: "These guys are on sale right now. Don't miss the window",          type: 'Warning',   category: 'Buy/Sell',       score: 8.0, uses: 8,  avgViews: 78400,  notes: '' },
+  { id: 14, text: "3 players you need to drop BEFORE Sunday",                        type: 'Number',    category: 'Waiver Wire',    score: 8.7, uses: 13, avgViews: 94700,  notes: '' },
+  { id: 15, text: "What if I told you this RB finishes as a top-5 this year?",       type: 'Question',  category: 'Sleeper',        score: 8.5, uses: 7,  avgViews: 86300,  notes: '' },
+  { id: 16, text: "Your league mates don't want you to know this",                   type: 'Curiosity', category: 'Trade Advice',   score: 9.0, uses: 11, avgViews: 112500, notes: '' },
+  { id: 17, text: "5 moves to make RIGHT NOW for the playoffs",                      type: 'Number',    category: 'Trade Advice',   score: 8.8, uses: 9,  avgViews: 103100, notes: '' },
+  { id: 18, text: "This 'questionable' tag means more than you think",               type: 'Curiosity', category: 'Injury',         score: 7.8, uses: 6,  avgViews: 74600,  notes: '' },
+  { id: 19, text: "Nobody is talking about this — and that's your edge",             type: 'Curiosity', category: 'Player Analysis', score: 9.1, uses: 8, avgViews: 108200, notes: '' },
+  { id: 20, text: "Do NOT make your start/sit decision until you see this",          type: 'Warning',   category: 'Start/Sit',     score: 9.5, uses: 15, avgViews: 119800, notes: '' },
+];
+
+function loadData() {
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    hooks = JSON.parse(stored);
+  } else {
+    hooks = SEED_DATA.map(h => ({ ...h }));
+    saveData();
+  }
+}
+
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks));
+}
+
+function tier(score) {
+  if (score >= 8.5) return 'high';
+  if (score >= 7.0) return 'mid';
+  return 'low';
+}
+
+function tierLabel(score) {
+  const t = tier(score);
+  if (t === 'high') return { icon: '🔥', label: 'High', cls: 'tier-high' };
+  if (t === 'mid')  return { icon: '⚡', label: 'Mid',  cls: 'tier-mid' };
+  return { icon: '💤', label: 'Low', cls: 'tier-low' };
+}
+
+function fmt(n) {
+  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  return n.toString();
+}
+
+function updateStats() {
+  document.getElementById('statTotal').textContent = hooks.length;
+  const types = new Set(hooks.map(h => h.type));
+  document.getElementById('statTypes').textContent = types.size;
+  const avgScore = hooks.length > 0
+    ? (hooks.reduce((a, h) => a + h.score, 0) / hooks.length).toFixed(1)
+    : '—';
+  document.getElementById('statAvgScore').textContent = avgScore;
+  if (hooks.length > 0) {
+    const top = hooks.reduce((a, b) => a.score > b.score ? a : b);
+    document.getElementById('statTopScore').textContent = top.score.toFixed(1);
+    const short = top.text.length > 36 ? top.text.slice(0, 36) + '…' : top.text;
+    document.getElementById('statTopHook').textContent = short;
+  }
+}
+
+function getFiltered() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const typeF = document.getElementById('filterType').value;
+  const catF  = document.getElementById('filterCat').value;
+  const tierF = document.getElementById('filterTier').value;
+
+  return hooks.filter(h => {
+    const matchSearch = !search ||
+      h.text.toLowerCase().includes(search) ||
+      (h.notes || '').toLowerCase().includes(search);
+    const matchType = !typeF || h.type === typeF;
+    const matchCat  = !catF  || h.category === catF;
+    const matchTier = !tierF || tier(h.score) === tierF;
+    return matchSearch && matchType && matchCat && matchTier;
+  });
+}
+
+function typeBadgeHtml(type) {
+  const cls = TYPE_CLASSES[type] || 'type-s';
+  return `<span class="type-badge ${cls}">${escHtml(type)}</span>`;
+}
+
+function escHtml(str) {
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function renderGrid(filtered) {
+  if (filtered.length === 0) {
+    return `<div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      <h3>No hooks found</h3>
+      <p>Try adjusting your search or filters.</p>
+    </div>`;
+  }
+  return `<div class="hooks-grid">${filtered.map(h => {
+    const tl = tierLabel(h.score);
+    return `<div class="hook-card">
+      <div class="hook-card-top">
+        ${typeBadgeHtml(h.type)}
+        <span class="cat-badge">${escHtml(h.category)}</span>
+      </div>
+      <div class="hook-card-body">"${escHtml(h.text)}"</div>
+      <div class="hook-card-meta">
+        <div class="hook-meta-item">
+          <span class="hook-meta-label">Score</span>
+          <span class="hook-meta-value orange">${h.score.toFixed(1)}</span>
+        </div>
+        <div class="hook-meta-item">
+          <span class="hook-meta-label">Uses</span>
+          <span class="hook-meta-value">${h.uses}</span>
+        </div>
+        <div class="hook-meta-item">
+          <span class="hook-meta-label">Avg Views</span>
+          <span class="hook-meta-value">${fmt(h.avgViews)}</span>
+        </div>
+      </div>
+      <div class="hook-card-footer">
+        <span class="tier-badge ${tl.cls}">${tl.icon} ${tl.label} Performer</span>
+        <div class="hook-actions">
+          <button class="action-btn copy" onclick="copyHook(${h.id}, this)" title="Copy hook">
+            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+          </button>
+          <button class="action-btn" onclick="editHook(${h.id})" title="Edit">
+            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+          </button>
+          <button class="action-btn delete" onclick="requestDelete(${h.id})" title="Delete">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderList(filtered) {
+  if (filtered.length === 0) {
+    return `<div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      <h3>No hooks found</h3>
+      <p>Try adjusting your search or filters.</p>
+    </div>`;
+  }
+  return `<div class="hooks-list">${filtered.map(h => {
+    const tl = tierLabel(h.score);
+    return `<div class="hook-list-item">
+      <div>
+        <div class="hook-list-text">"${escHtml(h.text)}"</div>
+        <div style="display:flex;gap:6px;margin-top:6px;">
+          ${typeBadgeHtml(h.type)}
+          <span class="cat-badge">${escHtml(h.category)}</span>
+        </div>
+      </div>
+      <div class="hook-list-stat">
+        <span class="hook-list-stat-val" style="color:var(--orange);">${h.score.toFixed(1)}</span>
+        <span class="hook-list-stat-lbl">Score</span>
+      </div>
+      <div class="hook-list-stat">
+        <span class="hook-list-stat-val">${h.uses}</span>
+        <span class="hook-list-stat-lbl">Uses</span>
+      </div>
+      <div class="hook-list-stat">
+        <span class="hook-list-stat-val">${fmt(h.avgViews)}</span>
+        <span class="hook-list-stat-lbl">Avg Views</span>
+      </div>
+      <span class="tier-badge ${tl.cls}">${tl.icon}</span>
+      <div class="hook-actions">
+        <button class="action-btn copy" onclick="copyHook(${h.id}, this)" title="Copy">
+          <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+        </button>
+        <button class="action-btn" onclick="editHook(${h.id})" title="Edit">
+          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+        </button>
+        <button class="action-btn delete" onclick="requestDelete(${h.id})" title="Delete">
+          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function applyFilters() {
+  const filtered = getFiltered();
+  document.getElementById('resultsCount').textContent = `${filtered.length} hook${filtered.length !== 1 ? 's' : ''}`;
+  const container = document.getElementById('hooksContainer');
+  if (currentView === 'grid') {
+    container.innerHTML = renderGrid(filtered);
+  } else {
+    container.innerHTML = renderList(filtered);
+  }
+}
+
+function setView(view) {
+  currentView = view;
+  document.getElementById('btnGrid').classList.toggle('active', view === 'grid');
+  document.getElementById('btnList').classList.toggle('active', view === 'list');
+  applyFilters();
+}
+
+// ── COPY ──
+function copyHook(id, btn) {
+  const hook = hooks.find(h => h.id === id);
+  if (!hook) return;
+  navigator.clipboard.writeText(hook.text).then(() => {
+    btn.classList.add('copied');
+    const orig = btn.innerHTML;
+    btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = orig;
+    }, 1800);
+  }).catch(() => {
+    prompt('Copy this hook:', hook.text);
+  });
+}
+
+// ── MODAL ──
+function openModal(hook) {
+  document.getElementById('editId').value = hook ? hook.id : '';
+  document.getElementById('modalTitle').textContent = hook ? 'Edit Hook' : 'Add Hook';
+  document.getElementById('fText').value = hook ? hook.text : '';
+  document.getElementById('fType').value = hook ? hook.type : 'Statement';
+  document.getElementById('fCat').value = hook ? hook.category : 'Waiver Wire';
+  document.getElementById('fScore').value = hook ? hook.score : '';
+  document.getElementById('fUses').value = hook ? hook.uses : '';
+  document.getElementById('fAvgViews').value = hook ? hook.avgViews : '';
+  document.getElementById('fNotes').value = hook ? hook.notes : '';
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+function saveHook() {
+  const id = document.getElementById('editId').value;
+  const hook = {
+    id: id ? parseInt(id) : Date.now(),
+    text: document.getElementById('fText').value.trim(),
+    type: document.getElementById('fType').value,
+    category: document.getElementById('fCat').value,
+    score: parseFloat(document.getElementById('fScore').value) || 0,
+    uses: parseInt(document.getElementById('fUses').value) || 0,
+    avgViews: parseInt(document.getElementById('fAvgViews').value) || 0,
+    notes: document.getElementById('fNotes').value.trim(),
+  };
+  if (!hook.text) { alert('Hook text is required.'); return; }
+
+  if (id) {
+    const idx = hooks.findIndex(h => h.id === parseInt(id));
+    if (idx >= 0) hooks[idx] = hook;
+  } else {
+    hooks.push(hook);
+  }
+  saveData();
+  updateStats();
+  applyFilters();
+  closeModal();
+}
+
+function editHook(id) {
+  const hook = hooks.find(h => h.id === id);
+  if (hook) openModal(hook);
+}
+
+// ── DELETE ──
+function requestDelete(id) {
+  deleteTargetId = id;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  deleteTargetId = null;
+  document.getElementById('confirmOverlay').classList.remove('open');
+}
+
+function confirmDelete() {
+  if (deleteTargetId !== null) {
+    hooks = hooks.filter(h => h.id !== deleteTargetId);
+    saveData();
+    updateStats();
+    applyFilters();
+  }
+  closeConfirm();
+}
+
+// ── KEYBOARD ──
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    closeConfirm();
+  }
+});
+
+// ── INIT ──
+loadData();
+updateStats();
+applyFilters();
+</script>
+</body>
+</html>
