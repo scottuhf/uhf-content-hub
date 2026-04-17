@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>🎬 Reels Creation Framework</title>
+<title>💡 Ideation Framework</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --bg:       #061525;
@@ -641,6 +642,25 @@ textarea { min-height: 88px; }
   box-shadow: 0 4px 18px rgba(237,10,115,0.35);
 }
 .btn-export:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-drive {
+  background: linear-gradient(135deg, #1a73e8 0%, #0f9d58 100%);
+  color: #fff;
+  font-size: 0.82rem;
+  padding: 12px 26px;
+  box-shadow: 0 4px 18px rgba(26,115,232,0.35);
+}
+.btn-drive:hover { filter: brightness(1.1); transform: translateY(-1px); }
+.btn-drive:disabled { opacity: 0.55; cursor: not-allowed; transform: none; filter: none; }
+#drive-status {
+  font-size: 0.78rem;
+  margin-top: 10px;
+  padding: 8px 14px;
+  border-radius: var(--radius);
+  display: none;
+}
+#drive-status.info  { display:block; background: rgba(51,154,233,0.12); color: var(--blue); border: 1px solid rgba(51,154,233,0.3); }
+#drive-status.ok    { display:block; background: rgba(62,207,106,0.12); color: #3ECF6A; border: 1px solid rgba(62,207,106,0.3); }
+#drive-status.error { display:block; background: rgba(237,10,115,0.12); color: var(--pink); border: 1px solid rgba(237,10,115,0.3); }
 
 /* ── REVIEW PAGE ── */
 .doc-name-block {
@@ -760,152 +780,82 @@ textarea { min-height: 88px; }
 
 /* review cards must not break across PDF pages */
 .review-card { page-break-inside: avoid; }
+
+/* ── STEP SPLIT (Idea + Format side by side) ── */
+.step-split {
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 28px;
+  align-items: start;
+}
+@media (max-width: 660px) { .step-split { grid-template-columns: 1fr; } }
+.step-split-col { min-width: 0; }
+.split-col-header {
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.split-col-header.idea-header   { color: var(--pink); border-bottom-color: rgba(237,10,115,0.35); }
+.split-col-header.format-header { color: var(--blue); border-bottom-color: rgba(51,154,233,0.35); }
+
+/* ── CCN CHECKBOXES ── */
+.ccn-check-row { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; margin-top: 6px; }
+.ccn-check-item { display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+.ccn-check-item input[type="checkbox"] { width: 15px; height: 15px; cursor: pointer; accent-color: var(--pink); }
+/* ── CUSTOM OPTIONS ── */
+.option-card { position: relative; }
+.custom-add-row { grid-column: 1/-1; display: flex; align-items: center; gap: 8px; padding: 6px 0; margin-top: 2px; }
+.custom-add-input { flex: 1; background: transparent; border: 1px dashed var(--border); color: var(--fg); border-radius: 6px; padding: 7px 10px; font-size: 0.78rem; font-family: inherit; }
+.custom-add-input:focus { outline: none; border-color: var(--blue); }
+.custom-add-input::placeholder { color: var(--muted); }
+.custom-add-btn { background: transparent; border: 1px solid var(--blue); color: var(--blue); border-radius: 50%; width: 28px; height: 28px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, color 0.15s; }
+.custom-add-btn:hover { background: var(--blue); color: #fff; }
+.custom-remove-btn { position: absolute; top: 5px; right: 5px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 0.82rem; padding: 2px 5px; border-radius: 3px; opacity: 0; transition: opacity 0.15s; line-height: 1; z-index: 2; }
+.custom-opt-card:hover .custom-remove-btn { opacity: 1; }
+.custom-remove-btn:hover { color: var(--pink) !important; opacity: 1 !important; }
 </style>
 </head>
 <body>
 
 <!-- HEADER -->
 <div class="app-header">
-  <h1>🎬 Reels Creation Framework</h1>
+  <h1>💡 Ideation Framework</h1>
   <nav style="display:flex;gap:6px;">
     <a href="index.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:4px;transition:all 0.18s;" onmouseover="this.style.color='#fff';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Content Hub</a>
     <a href="graphic-index.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:4px;transition:all 0.18s;" onmouseover="this.style.color='#fff';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Graphic Hub</a>
     <a href="games-hub.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:4px;transition:all 0.18s;" onmouseover="this.style.color='#fff';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Game Hub</a>
-    <a href="reels-framework.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);text-decoration:none;border:1px solid rgba(237,10,115,0.4);padding:4px 10px;border-radius:4px;background:rgba(237,10,115,0.1);">Reels Framework</a>
+    <a href="ideation-framework.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--pink);text-decoration:none;border:1px solid rgba(237,10,115,0.4);padding:4px 10px;border-radius:4px;background:rgba(237,10,115,0.1);">Ideation Framework</a>
     <a href="video-converter.html" style="font-family:'Oswald',sans-serif;font-size:0.68rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-decoration:none;border:1px solid var(--border);padding:4px 10px;border-radius:4px;transition:all 0.18s;" onmouseover="this.style.color='#fff';this.style.borderColor='var(--border2)'" onmouseout="this.style.color='var(--muted)';this.style.borderColor='var(--border)'">Video Converter</a>
   </nav>
-  <div id="step-counter">Step 1 of 6</div>
+  <div id="step-counter">Step 1 of 4</div>
 </div>
 <div class="progress-bar-wrap">
-  <div class="progress-bar-fill" id="progress-fill" style="width:14.28%"></div>
+  <div class="progress-bar-fill" id="progress-fill" style="width:25%"></div>
 </div>
 
 <!-- STEP NAV -->
 <div class="step-nav" id="step-nav">
-  <div class="step-pill active" data-step="1" onclick="goToStep(1)"><span class="pill-num">1</span>Ideation</div>
-  <div class="step-pill" data-step="2" onclick="goToStep(2)"><span class="pill-num">2</span>Topic</div>
+  <div class="step-pill active" data-step="1" onclick="goToStep(1)"><span class="pill-num">1</span>Topic</div>
+  <div class="step-pill" data-step="2" onclick="goToStep(2)"><span class="pill-num">2</span>Idea + Format</div>
   <div class="step-pill" data-step="3" onclick="goToStep(3)"><span class="pill-num">3</span>Recording</div>
-  <div class="step-pill" data-step="4" onclick="goToStep(4)"><span class="pill-num">4</span>Content Style</div>
-  <div class="step-pill" data-step="5" onclick="goToStep(5)"><span class="pill-num">5</span>Hook</div>
-  <div class="step-pill" data-step="6" onclick="goToStep(6)"><span class="pill-num">6</span>Editing</div>
-  <div class="step-pill" data-step="7" onclick="goToStep(7)"><span class="pill-num">✓</span>Review</div>
+  <div class="step-pill" data-step="4" onclick="goToStep(4)"><span class="pill-num">✓</span>Review</div>
 </div>
 
 <!-- MAIN CONTENT -->
 <div class="main">
 
-  <!-- ══ STEP 1: IDEATION ══ -->
+  <!-- ══ STEP 1: TOPIC ══ -->
   <div class="step-panel active" id="step-1">
     <div class="step-header">
-      <div class="step-badge">💡 Step 1</div>
-      <h2>Ideation</h2>
-      <p class="step-desc">The brainstorming phase. Identify what you want to say, why it matters, and who it's for — before committing to any format or style.</p>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Your Reel / Concept</label>
-      <textarea id="s1-idea" placeholder="Write your raw idea — a hot take, a question your audience keeps asking, a trend you want to react to…&#10;&#10;Example: Cam Skattebo's injury and whether the Giants should draft an RB high." rows="4"></textarea>
-    </div>
-    <div class="field-group">
-      <label class="section-label">CCN — Audience Fit</label>
-      <div class="row3">
-        <div>
-          <div class="ccn-label-tag ccn-core" data-tooltip="Big fans and product buyers">Core</div>
-          <input type="text" id="s1-ccn-core" placeholder="Who is the core audience for this reel?" oninput="state.ccnCore=this.value" />
-        </div>
-        <div>
-          <div class="ccn-label-tag ccn-casual" data-tooltip="Familiar with UHF, but not invested">Casual</div>
-          <input type="text" id="s1-ccn-casual" placeholder="Who is the casual audience for this reel?" oninput="state.ccnCasual=this.value" />
-        </div>
-        <div>
-          <div class="ccn-label-tag ccn-new" data-tooltip="No prior awareness or knowledge of UHF">New</div>
-          <input type="text" id="s1-ccn-new" placeholder="Who is the new audience for this reel?" oninput="state.ccnNew=this.value" />
-        </div>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Why Does This Matter Now?</label>
-      <input type="text" id="s1-why" placeholder="e.g. Draft is 2 weeks away…" />
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Content Mix — 70 / 20 / 10 <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">Which bucket does this content fall into?</span></label>
-      <div class="content-mix-scale">
-        <button class="mix-btn" data-mix="70" onclick="selectMix(70,this)">
-          <div class="mix-pct">70%</div>
-          <div class="mix-label">Proven</div>
-          <div class="mix-desc">Reliable, consistent material</div>
-        </button>
-        <button class="mix-btn" data-mix="20" onclick="selectMix(20,this)">
-          <div class="mix-pct">20%</div>
-          <div class="mix-label">Iteration</div>
-          <div class="mix-desc">Tweaks of successful content</div>
-        </button>
-        <button class="mix-btn" data-mix="10" onclick="selectMix(10,this)">
-          <div class="mix-pct">10%</div>
-          <div class="mix-label">Experimental</div>
-          <div class="mix-desc">New, unproven ideas</div>
-        </button>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <div class="pvc-wrap">
-        <label class="pvc-check-row" for="pvc-checkbox">
-          <input type="checkbox" id="pvc-checkbox" onchange="togglePVC(this)" />
-          <span class="pvc-check-name">Pre-validated Content</span>
-        </label>
-        <div class="pvc-check-hint">Check if this content is based on proven, pre-validated material.</div>
-        <div class="pvc-conditional" id="pvc-link-wrap">
-          <label class="field-label" style="margin-top:2px;">Link to Pre-validated Content <span style="color:var(--pink)">*</span></label>
-          <input type="text" id="s1-pvc-link" placeholder="https://…" oninput="state.pvcLink=this.value;hidePVCError()" />
-        </div>
-        <div class="pvc-conditional visible" id="pvc-reason-wrap">
-          <label class="field-label" style="margin-top:2px;">Why aren't we using pre-validated content? <span style="color:var(--pink)">*</span></label>
-          <input type="text" id="s1-pvc-reason" placeholder="Explain why this content hasn't been pre-validated…" oninput="state.pvcReason=this.value;hidePVCError()" />
-        </div>
-        <div id="pvc-error" style="display:none;color:var(--pink);font-size:0.72rem;font-style:italic;margin-top:8px;"></div>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">TAM — Total Addressable Market <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(How large is the potential audience?)</span></label>
-      <div class="tam-scale" id="tam-scale">
-        <button class="tam-btn" data-v="1"  onclick="selectTAM(1,this)">1</button>
-        <button class="tam-btn" data-v="2"  onclick="selectTAM(2,this)">2</button>
-        <button class="tam-btn" data-v="3"  onclick="selectTAM(3,this)">3</button>
-        <button class="tam-btn" data-v="4"  onclick="selectTAM(4,this)">4</button>
-        <button class="tam-btn" data-v="5"  onclick="selectTAM(5,this)">5</button>
-        <button class="tam-btn" data-v="6"  onclick="selectTAM(6,this)">6</button>
-        <button class="tam-btn" data-v="7"  onclick="selectTAM(7,this)">7</button>
-        <button class="tam-btn" data-v="8"  onclick="selectTAM(8,this)">8</button>
-        <button class="tam-btn" data-v="9"  onclick="selectTAM(9,this)">9</button>
-        <button class="tam-btn" data-v="10" onclick="selectTAM(10,this)">10</button>
-      </div>
-      <div class="tam-labels">
-        <span class="tl-unknown">Unknown</span>
-        <span class="tl-niche">Niche</span>
-        <span class="tl-known">Known</span>
-        <span class="tl-mass">Mass Market</span>
-      </div>
-    </div>
-
-    <div class="field-group">
-      <label class="field-label">Additional Notes / Context</label>
-      <textarea id="s1-notes" placeholder="Any extra angles, research, or context you want to include…" rows="3"></textarea>
-    </div>
-
-    <div class="nav-buttons">
-      <div></div>
-      <button class="btn btn-primary" onclick="nextStep()">Next: Topic →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 2: TOPIC ══ -->
-  <div class="step-panel" id="step-2">
-    <div class="step-header">
-      <div class="step-badge">🏷️ Step 2</div>
+      <div class="step-badge">🏷️ Step 1</div>
       <h2>Topic</h2>
       <p class="step-desc">The subject matter of your reel. Select one or more topic categories — or add your own.</p>
     </div>
@@ -926,11 +876,146 @@ textarea { min-height: 88px; }
         </div>
       </div>
     </div>
-
     <div class="field-group" style="margin-top:14px;">
       <label class="field-label">Notes / Angle</label>
       <textarea id="s2-notes" placeholder="Describe your specific angle or add any context…" rows="3"></textarea>
     </div>
+    <div class="nav-buttons">
+      <div></div>
+      <button class="btn btn-primary" onclick="nextStep()">Next: Idea + Format →</button>
+    </div>
+  </div>
+
+  <!-- ══ STEP 2: IDEA + FORMAT ══ -->
+  <div class="step-panel" id="step-2">
+    <div class="step-header">
+      <div class="step-badge">💡 Step 2</div>
+      <h2>Idea + Format</h2>
+      <p class="step-desc">Define your concept and choose a content format. Fill either side first — they're independent.</p>
+    </div>
+
+    <div class="step-split">
+
+      <!-- LEFT: IDEA -->
+      <div class="step-split-col">
+        <div class="split-col-header idea-header">💡 Idea</div>
+
+        <div class="field-group">
+          <label class="field-label">Your Reel / Concept</label>
+          <textarea id="s1-idea" placeholder="Write your raw idea — a hot take, a question your audience keeps asking, a trend you want to react to…&#10;&#10;Example: Cam Skattebo's injury and whether the Giants should draft an RB high." rows="4"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="section-label">CCN — Audience Fit</label>
+          <div class="ccn-check-row">
+            <label class="ccn-check-item">
+              <input type="checkbox" id="ccn-core" onchange="state.ccnCore=this.checked" />
+              <span class="ccn-label-tag ccn-core" data-tooltip="Big fans and product buyers">Core</span>
+            </label>
+            <label class="ccn-check-item">
+              <input type="checkbox" id="ccn-casual" onchange="state.ccnCasual=this.checked" />
+              <span class="ccn-label-tag ccn-casual" data-tooltip="Familiar with UHF, but not invested">Casual</span>
+            </label>
+            <label class="ccn-check-item">
+              <input type="checkbox" id="ccn-new" onchange="state.ccnNew=this.checked" />
+              <span class="ccn-label-tag ccn-new" data-tooltip="No prior awareness or knowledge of UHF">New</span>
+            </label>
+          </div>
+        </div>
+
+
+        <div class="field-group">
+          <label class="field-label">Content Mix — 70 / 20 / 10 <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">Which bucket does this content fall into?</span></label>
+          <div class="content-mix-scale">
+            <button class="mix-btn" data-mix="70" onclick="selectMix(70,this)">
+              <div class="mix-pct">70%</div>
+              <div class="mix-label">Proven</div>
+              <div class="mix-desc">Reliable, consistent material</div>
+            </button>
+            <button class="mix-btn" data-mix="20" onclick="selectMix(20,this)">
+              <div class="mix-pct">20%</div>
+              <div class="mix-label">Iteration</div>
+              <div class="mix-desc">Tweaks of successful content</div>
+            </button>
+            <button class="mix-btn" data-mix="10" onclick="selectMix(10,this)">
+              <div class="mix-pct">10%</div>
+              <div class="mix-label">Experimental</div>
+              <div class="mix-desc">New, unproven ideas</div>
+            </button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <div class="pvc-wrap">
+            <label class="pvc-check-row" for="pvc-checkbox">
+              <input type="checkbox" id="pvc-checkbox" onchange="togglePVC(this)" />
+              <span class="pvc-check-name">Pre-validated Content</span>
+            </label>
+            <div class="pvc-check-hint">Check if this content is based on proven, pre-validated material.</div>
+            <div class="pvc-conditional" id="pvc-link-wrap">
+              <label class="field-label" style="margin-top:2px;">Link to Pre-validated Content <span style="color:var(--pink)">*</span></label>
+              <input type="text" id="s1-pvc-link" placeholder="https://…" oninput="state.pvcLink=this.value;hidePVCError()" />
+            </div>
+            <div class="pvc-conditional visible" id="pvc-reason-wrap">
+              <label class="field-label" style="margin-top:2px;">Why aren't we using pre-validated content? <span style="color:var(--pink)">*</span></label>
+              <input type="text" id="s1-pvc-reason" placeholder="Explain why this content hasn't been pre-validated…" oninput="state.pvcReason=this.value;hidePVCError()" />
+            </div>
+            <div id="pvc-error" style="display:none;color:var(--pink);font-size:0.72rem;font-style:italic;margin-top:8px;"></div>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">TAM — Total Addressable Market <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(How large is the potential audience?)</span></label>
+          <div class="tam-scale" id="tam-scale">
+            <button class="tam-btn" data-v="1"  onclick="selectTAM(1,this)">1</button>
+            <button class="tam-btn" data-v="2"  onclick="selectTAM(2,this)">2</button>
+            <button class="tam-btn" data-v="3"  onclick="selectTAM(3,this)">3</button>
+            <button class="tam-btn" data-v="4"  onclick="selectTAM(4,this)">4</button>
+            <button class="tam-btn" data-v="5"  onclick="selectTAM(5,this)">5</button>
+            <button class="tam-btn" data-v="6"  onclick="selectTAM(6,this)">6</button>
+            <button class="tam-btn" data-v="7"  onclick="selectTAM(7,this)">7</button>
+            <button class="tam-btn" data-v="8"  onclick="selectTAM(8,this)">8</button>
+            <button class="tam-btn" data-v="9"  onclick="selectTAM(9,this)">9</button>
+            <button class="tam-btn" data-v="10" onclick="selectTAM(10,this)">10</button>
+          </div>
+          <div class="tam-labels">
+            <span class="tl-unknown">Unknown</span>
+            <span class="tl-niche">Niche</span>
+            <span class="tl-known">Known</span>
+            <span class="tl-mass">Mass Market</span>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Additional Notes / Context</label>
+          <textarea id="s1-notes" placeholder="Any extra angles, research, or context you want to include…" rows="3"></textarea>
+        </div>
+      </div>
+
+      <!-- RIGHT: FORMAT -->
+      <div class="step-split-col">
+        <div class="split-col-header format-header">📋 Format</div>
+        <p class="ms-hint">Select all that apply</p>
+        <div class="option-grid cols-3" id="grid-content">
+          <div class="option-card" onclick="toggleOpt('content',this,'Breakdown')"><div class="check">✓</div><div class="opt-name">🔬 Breakdown</div><div class="opt-desc">Deep dive analysis — dissect a play, stat, or situation piece by piece.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Countdown')"><div class="check">✓</div><div class="opt-name">🔢 Countdown</div><div class="opt-desc">Numbered list in descending order. Creates suspense — "and #1 is…"</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Ranking')"><div class="check">✓</div><div class="opt-name">🏆 Ranking</div><div class="opt-desc">Ordered tier list or comparative positioning. Sparks debate.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Reaction')"><div class="check">✓</div><div class="opt-name">😲 Reaction</div><div class="opt-desc">Your live or recorded response to news, a clip, or a hot take.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'This or That')"><div class="check">✓</div><div class="opt-name">⚖️ This or That</div><div class="opt-desc">Binary choice format. Forces audience to pick a side and comment.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Level of Concern')"><div class="check">✓</div><div class="opt-name">📉 Level of Concern</div><div class="opt-desc">Rate how worried you are (1–10 scale). Relatable and shareable.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Trivia')"><div class="check">✓</div><div class="opt-name">🧠 Trivia</div><div class="opt-desc">Quiz-style Q&A. Educates while entertaining. Great for retention.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Skit')"><div class="check">✓</div><div class="opt-name">🎬 Skit</div><div class="opt-desc">Short comedic or dramatic scene. Character-driven in under 60 seconds.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Interaction')"><div class="check">✓</div><div class="opt-name">💬 Interaction</div><div class="opt-desc">Reply to a comment, duet, or stitch. Directly engages community.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Ramble')"><div class="check">✓</div><div class="opt-name">🎤 Ramble</div><div class="opt-desc">Unstructured stream-of-consciousness. Raw and authentic.</div></div>
+          <div class="option-card" onclick="toggleOpt('content',this,'Game')"><div class="check">✓</div><div class="opt-name">🎮 Game</div><div class="opt-desc">Fun, nonsensical game to engage viewers on a topic.</div></div>
+          <div class="custom-add-row">
+            <input type="text" class="custom-add-input" id="content-custom-input" placeholder="Add custom format… press Enter to save permanently" onkeydown="if(event.key==='Enter'){event.preventDefault();handleCustomAdd('content',this)}" />
+            <button class="custom-add-btn" onclick="handleCustomAdd('content',document.getElementById('content-custom-input'))" title="Add permanently">+</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /step-split -->
 
     <div class="nav-buttons">
       <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
@@ -951,191 +1036,19 @@ textarea { min-height: 88px; }
       <div class="option-card" onclick="toggleOpt('recording',this,'Interview')"><div class="check">✓</div><div class="opt-name">🎙️ Interview</div><div class="opt-desc">Guest-style or reporter setup. Multi-perspective or solo Q&A format.</div></div>
       <div class="option-card" onclick="toggleOpt('recording',this,'Entertainment')"><div class="check">✓</div><div class="opt-name">🎭 Entertainment</div><div class="opt-desc">Skits, characters, performance-based. Higher energy and production value.</div></div>
       <div class="option-card" onclick="toggleOpt('recording',this,'Green Screen')"><div class="check">✓</div><div class="opt-name">🟩 Green Screen</div><div class="opt-desc">Virtual background — stats, highlights, or custom imagery behind you.</div></div>
-      <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('recording',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom recording style below.</div>
-        <div class="other-input-wrap" id="recording-other-wrap">
-          <input type="text" id="recording-other-input" placeholder="Describe your custom recording style… (required)" oninput="state.recordingOther=this.value" />
-          <div class="other-required" id="recording-other-req">⚠ Please enter your custom recording style.</div>
-        </div>
+      <div class="custom-add-row">
+        <input type="text" class="custom-add-input" id="recording-custom-input" placeholder="Add custom recording style… press Enter to save permanently" onkeydown="if(event.key==='Enter'){event.preventDefault();handleCustomAdd('recording',this)}" />
+        <button class="custom-add-btn" onclick="handleCustomAdd('recording',document.getElementById('recording-custom-input'))" title="Add permanently">+</button>
       </div>
     </div>
-    <div class="nav-buttons">
-      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
-      <button class="btn btn-primary" onclick="nextStep()">Next: Content Style →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 4: CONTENT STYLE ══ -->
-  <div class="step-panel" id="step-4">
-    <div class="step-header">
-      <div class="step-badge">📋 Step 4</div>
-      <h2>Content Style</h2>
-      <p class="step-desc">The structural format — determines rhythm, viewer expectation, and how information is delivered.</p>
-    </div>
-    <p class="ms-hint">Select all that apply</p>
-    <div class="option-grid cols-2" id="grid-content">
-      <div class="option-card" onclick="toggleOpt('content',this,'Breakdown')"><div class="check">✓</div><div class="opt-name">🔬 Breakdown</div><div class="opt-desc">Deep dive analysis — dissect a play, stat, or situation piece by piece.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Countdown')"><div class="check">✓</div><div class="opt-name">🔢 Countdown</div><div class="opt-desc">Numbered list in descending order. Creates suspense — "and #1 is…"</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Ranking')"><div class="check">✓</div><div class="opt-name">🏆 Ranking</div><div class="opt-desc">Ordered tier list or comparative positioning. Sparks debate.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Reaction')"><div class="check">✓</div><div class="opt-name">😲 Reaction</div><div class="opt-desc">Your live or recorded response to news, a clip, or a hot take.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'This or That')"><div class="check">✓</div><div class="opt-name">⚖️ This or That</div><div class="opt-desc">Binary choice format. Forces audience to pick a side and comment.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Level of Concern')"><div class="check">✓</div><div class="opt-name">📉 Level of Concern</div><div class="opt-desc">Rate how worried you are (1–10 scale). Relatable and shareable.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Trivia')"><div class="check">✓</div><div class="opt-name">🧠 Trivia</div><div class="opt-desc">Quiz-style Q&A. Educates while entertaining. Great for retention.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Skit')"><div class="check">✓</div><div class="opt-name">🎬 Skit</div><div class="opt-desc">Short comedic or dramatic scene. Character-driven in under 60 seconds.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Interaction')"><div class="check">✓</div><div class="opt-name">💬 Interaction</div><div class="opt-desc">Reply to a comment, duet, or stitch. Directly engages community.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Ramble')"><div class="check">✓</div><div class="opt-name">🎤 Ramble</div><div class="opt-desc">Unstructured stream-of-consciousness. Raw and authentic.</div></div>
-      <div class="option-card" onclick="toggleOpt('content',this,'Game')"><div class="check">✓</div><div class="opt-name">🎮 Game</div><div class="opt-desc">Fun, nonsensical game to engage viewers on a topic.</div></div>
-      <div class="option-card other-card" onclick="toggleOther('content',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom content style below.</div>
-        <div class="other-input-wrap" id="content-other-wrap">
-          <input type="text" id="content-other-input" placeholder="Describe your custom content style… (required)" oninput="state.contentOther=this.value" />
-          <div class="other-required" id="content-other-req">⚠ Please enter your custom content style.</div>
-        </div>
-      </div>
-    </div>
-    <div class="nav-buttons">
-      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
-      <button class="btn btn-primary" onclick="nextStep()">Next: Hook →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 5: HOOK ══ -->
-  <div class="step-panel" id="step-5">
-    <div class="step-header">
-      <div class="step-badge">🎣 Step 5</div>
-      <h2>Hook</h2>
-      <p class="step-desc">The first 1–3 seconds of your reel. Choose one or more tactics from any hook type, then write your opening line.</p>
-    </div>
-    <p class="ms-hint">Select any tactics across all hook types</p>
-
-    <!-- VERBAL -->
-    <div class="hook-section-block" id="block-verbal">
-      <div class="hook-section-header verbal" onclick="toggleHookBlock('verbal')">
-        🔴 Verbal Hook — What you say
-        <span class="hook-collapse-icon">▾</span>
-      </div>
-      <div class="hook-section-body">
-        <div class="hook-desc">The first words out of your mouth grab attention. No visual needed — your opening line is the hook.</div>
-        <div class="option-grid cols-2" id="grid-verbal">
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Shock')"><div class="check">✓</div><div class="opt-name">⚡ Shock</div><div class="opt-desc">A stat, fact, or claim so surprising the viewer has to keep watching.</div></div>
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Negative')"><div class="check">✓</div><div class="opt-name">🚫 Negative</div><div class="opt-desc">Lead with what's wrong or what NOT to do. Controversy holds attention.</div></div>
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Question')"><div class="check">✓</div><div class="opt-name">❓ Question</div><div class="opt-desc">Open with a question that makes the viewer want the answer.</div></div>
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Bold Claim')"><div class="check">✓</div><div class="opt-name">💥 Bold Claim</div><div class="opt-desc">State an opinion so confidently it demands a response.</div></div>
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Story Open')"><div class="check">✓</div><div class="opt-name">📖 Story Open</div><div class="opt-desc">Start mid-story. "So I'm watching film at 2am and I noticed something nobody else is talking about…"</div></div>
-          <div class="option-card" onclick="toggleOpt('verbalTactics',this,'Relatability')"><div class="check">✓</div><div class="opt-name">🤝 Relatability</div><div class="opt-desc">Makes the viewer feel seen. "If you watched last night's game you already know…"</div></div>
-          <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('verbalTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom verbal hook.</div>
-            <div class="other-input-wrap" id="verbalTactics-other-wrap">
-              <input type="text" id="verbalTactics-other-input" placeholder="Describe your custom verbal hook… (required)" oninput="state.verbalTacticsOther=this.value" />
-              <div class="other-required" id="verbalTactics-other-req">⚠ Please enter your custom verbal hook.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ON SCREEN -->
-    <div class="hook-section-block" id="block-onscreen">
-      <div class="hook-section-header onscreen" onclick="toggleHookBlock('onscreen')">
-        🟡 On Screen Hook — What they read
-        <span class="hook-collapse-icon">▾</span>
-      </div>
-      <div class="hook-section-body">
-        <div class="hook-desc">Text overlay, graphic, or visual element that stops scrollers who have their sound off.</div>
-        <div class="option-grid cols-2" id="grid-onscreen">
-          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Stat Overlay')"><div class="check">✓</div><div class="opt-name">📊 Stat Overlay</div><div class="opt-desc">Flash a hard-hitting number on screen. The visual alone earns the watch.</div></div>
-          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Text Tease')"><div class="check">✓</div><div class="opt-name">👀 Text Tease</div><div class="opt-desc">"Wait for it" or a preview of your conclusion. Creates curiosity loop.</div></div>
-          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'List Preview')"><div class="check">✓</div><div class="opt-name">📋 List Preview</div><div class="opt-desc">Show items quickly before diving in — viewer stays for #1.</div></div>
-          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Controversial Title')"><div class="check">✓</div><div class="opt-name">🔥 Controversial Title</div><div class="opt-desc">"The most overrated player in the league" displayed boldly on screen.</div></div>
-          <div class="option-card" onclick="toggleOpt('onscreenTactics',this,'Visual Question')"><div class="check">✓</div><div class="opt-name">💭 Visual Question</div><div class="opt-desc">Question printed on screen — drives even silent viewers to engage.</div></div>
-          <div class="option-card other-card" onclick="toggleOther('onscreenTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom on-screen hook.</div>
-            <div class="other-input-wrap" id="onscreenTactics-other-wrap">
-              <input type="text" id="onscreenTactics-other-input" placeholder="Describe your custom on-screen hook… (required)" oninput="state.onscreenTacticsOther=this.value" />
-              <div class="other-required" id="onscreenTactics-other-req">⚠ Please enter your custom on-screen hook.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HIJACK -->
-    <div class="hook-section-block" id="block-hijack">
-      <div class="hook-section-header hijack" onclick="toggleHookBlock('hijack')">
-        🟢 Hijack Hook — Ride a trend
-        <span class="hook-collapse-icon">▾</span>
-      </div>
-      <div class="hook-section-body">
-        <div class="hook-desc">Borrow the energy of something trending — a sound, meme, or viral moment — and redirect it to your content.</div>
-        <div class="option-grid cols-2" id="grid-hijack">
-          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Trending Audio')"><div class="check">✓</div><div class="opt-name">🎵 Trending Audio</div><div class="opt-desc">Use a viral sound or song. Algorithm already has momentum — ride it.</div></div>
-          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Meme Format')"><div class="check">✓</div><div class="opt-name">😂 Meme Format</div><div class="opt-desc">Adapt a recognizable meme template to your sports take.</div></div>
-          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'News Cycle')"><div class="check">✓</div><div class="opt-name">📰 News Cycle</div><div class="opt-desc">Piggyback on breaking news. Post fast, while search volume is peaking.</div></div>
-          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Duet / Stitch')"><div class="check">✓</div><div class="opt-name">🔗 Duet / Stitch</div><div class="opt-desc">Respond to another creator's clip. Their existing views become your audience.</div></div>
-          <div class="option-card" onclick="toggleOpt('hijackTactics',this,'Challenge Format')"><div class="check">✓</div><div class="opt-name">🏅 Challenge Format</div><div class="opt-desc">Adapt a trending challenge to sports content.</div></div>
-          <div class="option-card other-card" onclick="toggleOther('hijackTactics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom hijack hook.</div>
-            <div class="other-input-wrap" id="hijackTactics-other-wrap">
-              <input type="text" id="hijackTactics-other-input" placeholder="Describe your custom hijack hook… (required)" oninput="state.hijackTacticsOther=this.value" />
-              <div class="other-required" id="hijackTactics-other-req">⚠ Please enter your custom hijack hook.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Hook Bank -->
-    <div class="hook-bank">
-      <h4>⚡ Hook Bank — Click Any Template to Use</h4>
-      <div id="hook-bank-list"></div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="field-group">
-      <div class="hook-script-label">
-        <label class="field-label" style="margin-bottom:0;">Hook Script — Write Your Opening Line (first 3 seconds)</label>
-        <button class="btn-add-bank" id="btn-add-bank" onclick="addCurrentHookToBank()">+ Add to Bank</button>
-      </div>
-      <textarea id="s5-hook" placeholder="Write your exact hook here…&#10;&#10;Example: 'Cam Skattebo just got hurt — and the Giants' entire draft strategy just changed.'" rows="4"></textarea>
-    </div>
-
-    <div class="nav-buttons">
-      <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
-      <button class="btn btn-primary" onclick="nextStep()">Next: Editing →</button>
-    </div>
-  </div>
-
-  <!-- ══ STEP 6: EDITING STYLE ══ -->
-  <div class="step-panel" id="step-6">
-    <div class="step-header">
-      <div class="step-badge">✂️ Step 6</div>
-      <h2>Editing Style</h2>
-      <p class="step-desc">The post-production aesthetic — how cuts, motion graphics, pacing, and sound design shape the viewer's emotional experience.</p>
-    </div>
-    <p class="ms-hint">Select all that apply</p>
-    <div class="option-grid cols-2" id="grid-editing">
-      <div class="option-card" onclick="toggleOpt('editing',this,'Breaking News')"><div class="check">✓</div><div class="opt-name">📡 Breaking News</div><div class="opt-desc">Lower thirds, news ticker, urgent red graphics. Creates urgency and authority.</div></div>
-      <div class="option-card" onclick="toggleOpt('editing',this,'Classic')"><div class="check">✓</div><div class="opt-name">🎯 Classic</div><div class="opt-desc">Clean text overlays, minimal cuts, natural talking pace. Timeless and reliable.</div></div>
-      <div class="option-card" onclick="toggleOpt('editing',this,'Storytelling')"><div class="check">✓</div><div class="opt-name">📽️ Storytelling</div><div class="opt-desc">Narrative arc, emotional pacing, musical score, cinematic b-roll.</div></div>
-      <div class="option-card" onclick="toggleOpt('editing',this,'Animation')"><div class="check">✓</div><div class="opt-name">✨ Animation</div><div class="opt-desc">Motion graphics, animated stats, kinetic text. High visual energy.</div></div>
-      <div class="option-card" onclick="toggleOpt('editing',this,'Reel Game')"><div class="check">✓</div><div class="opt-name">🎮 Reel Game</div><div class="opt-desc">Using the reel games tab on the video graphic hub. Fun, viewer-engagement focused.</div></div>
-      <div class="option-card other-card" onclick="toggleOther('editing',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Describe your custom editing style.</div>
-        <div class="other-input-wrap" id="editing-other-wrap">
-          <input type="text" id="editing-other-input" placeholder="Describe your custom editing style… (required)" oninput="state.editingOther=this.value" />
-          <div class="other-required" id="editing-other-req">⚠ Please enter your custom editing style.</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="field-group" style="margin-top:14px;">
-      <label class="field-label">Edit Notes / Specific Techniques</label>
-      <textarea id="s6-notes" placeholder="Sound effects needed, color grade, transition style, specific overlays…&#10;&#10;Example: red lower thirds, injury stat card, 'BREAKING' ticker, quick-cut pacing." rows="4"></textarea>
-    </div>
-
     <div class="nav-buttons">
       <button class="btn btn-ghost" onclick="prevStep()">← Back</button>
       <button class="btn btn-success" onclick="nextStep()">Review &amp; Export →</button>
     </div>
   </div>
 
-  <!-- ══ STEP 7: REVIEW ══ -->
-  <div class="step-panel" id="step-7">
+  <!-- ══ STEP 4: REVIEW ══ -->
+  <div class="step-panel" id="step-4">
     <div class="step-header">
       <div class="step-badge">✅ Review</div>
       <h2>Your Reel Plan</h2>
@@ -1147,7 +1060,7 @@ textarea { min-height: 88px; }
       <label>Document Name</label>
       <div class="doc-name-row">
         <input type="text" id="doc-name" placeholder="e.g. Cam Skattebo Injury — Giants Draft RB" oninput="state.docName=this.value" />
-        <div class="rcf-suffix">RCF</div>
+        <div class="rcf-suffix">IF</div>
       </div>
     </div>
 
@@ -1157,9 +1070,11 @@ textarea { min-height: 88px; }
     </div>
 
     <div class="export-actions">
-      <button class="btn btn-export" onclick="exportDOCX()">⬇️ Download Google Doc</button>
+      <button class="btn btn-export" onclick="exportDOCX()">⬇️ Download Doc</button>
+      <button class="btn btn-drive" id="drive-btn" onclick="uploadToDrive()">☁️ Upload to Drive</button>
       <button class="btn btn-ghost" onclick="startOver()">↺ New Reel</button>
     </div>
+    <div id="drive-status"></div>
   </div>
 
 </div><!-- /main -->
@@ -1168,32 +1083,24 @@ textarea { min-height: 88px; }
 <script>
 // ══ STATE ══
 const state = {
-  // Step 1
+  // Step 1 — Topic
+  topics:[], topicsOther:'', s2notes:'',
+  // Step 2 — Idea
   idea:'',
-  ccnCore:'', ccnCasual:'', ccnNew:'',
-  why:'',
+  ccnCore:false, ccnCasual:false, ccnNew:false,
   contentMix: 0,
   pvcChecked: false, pvcLink:'', pvcReason:'',
   tam:0, s1notes:'',
-  // Step 2
-  topics:[], topicsOther:'', s2notes:'',
-  // Step 3
-  recording:[], recordingOther:'',
-  // Step 4
-  content:[], contentOther:'',
-  // Step 5 - separate arrays per hook type
-  verbalTactics:[], verbalTacticsOther:'',
-  onscreenTactics:[], onscreenTacticsOther:'',
-  hijackTactics:[], hijackTacticsOther:'',
-  hookScript:'',
-  // Step 6
-  editing:[], editingOther:'', s6notes:'',
+  // Step 2 — Format
+  content:[],
+  // Step 3 — Recording
+  recording:[],
   // Doc
   docName:''
 };
 
 let currentStep = 1;
-const TOTAL = 7;
+const TOTAL = 4;
 
 // ══ NAVIGATION ══
 function goToStep(n) {
@@ -1209,13 +1116,13 @@ function goToStep(n) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 function nextStep() {
-  if (currentStep === 1) {
+  if (currentStep === 2) {
     syncTextFields();
     const cb = document.getElementById('pvc-checkbox');
     if (cb.checked) {
       if (!state.pvcLink) { showPVCError('⚠ Please add a link to the pre-validated content before continuing.'); return; }
     } else {
-      if (!state.pvcReason) { showPVCError('⚠ Please explain why you aren\'t using pre-validated content before continuing.'); return; }
+      if (!state.pvcReason) { showPVCError("⚠ Please explain why you aren't using pre-validated content before continuing."); return; }
     }
     hidePVCError();
   }
@@ -1247,24 +1154,16 @@ function updateProgress() {
 function syncTextFields() {
   const grab = (id, key) => { const el = document.getElementById(id); if (el) state[key] = el.value.trim(); };
   grab('s1-idea','idea');
-  grab('s1-ccn-core','ccnCore'); grab('s1-ccn-casual','ccnCasual'); grab('s1-ccn-new','ccnNew');
-  grab('s1-why','why');
   grab('s1-pvc-link','pvcLink'); grab('s1-pvc-reason','pvcReason');
   grab('s1-notes','s1notes');
   grab('s2-notes','s2notes');
-  grab('s5-hook','hookScript');
-  grab('s6-notes','s6notes');
   grab('doc-name','docName');
-  // other inputs
-  ['topics','recording','content','verbalTactics','onscreenTactics','hijackTactics','editing'].forEach(g => {
-    const el = document.getElementById(g + '-other-input');
-    if (el) state[g + 'Other'] = el.value.trim();
-  });
+  const _toe = document.getElementById('topics-other-input');
+  if (_toe) state.topicsOther = _toe.value.trim();
 }
 
 // ══ MULTI-SELECT TOGGLE ══
 function toggleOpt(group, el, value) {
-  // make sure not an other-card
   if (el.classList.contains('other-card')) return;
   const arr = state[group];
   const idx = arr.indexOf(value);
@@ -1291,10 +1190,9 @@ function toggleOther(group, el) {
   }
 }
 
-// Validate other inputs before proceeding
 function validateOthers() {
   let ok = true;
-  ['topics','recording','content','verbalTactics','onscreenTactics','hijackTactics','editing'].forEach(g => {
+  ['topics'].forEach(g => {
     const arr = state[g];
     if (arr.includes('__other__')) {
       const val = (document.getElementById(g + '-other-input') || {}).value || '';
@@ -1339,87 +1237,6 @@ function togglePVC(checkbox) {
   }
 }
 
-// ══ HOOK BLOCK COLLAPSE ══
-function toggleHookBlock(id) {
-  document.getElementById('block-' + id).classList.toggle('collapsed');
-}
-
-// ══ HOOK BANK ══
-const DEFAULT_BANK = [
-  "The quickest way to [X] is by [Y]",
-  "It's come to my attention that people don't know how to [X]",
-  "Most of you don't know how to [X]",
-  "This is 90 seconds of the best [X] advice you'll find on social media",
-  "The only [X] guide you need",
-  "[X] vs [Y] — what's the difference?",
-  "One of the top [niche] strategies of this year is [X]"
-];
-
-function loadBank() {
-  const custom = JSON.parse(localStorage.getItem('rcf-hook-bank') || '[]');
-  return [...DEFAULT_BANK, ...custom];
-}
-
-function renderBankList() {
-  const list = document.getElementById('hook-bank-list');
-  if (!list) return;
-  list.innerHTML = loadBank().map(item => {
-    const safe = item.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-    return `<div class="bank-item" onclick="useBank('${safe}')">${item}<span class="use-btn">Use →</span></div>`;
-  }).join('');
-}
-
-function useBank(text) {
-  const ta = document.getElementById('s5-hook');
-  ta.value = text;
-  ta.focus();
-  state.hookScript = text;
-}
-
-function templatizeHook(text) {
-  const skipWords = new Set([
-    'The','A','An','It','This','That','These','Those','If','So','When',
-    'What','Who','And','But','For','Are','Was','Were','Has','Have','Had',
-    'Did','Do','Does','Not','Just','Only','Now','All','My','Your','Our'
-  ]);
-  const placeholders = ['[X]','[Y]','[Z]','[A]','[B]','[C]'];
-  const found = new Map();
-  let pIdx = 0;
-
-  // Match sequences of 1-3 Title Case words (proper nouns)
-  const re = /\b([A-Z][a-z]{1,}(?:[ \t]+[A-Z][a-z]{1,}){0,2})\b/g;
-  let m;
-  while ((m = re.exec(text)) !== null) {
-    const phrase = m[1];
-    if (!found.has(phrase) && !skipWords.has(phrase) && pIdx < placeholders.length) {
-      found.set(phrase, placeholders[pIdx++]);
-    }
-  }
-  // Replace longest matches first to avoid partial replacements
-  let result = text;
-  [...found.keys()].sort((a, b) => b.length - a.length).forEach(phrase => {
-    result = result.split(phrase).join(found.get(phrase));
-  });
-  return result;
-}
-
-function addCurrentHookToBank() {
-  const ta = document.getElementById('s5-hook');
-  const raw = (ta.value || '').trim();
-  if (!raw) { alert('Write a hook script first, then add it to the bank.'); return; }
-  const template = templatizeHook(raw);
-  const custom = JSON.parse(localStorage.getItem('rcf-hook-bank') || '[]');
-  if (!DEFAULT_BANK.includes(template) && !custom.includes(template)) {
-    custom.push(template);
-    localStorage.setItem('rcf-hook-bank', JSON.stringify(custom));
-    renderBankList();
-  }
-  const btn = document.getElementById('btn-add-bank');
-  btn.textContent = '✓ Added!';
-  btn.classList.add('confirmed');
-  setTimeout(() => { btn.textContent = '+ Add to Bank'; btn.classList.remove('confirmed'); }, 1800);
-}
-
 // ══ BUILD REVIEW ══
 function buildReview() {
   syncTextFields();
@@ -1440,22 +1257,15 @@ function buildReview() {
     return v ? `<div class="rc-value">${v}</div>` : `<div class="rc-value empty">— not filled in —</div>`;
   }
 
-  // Combine all hook tactics
-  const allTactics = [
-    ...state.verbalTactics.map(v => v === '__other__' ? `Other (Verbal): ${state.verbalTacticsOther}` : `[Verbal] ${v}`),
-    ...state.onscreenTactics.map(v => v === '__other__' ? `Other (On Screen): ${state.onscreenTacticsOther}` : `[On Screen] ${v}`),
-    ...state.hijackTactics.map(v => v === '__other__' ? `Other (Hijack): ${state.hijackTacticsOther}` : `[Hijack] ${v}`)
-  ];
-
   const tamLabel = state.tam >= 8 ? 'Mass Market' : state.tam >= 5 ? 'Known' : state.tam >= 2 ? 'Niche' : state.tam === 1 ? 'Unknown' : '';
   const tamHTML = state.tam
     ? `<div class="rc-tam"><span class="tam-n">${state.tam}</span>/10 — ${tamLabel}</div>`
-    : `<span class="rc-value empty">— not rated —</span>`;
+    : '<span class="rc-value empty">— not rated —</span>';
 
   const mixLabels = { 70:'Proven (70%)', 20:'Iteration (20%)', 10:'Experimental (10%)' };
   const mixHTML = state.contentMix
     ? `<div class="rc-value">${mixLabels[state.contentMix] || state.contentMix + '%'}</div>`
-    : `<span class="rc-value empty">— not selected —</span>`;
+    : '<span class="rc-value empty">— not selected —</span>';
 
   const pvcHTML = state.pvcChecked
     ? `<div class="rc-value">✓ Yes — <a href="${state.pvcLink}" style="color:var(--blue)">${state.pvcLink || 'link not provided'}</a></div>`
@@ -1463,70 +1273,47 @@ function buildReview() {
 
   grid.innerHTML = `
     <div class="review-card">
-      <div class="rc-step">💡 Step 1 — Ideation</div>
+      <div class="rc-step">🏷️ Step 1 — Topic</div>
+      <div class="rc-row"><div class="rc-label">Selected Topics</div>${tagsHTML(state.topics,'topicsOther')}</div>
+      <div class="rc-row"><div class="rc-label">Notes / Angle</div>${valHTML(state.s2notes)}</div>
+    </div>
+    <div class="review-card">
+      <div class="rc-step">💡 Step 2 — Idea</div>
       <div class="rc-row"><div class="rc-label">Reel Concept</div>${valHTML(state.idea)}</div>
-      <div class="rc-row"><div class="rc-label">CCN — Core</div>${valHTML(state.ccnCore)}</div>
-      <div class="rc-row"><div class="rc-label">CCN — Casual</div>${valHTML(state.ccnCasual)}</div>
-      <div class="rc-row"><div class="rc-label">CCN — New</div>${valHTML(state.ccnNew)}</div>
-      <div class="rc-row"><div class="rc-label">Why Now</div>${valHTML(state.why)}</div>
+      <div class="rc-row"><div class="rc-label">CCN Fit</div>${(()=>{const p=[state.ccnCore&&'Core',state.ccnCasual&&'Casual',state.ccnNew&&'New'].filter(Boolean);return p.length?'<div class="rc-tags">'+p.map(x=>'<span class="rc-tag">'+x+'</span>').join('')+'</div>':'<span class="rc-value empty">— not selected —</span>';})()}</div>
       <div class="rc-row"><div class="rc-label">Content Mix</div>${mixHTML}</div>
       <div class="rc-row"><div class="rc-label">Pre-validated Content</div>${pvcHTML}</div>
       <div class="rc-row"><div class="rc-label">TAM Score</div>${tamHTML}</div>
       <div class="rc-row"><div class="rc-label">Additional Notes</div>${valHTML(state.s1notes)}</div>
     </div>
     <div class="review-card">
-      <div class="rc-step">🏷️ Step 2 — Topic</div>
-      <div class="rc-row"><div class="rc-label">Selected Topics</div>${tagsHTML(state.topics,'topicsOther')}</div>
-      <div class="rc-row"><div class="rc-label">Notes / Angle</div>${valHTML(state.s2notes)}</div>
+      <div class="rc-step">📋 Step 2 — Format</div>
+      <div class="rc-row"><div class="rc-label">Selected Formats</div>${tagsHTML(state.content,'contentOther')}</div>
     </div>
     <div class="review-card">
       <div class="rc-step">🎥 Step 3 — Recording Style</div>
       <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.recording,'recordingOther')}</div>
     </div>
-    <div class="review-card">
-      <div class="rc-step">📋 Step 4 — Content Style</div>
-      <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.content,'contentOther')}</div>
-    </div>
-    <div class="review-card">
-      <div class="rc-step">🎣 Step 5 — Hook</div>
-      <div class="rc-row"><div class="rc-label">Selected Tactics</div>${
-        allTactics.length
-          ? `<div class="rc-tags">${allTactics.map(t => `<span class="rc-tag">${t}</span>`).join('')}</div>`
-          : `<span class="rc-value empty">— not selected —</span>`
-      }</div>
-      <div class="rc-row"><div class="rc-label">Hook Script</div>${valHTML(state.hookScript)}</div>
-    </div>
-    <div class="review-card">
-      <div class="rc-step">✂️ Step 6 — Editing Style</div>
-      <div class="rc-row"><div class="rc-label">Selected Styles</div>${tagsHTML(state.editing,'editingOther')}</div>
-      <div class="rc-row"><div class="rc-label">Edit Notes / Techniques</div>${valHTML(state.s6notes)}</div>
-    </div>
   `;
 }
 
-// ══ EXPORT DOCX ══
-async function exportDOCX() {
+// ══ BUILD DOCX BLOB ══
+async function buildDocxBlob() {
   syncTextFields();
-  if (!validateOthers()) { alert('Please fill in all "Other" fields before exporting.'); return; }
-  if (!window.docx) { alert('Export library not loaded yet — please wait a moment and try again.'); return; }
+  if (!validateOthers()) { alert('Please fill in all "Other" fields before exporting.'); return null; }
+  if (!window.docx) { alert('Export library not loaded yet — please wait a moment and try again.'); return null; }
 
   try {
-
   const {
     Document, Packer, Paragraph, TextRun, Table, TableRow, TableCell,
     BorderStyle, ShadingType, WidthType
   } = window.docx;
 
-  const docName = (state.docName ? state.docName + ' RCF' : 'Reels Creation Framework RCF');
+  const docName = (state.docName ? state.docName + ' IF' : 'Ideation Framework IF');
   const dateStr = new Date().toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
 
-  // A4 = 11906 DXA wide. Margins 720 each side → usable = 10466 DXA.
-  // 3-cell table: col | gap | col  →  5083 | 300 | 5083
-  const PAGE_W  = 11906;
-  const MARGIN  = 720;
-  const USABLE  = PAGE_W - MARGIN * 2;   // 10466
-  const GAP_W   = 300;
-  const COL_W   = Math.floor((USABLE - GAP_W) / 2);  // 5083
+  const PAGE_W = 11906, MARGIN = 720, USABLE = PAGE_W - MARGIN * 2, GAP_W = 300;
+  const COL_W = Math.floor((USABLE - GAP_W) / 2);
 
   const NO_BORDER = { style: BorderStyle.NONE, size: 0, color: 'FFFFFF' };
   const noBorders = { top: NO_BORDER, bottom: NO_BORDER, left: NO_BORDER, right: NO_BORDER, insideH: NO_BORDER, insideV: NO_BORDER };
@@ -1579,108 +1366,63 @@ async function exportDOCX() {
       shading: { fill: 'EEF4FF', type: ShadingType.CLEAR },
       children: [
         new TextRun({ text: 'TAM   ', bold: true, size: 13, color: LABEL_COL }),
-        value
-          ? new TextRun({ text: `${value} / 10`, bold: true, size: 18, color: '1D4ED8' })
-          : new TextRun({ text: '—', size: 15, color: MUTED, italics: true }),
-        value
-          ? new TextRun({ text: `    ${tier}`, size: 13, color: LABEL_COL })
-          : new TextRun({ text: '' }),
+        value ? new TextRun({ text: `${value} / 10`, bold: true, size: 18, color: '1D4ED8' }) : new TextRun({ text: '—', size: 15, color: MUTED, italics: true }),
+        value ? new TextRun({ text: `    ${tier}`, size: 13, color: LABEL_COL }) : new TextRun({ text: '' }),
       ],
     });
   }
 
-  function gap(sz = 100) {
-    return new Paragraph({ text: '', spacing: sp(0, sz) });
-  }
+  function gap(sz = 100) { return new Paragraph({ text: '', spacing: sp(0, sz) }); }
 
   function makeCell(w, children) {
-    return new TableCell({
-      width: { size: w, type: WidthType.DXA },
-      borders: noBorders,
-      children,
-    });
+    return new TableCell({ width: { size: w, type: WidthType.DXA }, borders: noBorders, children });
   }
 
-  // Hook tactics
-  const allTactics = [
-    ...state.verbalTactics.map(v => v === '__other__' ? `Verbal: ${state.verbalTacticsOther}` : `[V] ${v}`),
-    ...state.onscreenTactics.map(v => v === '__other__' ? `On Screen: ${state.onscreenTacticsOther}` : `[OS] ${v}`),
-    ...state.hijackTactics.map(v => v === '__other__' ? `Hijack: ${state.hijackTacticsOther}` : `[HJ] ${v}`),
-  ];
-
-  // ── TAM label helper ──
   const tamLabelStr = state.tam >= 8 ? 'Mass Market' : state.tam >= 5 ? 'Known' : state.tam >= 2 ? 'Niche' : state.tam === 1 ? 'Unknown' : '';
   const mixLabelStr = state.contentMix === 70 ? 'Proven (70%)' : state.contentMix === 20 ? 'Iteration (20%)' : state.contentMix === 10 ? 'Experimental (10%)' : null;
   const pvcStr = state.pvcChecked ? `Yes — ${state.pvcLink || 'link not provided'}` : `No — ${state.pvcReason || 'reason not provided'}`;
 
-  // ── LEFT: Steps 1–2 ──
   const leftChildren = [
-    sectionHeader(1, 'Ideation', PINK),
+    sectionHeader(1, 'Topic', BLUE),
+    tagsField('Topics', state.topics, 'topicsOther', BLUE),
+    field('Angle', state.s2notes, BLUE),
+    gap(160),
+    sectionHeader(2, 'Idea', PINK),
     field('Concept', state.idea, PINK),
-    field('CCN · Core', state.ccnCore, PINK),
-    field('CCN · Casual', state.ccnCasual, PINK),
-    field('CCN · New', state.ccnNew, PINK),
-    field('Why Now', state.why, PINK),
+    field('CCN Fit', [state.ccnCore&&'Core',state.ccnCasual&&'Casual',state.ccnNew&&'New'].filter(Boolean).join(' · ')||null, PINK),
     field('Content Mix', mixLabelStr, PINK),
     field('Pre-validated', pvcStr, PINK),
     tamField(state.tam || null),
     field('Notes', state.s1notes, PINK),
-    gap(160),
-    sectionHeader(2, 'Topic', BLUE),
-    tagsField('Topics', state.topics, 'topicsOther', BLUE),
-    field('Angle', state.s2notes, BLUE),
   ];
 
-  // ── RIGHT: Steps 3–6 ──
   const rightChildren = [
+    sectionHeader(2, 'Format', BLUE),
+    tagsField('Format', state.content, 'contentOther', BLUE),
+    gap(160),
     sectionHeader(3, 'Recording Style', PINK),
     tagsField('Style', state.recording, 'recordingOther', PINK),
-    gap(160),
-    sectionHeader(4, 'Content Style', BLUE),
-    tagsField('Style', state.content, 'contentOther', BLUE),
-    gap(160),
-    sectionHeader(5, 'Hook', PINK),
-    tagsField('Tactics', allTactics, null, PINK),
-    field('Hook Script', state.hookScript, PINK),
-    gap(160),
-    sectionHeader(6, 'Editing Style', BLUE),
-    tagsField('Style', state.editing, 'editingOther', BLUE),
-    field('Edit Notes', state.s6notes, BLUE),
   ];
 
-  // ── 2-column table: LEFT | gap | RIGHT ──
   const layoutTable = new Table({
     width: { size: USABLE, type: WidthType.DXA },
     columnWidths: [COL_W, GAP_W, COL_W],
     borders: noBorders,
-    rows: [
-      new TableRow({
-        children: [
-          makeCell(COL_W, leftChildren),
-          makeCell(GAP_W, [new Paragraph({ text: '' })]),
-          makeCell(COL_W, rightChildren),
-        ],
-      }),
-    ],
+    rows: [new TableRow({ children: [makeCell(COL_W, leftChildren), makeCell(GAP_W, [new Paragraph({ text: '' })]), makeCell(COL_W, rightChildren)] })],
   });
 
   const doc = new Document({
-    creator: 'Reels Creation Framework',
+    creator: 'Ideation Framework',
     title: docName,
     sections: [{
-      properties: {
-        page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } },
-      },
+      properties: { page: { margin: { top: 720, bottom: 720, left: 720, right: 720 } } },
       children: [
-        new Paragraph({
-          spacing: sp(0, 40),
-          children: [new TextRun({ text: docName, bold: true, size: 44, color: NAVY })],
-        }),
+        new Paragraph({ spacing: sp(0, 40), children: [new TextRun({ text: docName, bold: true, size: 44, color: NAVY })] }),
         new Paragraph({
           spacing: sp(0, 200),
           border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: PINK, space: 6 } },
           children: [
-            new TextRun({ text: 'REELS CREATION FRAMEWORK  •  RCF', bold: true, size: 15, color: PINK }),
+            new TextRun({ text: 'IDEATION FRAMEWORK  •  IF', bold: true, size: 15, color: PINK }),
             new TextRun({ text: `        ${dateStr}`, size: 14, color: LABEL_COL }),
           ],
         }),
@@ -1689,7 +1431,7 @@ async function exportDOCX() {
           spacing: sp(240, 0),
           border: { top: { style: BorderStyle.SINGLE, size: 4, color: 'D1D5DB', space: 6 } },
           children: [
-            new TextRun({ text: 'Reels Creation Framework  •  RCF        ', size: 13, color: MUTED }),
+            new TextRun({ text: 'Ideation Framework  •  IF        ', size: 13, color: MUTED }),
             new TextRun({ text: `Generated ${dateStr}`, size: 13, color: MUTED }),
           ],
         }),
@@ -1698,33 +1440,169 @@ async function exportDOCX() {
   });
 
   const blob = await Packer.toBlob(doc);
-  const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), { href: url, download: docName + '.docx' });
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  return { blob, docName };
 
   } catch(err) {
-    console.error('DOCX export error:', err);
+    console.error('DOCX build error:', err);
     alert('Export failed: ' + err.message);
+    return null;
   }
+}
+
+// ══ EXPORT DOCX ══
+async function exportDOCX() {
+  const result = await buildDocxBlob();
+  if (!result) return;
+  const { blob, docName } = result;
+  const url = URL.createObjectURL(blob);
+  const a = Object.assign(document.createElement('a'), { href: url, download: docName + '.docx' });
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ══ GOOGLE DRIVE UPLOAD ══
+const DRIVE_CONFIG = {
+  clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
+  folderId: '1VBv8MDa9rZD-UBY6t6MJKH9O0EB8sN1C',
+  scope: 'https://www.googleapis.com/auth/drive.file',
+};
+
+let _driveTokenClient = null;
+let _driveAccessToken = null;
+
+function driveStatus(msg, type) {
+  const el = document.getElementById('drive-status');
+  el.textContent = msg; el.className = type;
+}
+function driveSetBusy(busy) {
+  const btn = document.getElementById('drive-btn');
+  btn.disabled = busy;
+  btn.textContent = busy ? '⏳ Uploading…' : '☁️ Upload to Drive';
+}
+
+async function uploadBlobToDrive(blob, filename, token) {
+  const meta = JSON.stringify({ name: filename, parents: [DRIVE_CONFIG.folderId] });
+  const body = new FormData();
+  body.append('metadata', new Blob([meta], { type: 'application/json' }));
+  body.append('file', blob, filename);
+  const res = await fetch(
+    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink',
+    { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body }
+  );
+  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err?.error?.message || `HTTP ${res.status}`); }
+  return res.json();
+}
+
+async function uploadToDrive() {
+  if (DRIVE_CONFIG.clientId === 'YOUR_CLIENT_ID.apps.googleusercontent.com') {
+    driveStatus('Drive upload not configured — see setup comments in source.', 'error'); return;
+  }
+  driveSetBusy(true); driveStatus('Building document…', 'info');
+  const result = await buildDocxBlob();
+  if (!result) { driveSetBusy(false); driveStatus('', ''); return; }
+  const { blob, docName } = result;
+  const filename = docName + '.docx';
+  driveStatus('Signing in to Google…', 'info');
+  if (!_driveTokenClient) {
+    _driveTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: DRIVE_CONFIG.clientId, scope: DRIVE_CONFIG.scope, callback: () => {},
+    });
+  }
+  const doUpload = async (token) => {
+    driveStatus('Uploading to Drive…', 'info');
+    try {
+      const file = await uploadBlobToDrive(blob, filename, token);
+      driveStatus(`✓ Uploaded: ${file.name} — `, 'ok');
+      const link = document.createElement('a');
+      link.href = file.webViewLink; link.target = '_blank'; link.rel = 'noopener noreferrer';
+      link.textContent = 'Open in Drive'; link.style.cssText = 'color:inherit;font-weight:600;';
+      document.getElementById('drive-status').appendChild(link);
+    } catch (err) {
+      console.error('Drive upload error:', err);
+      driveStatus('Upload failed: ' + err.message, 'error');
+    } finally { driveSetBusy(false); }
+  };
+  if (_driveAccessToken) {
+    try { await doUpload(_driveAccessToken); return; } catch { _driveAccessToken = null; }
+  }
+  _driveTokenClient.callback = async (resp) => {
+    if (resp.error) { driveStatus('Google sign-in cancelled or failed.', 'error'); driveSetBusy(false); return; }
+    _driveAccessToken = resp.access_token;
+    await doUpload(_driveAccessToken);
+  };
+  _driveTokenClient.requestAccessToken({ prompt: '' });
+}
+
+
+// ══ CUSTOM OPTIONS (localStorage, permanent across sessions) ══
+const CUSTOM_STORAGE = { content: 'if_custom_content', recording: 'if_custom_recording' };
+
+function getCustomOpts(group) {
+  try { return JSON.parse(localStorage.getItem(CUSTOM_STORAGE[group]) || '[]'); }
+  catch { return []; }
+}
+function saveCustomOpts(group, arr) {
+  localStorage.setItem(CUSTOM_STORAGE[group], JSON.stringify(arr));
+}
+function renderCustomCards(group) {
+  const grid = document.getElementById('grid-' + group);
+  if (!grid) return;
+  grid.querySelectorAll('.custom-opt-card').forEach(el => el.remove());
+  const addRow = grid.querySelector('.custom-add-row');
+  getCustomOpts(group).forEach(label => {
+    const card = document.createElement('div');
+    card.className = 'option-card custom-opt-card';
+    card.setAttribute('data-custom-label', label);
+    if (state[group] && state[group].includes(label)) card.classList.add('selected');
+    card.onclick = () => toggleOpt(group, card, label);
+    const rmBtn = document.createElement('button');
+    rmBtn.className = 'custom-remove-btn';
+    rmBtn.title = 'Remove permanently';
+    rmBtn.textContent = '×';
+    rmBtn.onclick = e => { e.stopPropagation(); removeCustomOpt(group, label); };
+    card.innerHTML = '<div class="check">✓</div><div class="opt-name">✏️ ' + label + '</div>';
+    card.appendChild(rmBtn);
+    if (addRow) grid.insertBefore(card, addRow);
+    else grid.appendChild(card);
+  });
+}
+function addCustomOpt(group, label) {
+  label = label.trim();
+  if (!label) return;
+  const opts = getCustomOpts(group);
+  if (!opts.includes(label)) { opts.push(label); saveCustomOpts(group, opts); }
+  renderCustomCards(group);
+  const grid = document.getElementById('grid-' + group);
+  const newCard = grid ? [...grid.querySelectorAll('.custom-opt-card')].find(c => c.getAttribute('data-custom-label') === label) : null;
+  if (newCard && !newCard.classList.contains('selected')) toggleOpt(group, newCard, label);
+}
+function removeCustomOpt(group, label) {
+  saveCustomOpts(group, getCustomOpts(group).filter(l => l !== label));
+  if (state[group]) { const i = state[group].indexOf(label); if (i !== -1) state[group].splice(i, 1); }
+  renderCustomCards(group);
+}
+function handleCustomAdd(group, input) {
+  const val = input.value.trim();
+  if (!val) return;
+  addCustomOpt(group, val);
+  input.value = '';
+  input.focus();
 }
 
 // ══ INIT ══
 document.addEventListener('DOMContentLoaded', () => {
-  renderBankList();
+  renderCustomCards('content');
+  renderCustomCards('recording');
 });
 
 // ══ START OVER ══
 function startOver() {
   if (!confirm('Start a new reel? All current entries will be cleared.')) return;
-  // reset state arrays/strings
   Object.keys(state).forEach(k => {
-    if (Array.isArray(state[k]))       state[k] = [];
+    if (Array.isArray(state[k]))             state[k] = [];
     else if (k === 'tam' || k === 'contentMix') state[k] = 0;
-    else if (k === 'pvcChecked')       state[k] = false;
-    else                               state[k] = '';
+    else if (k === 'pvcChecked' || k === 'ccnCore' || k === 'ccnCasual' || k === 'ccnNew') state[k] = false;
+    else                                     state[k] = '';
   });
   document.querySelectorAll('textarea, input[type="text"]').forEach(el => el.value = '');
   document.querySelectorAll('input[type="checkbox"]').forEach(el => el.checked = false);
@@ -1733,12 +1611,12 @@ function startOver() {
   document.querySelectorAll('.other-required.show').forEach(el => el.classList.remove('show'));
   document.querySelectorAll('.tam-btn.selected').forEach(el => el.classList.remove('selected'));
   document.querySelectorAll('.mix-btn.selected').forEach(el => el.classList.remove('selected'));
-  document.querySelectorAll('.hook-section-block.collapsed').forEach(el => el.classList.remove('collapsed'));
-  // Reset PVC UI to default (unchecked = show reason input)
   const linkWrap = document.getElementById('pvc-link-wrap');
   const reasonWrap = document.getElementById('pvc-reason-wrap');
   if (linkWrap) linkWrap.classList.remove('visible');
   if (reasonWrap) reasonWrap.classList.add('visible');
+  renderCustomCards('content');
+  renderCustomCards('recording');
   goToStep(1);
 }
 </script>
