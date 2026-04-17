@@ -7,7 +7,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/docx@7.8.2/build/index.js"></script>
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
   --bg:       #061525;
@@ -114,7 +113,7 @@ body {
 
 /* ── MAIN ── */
 .main {
-  max-width: 860px;
+  max-width: 1100px;
   margin: 0 auto;
   padding: 30px 22px 100px;
 }
@@ -642,25 +641,6 @@ textarea { min-height: 88px; }
   box-shadow: 0 4px 18px rgba(237,10,115,0.35);
 }
 .btn-export:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-drive {
-  background: linear-gradient(135deg, #1a73e8 0%, #0f9d58 100%);
-  color: #fff;
-  font-size: 0.82rem;
-  padding: 12px 26px;
-  box-shadow: 0 4px 18px rgba(26,115,232,0.35);
-}
-.btn-drive:hover { filter: brightness(1.1); transform: translateY(-1px); }
-.btn-drive:disabled { opacity: 0.55; cursor: not-allowed; transform: none; filter: none; }
-#drive-status {
-  font-size: 0.78rem;
-  margin-top: 10px;
-  padding: 8px 14px;
-  border-radius: var(--radius);
-  display: none;
-}
-#drive-status.info  { display:block; background: rgba(51,154,233,0.12); color: var(--blue); border: 1px solid rgba(51,154,233,0.3); }
-#drive-status.ok    { display:block; background: rgba(62,207,106,0.12); color: #3ECF6A; border: 1px solid rgba(62,207,106,0.3); }
-#drive-status.error { display:block; background: rgba(237,10,115,0.12); color: var(--pink); border: 1px solid rgba(237,10,115,0.3); }
 
 /* ── REVIEW PAGE ── */
 .doc-name-block {
@@ -784,11 +764,16 @@ textarea { min-height: 88px; }
 /* ── STEP SPLIT (Idea + Format side by side) ── */
 .step-split {
   display: grid;
-  grid-template-columns: 1fr 1.4fr;
-  gap: 28px;
+  grid-template-columns: 1.4fr 1fr;
+  gap: 32px;
   align-items: start;
 }
-@media (max-width: 660px) { .step-split { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .step-split { grid-template-columns: 1fr; } }
+
+/* ── COMPACT FORMAT CARDS ── */
+#grid-content .option-card { padding: 7px 9px; }
+#grid-content .opt-name { font-size: 0.75rem; }
+#grid-content .opt-desc { font-size: 0.67rem; line-height: 1.3; }
 .step-split-col { min-width: 0; }
 .split-col-header {
   font-family: 'Oswald', sans-serif;
@@ -818,8 +803,7 @@ textarea { min-height: 88px; }
 .custom-add-input::placeholder { color: var(--muted); }
 .custom-add-btn { background: transparent; border: 1px solid var(--blue); color: var(--blue); border-radius: 50%; width: 28px; height: 28px; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.15s, color 0.15s; }
 .custom-add-btn:hover { background: var(--blue); color: #fff; }
-.custom-remove-btn { position: absolute; top: 5px; right: 5px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 0.82rem; padding: 2px 5px; border-radius: 3px; opacity: 0; transition: opacity 0.15s; line-height: 1; z-index: 2; }
-.custom-opt-card:hover .custom-remove-btn { opacity: 1; }
+.custom-remove-btn { position: absolute; top: 5px; right: 5px; background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 0.82rem; padding: 2px 5px; border-radius: 3px; opacity: 0.45; transition: opacity 0.15s, color 0.15s; line-height: 1; z-index: 2; }
 .custom-remove-btn:hover { color: var(--pink) !important; opacity: 1 !important; }
 </style>
 </head>
@@ -857,28 +841,29 @@ textarea { min-height: 88px; }
     <div class="step-header">
       <div class="step-badge">🏷️ Step 1</div>
       <h2>Topic</h2>
-      <p class="step-desc">The subject matter of your reel. Select one or more topic categories — or add your own.</p>
+      <p class="step-desc">Enter your topic, then select the categories that best describe it.</p>
     </div>
-    <p class="ms-hint">Select all that apply</p>
-    <div class="option-grid cols-2" id="grid-topics">
-      <div class="option-card" onclick="toggleOpt('topics',this,'Free Agency')"><div class="check">✓</div><div class="opt-name">🔓 Free Agency</div><div class="opt-desc">Player movement, signings, departures — the market is open.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Draft')"><div class="check">✓</div><div class="opt-name">📋 Draft</div><div class="opt-desc">Picks, prospects, mock drafts, live reactions to draft night.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Rookies')"><div class="check">✓</div><div class="opt-name">⭐ Rookies</div><div class="opt-desc">First-year players, debut performances, hype tracking.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Trade Rumors')"><div class="check">✓</div><div class="opt-name">🔄 Trade Rumors</div><div class="opt-desc">Breaking news, speculation, league insider intel.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Game Recap')"><div class="check">✓</div><div class="opt-name">🏟️ Game Recap</div><div class="opt-desc">Post-game analysis, highlights, turning point moments.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Rankings')"><div class="check">✓</div><div class="opt-name">📊 Rankings</div><div class="opt-desc">Power rankings, player tiers, best of lists.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Injuries')"><div class="check">✓</div><div class="opt-name">🩹 Injuries</div><div class="opt-desc">Updates, impact on team, fantasy implications.</div></div>
-      <div class="option-card" onclick="toggleOpt('topics',this,'Season Preview')"><div class="check">✓</div><div class="opt-name">🔮 Season Preview</div><div class="opt-desc">Predictions, expectations, bold takes before the season starts.</div></div>
-      <div class="option-card other-card" style="grid-column:1/-1" onclick="toggleOther('topics',this)"><div class="check">✓</div><div class="opt-name">✏️ Other</div><div class="opt-desc">Define a custom topic below.</div>
-        <div class="other-input-wrap" id="topics-other-wrap">
-          <input type="text" id="topics-other-input" placeholder="Describe your custom topic… (required)" oninput="state.topicsOther=this.value" />
-          <div class="other-required" id="topics-other-req">⚠ Please enter your custom topic.</div>
+    <div class="field-group">
+      <label class="field-label">Topic</label>
+      <input type="text" id="s1-topic" placeholder="e.g. AJ Brown trade, Mahomes injury update, Week 5 waiver wire…" oninput="state.topic=this.value" />
+    </div>
+    <div class="field-group">
+      <label class="section-label">Topic Categories</label>
+      <p class="ms-hint">Select all that apply</p>
+      <div class="option-grid cols-2" id="grid-topics">
+        <div class="option-card" onclick="toggleOpt('topics',this,'Free Agency')"><div class="check">✓</div><div class="opt-name">🔓 Free Agency</div><div class="opt-desc">Player movement, signings, departures — the market is open.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Draft')"><div class="check">✓</div><div class="opt-name">📋 Draft</div><div class="opt-desc">Picks, prospects, mock drafts, live reactions to draft night.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Rookies')"><div class="check">✓</div><div class="opt-name">⭐ Rookies</div><div class="opt-desc">First-year players, debut performances, hype tracking.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Trade')"><div class="check">✓</div><div class="opt-name">🔄 Trade</div><div class="opt-desc">Trade rumors, news, and speculation — who's on the move.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Game Recap')"><div class="check">✓</div><div class="opt-name">🏟️ Game Recap</div><div class="opt-desc">Post-game analysis, highlights, turning point moments.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Rankings')"><div class="check">✓</div><div class="opt-name">📊 Rankings</div><div class="opt-desc">Power rankings, player tiers, best of lists.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Injuries')"><div class="check">✓</div><div class="opt-name">🩹 Injuries</div><div class="opt-desc">Updates, impact on team, fantasy implications.</div></div>
+        <div class="option-card" onclick="toggleOpt('topics',this,'Season Preview')"><div class="check">✓</div><div class="opt-name">🔮 Season Preview</div><div class="opt-desc">Predictions, expectations, bold takes before the season starts.</div></div>
+        <div class="custom-add-row">
+          <input type="text" class="custom-add-input" id="topics-custom-input" placeholder="Add custom category… press Enter to save permanently" onkeydown="if(event.key==='Enter'){event.preventDefault();handleCustomAdd('topics',this)}" />
+          <button class="custom-add-btn" onclick="handleCustomAdd('topics',document.getElementById('topics-custom-input'))" title="Add permanently">+</button>
         </div>
       </div>
-    </div>
-    <div class="field-group" style="margin-top:14px;">
-      <label class="field-label">Notes / Angle</label>
-      <textarea id="s2-notes" placeholder="Describe your specific angle or add any context…" rows="3"></textarea>
     </div>
     <div class="nav-buttons">
       <div></div>
@@ -906,20 +891,12 @@ textarea { min-height: 88px; }
         </div>
 
         <div class="field-group">
-          <label class="section-label">CCN — Audience Fit</label>
-          <div class="ccn-check-row">
-            <label class="ccn-check-item">
-              <input type="checkbox" id="ccn-core" onchange="state.ccnCore=this.checked" />
-              <span class="ccn-label-tag ccn-core" data-tooltip="Big fans and product buyers">Core</span>
+          <div class="pvc-wrap">
+            <label class="pvc-check-row" for="ccn-checkbox">
+              <input type="checkbox" id="ccn-checkbox" onchange="state.ccnConsidered=this.checked" />
+              <span class="pvc-check-name">Did you consider CCN fit?</span>
             </label>
-            <label class="ccn-check-item">
-              <input type="checkbox" id="ccn-casual" onchange="state.ccnCasual=this.checked" />
-              <span class="ccn-label-tag ccn-casual" data-tooltip="Familiar with UHF, but not invested">Casual</span>
-            </label>
-            <label class="ccn-check-item">
-              <input type="checkbox" id="ccn-new" onchange="state.ccnNew=this.checked" />
-              <span class="ccn-label-tag ccn-new" data-tooltip="No prior awareness or knowledge of UHF">New</span>
-            </label>
+            <div class="pvc-check-hint">Core (big fans &amp; buyers) · Casual (familiar, not invested) · New (no prior UHF awareness)</div>
           </div>
         </div>
 
@@ -1071,10 +1048,8 @@ textarea { min-height: 88px; }
 
     <div class="export-actions">
       <button class="btn btn-export" onclick="exportDOCX()">⬇️ Download Doc</button>
-      <button class="btn btn-drive" id="drive-btn" onclick="uploadToDrive()">☁️ Upload to Drive</button>
       <button class="btn btn-ghost" onclick="startOver()">↺ New Reel</button>
     </div>
-    <div id="drive-status"></div>
   </div>
 
 </div><!-- /main -->
@@ -1084,10 +1059,10 @@ textarea { min-height: 88px; }
 // ══ STATE ══
 const state = {
   // Step 1 — Topic
-  topics:[], topicsOther:'', s2notes:'',
+  topic:'', topics:[],
   // Step 2 — Idea
   idea:'',
-  ccnCore:false, ccnCasual:false, ccnNew:false,
+  ccnConsidered:false,
   contentMix: 0,
   pvcChecked: false, pvcLink:'', pvcReason:'',
   tam:0, s1notes:'',
@@ -1153,13 +1128,11 @@ function updateProgress() {
 // ══ SYNC TEXT FIELDS TO STATE ══
 function syncTextFields() {
   const grab = (id, key) => { const el = document.getElementById(id); if (el) state[key] = el.value.trim(); };
+  grab('s1-topic','topic');
   grab('s1-idea','idea');
   grab('s1-pvc-link','pvcLink'); grab('s1-pvc-reason','pvcReason');
   grab('s1-notes','s1notes');
-  grab('s2-notes','s2notes');
   grab('doc-name','docName');
-  const _toe = document.getElementById('topics-other-input');
-  if (_toe) state.topicsOther = _toe.value.trim();
 }
 
 // ══ MULTI-SELECT TOGGLE ══
@@ -1191,22 +1164,7 @@ function toggleOther(group, el) {
 }
 
 function validateOthers() {
-  let ok = true;
-  ['topics'].forEach(g => {
-    const arr = state[g];
-    if (arr.includes('__other__')) {
-      const val = (document.getElementById(g + '-other-input') || {}).value || '';
-      const req = document.getElementById(g + '-other-req');
-      if (!val.trim()) {
-        if (req) req.classList.add('show');
-        ok = false;
-      } else {
-        if (req) req.classList.remove('show');
-        state[g + 'Other'] = val.trim();
-      }
-    }
-  });
-  return ok;
+  return true;
 }
 
 // ══ TAM ══
@@ -1240,6 +1198,11 @@ function togglePVC(checkbox) {
 // ══ BUILD REVIEW ══
 function buildReview() {
   syncTextFields();
+  const docNameInput = document.getElementById('doc-name');
+  if (docNameInput && !state.docName && state.topic) {
+    docNameInput.value = state.topic;
+    state.docName = state.topic;
+  }
   const grid = document.getElementById('review-grid');
 
   function tagsHTML(arr, otherKey) {
@@ -1274,13 +1237,13 @@ function buildReview() {
   grid.innerHTML = `
     <div class="review-card">
       <div class="rc-step">🏷️ Step 1 — Topic</div>
-      <div class="rc-row"><div class="rc-label">Selected Topics</div>${tagsHTML(state.topics,'topicsOther')}</div>
-      <div class="rc-row"><div class="rc-label">Notes / Angle</div>${valHTML(state.s2notes)}</div>
+      <div class="rc-row"><div class="rc-label">Topic</div>${valHTML(state.topic)}</div>
+      <div class="rc-row"><div class="rc-label">Categories</div>${tagsHTML(state.topics,'')}</div>
     </div>
     <div class="review-card">
       <div class="rc-step">💡 Step 2 — Idea</div>
       <div class="rc-row"><div class="rc-label">Reel Concept</div>${valHTML(state.idea)}</div>
-      <div class="rc-row"><div class="rc-label">CCN Fit</div>${(()=>{const p=[state.ccnCore&&'Core',state.ccnCasual&&'Casual',state.ccnNew&&'New'].filter(Boolean);return p.length?'<div class="rc-tags">'+p.map(x=>'<span class="rc-tag">'+x+'</span>').join('')+'</div>':'<span class="rc-value empty">— not selected —</span>';})()}</div>
+      <div class="rc-row"><div class="rc-label">CCN Fit Considered</div>${state.ccnConsidered ? '<div class="rc-value">Yes</div>' : '<span class="rc-value empty">— not checked —</span>'}</div>
       <div class="rc-row"><div class="rc-label">Content Mix</div>${mixHTML}</div>
       <div class="rc-row"><div class="rc-label">Pre-validated Content</div>${pvcHTML}</div>
       <div class="rc-row"><div class="rc-label">TAM Score</div>${tamHTML}</div>
@@ -1384,12 +1347,12 @@ async function buildDocxBlob() {
 
   const leftChildren = [
     sectionHeader(1, 'Topic', BLUE),
-    tagsField('Topics', state.topics, 'topicsOther', BLUE),
-    field('Angle', state.s2notes, BLUE),
+    field('Topic', state.topic, BLUE),
+    tagsField('Categories', state.topics, '', BLUE),
     gap(160),
     sectionHeader(2, 'Idea', PINK),
     field('Concept', state.idea, PINK),
-    field('CCN Fit', [state.ccnCore&&'Core',state.ccnCasual&&'Casual',state.ccnNew&&'New'].filter(Boolean).join(' · ')||null, PINK),
+    field('CCN Fit', state.ccnConsidered ? 'Yes — considered' : null, PINK),
     field('Content Mix', mixLabelStr, PINK),
     field('Pre-validated', pvcStr, PINK),
     tamField(state.tam || null),
@@ -1460,82 +1423,9 @@ async function exportDOCX() {
   URL.revokeObjectURL(url);
 }
 
-// ══ GOOGLE DRIVE UPLOAD ══
-const DRIVE_CONFIG = {
-  clientId: 'YOUR_CLIENT_ID.apps.googleusercontent.com',
-  folderId: '1VBv8MDa9rZD-UBY6t6MJKH9O0EB8sN1C',
-  scope: 'https://www.googleapis.com/auth/drive.file',
-};
-
-let _driveTokenClient = null;
-let _driveAccessToken = null;
-
-function driveStatus(msg, type) {
-  const el = document.getElementById('drive-status');
-  el.textContent = msg; el.className = type;
-}
-function driveSetBusy(busy) {
-  const btn = document.getElementById('drive-btn');
-  btn.disabled = busy;
-  btn.textContent = busy ? '⏳ Uploading…' : '☁️ Upload to Drive';
-}
-
-async function uploadBlobToDrive(blob, filename, token) {
-  const meta = JSON.stringify({ name: filename, parents: [DRIVE_CONFIG.folderId] });
-  const body = new FormData();
-  body.append('metadata', new Blob([meta], { type: 'application/json' }));
-  body.append('file', blob, filename);
-  const res = await fetch(
-    'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,name,webViewLink',
-    { method: 'POST', headers: { Authorization: 'Bearer ' + token }, body }
-  );
-  if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err?.error?.message || `HTTP ${res.status}`); }
-  return res.json();
-}
-
-async function uploadToDrive() {
-  if (DRIVE_CONFIG.clientId === 'YOUR_CLIENT_ID.apps.googleusercontent.com') {
-    driveStatus('Drive upload not configured — see setup comments in source.', 'error'); return;
-  }
-  driveSetBusy(true); driveStatus('Building document…', 'info');
-  const result = await buildDocxBlob();
-  if (!result) { driveSetBusy(false); driveStatus('', ''); return; }
-  const { blob, docName } = result;
-  const filename = docName + '.docx';
-  driveStatus('Signing in to Google…', 'info');
-  if (!_driveTokenClient) {
-    _driveTokenClient = google.accounts.oauth2.initTokenClient({
-      client_id: DRIVE_CONFIG.clientId, scope: DRIVE_CONFIG.scope, callback: () => {},
-    });
-  }
-  const doUpload = async (token) => {
-    driveStatus('Uploading to Drive…', 'info');
-    try {
-      const file = await uploadBlobToDrive(blob, filename, token);
-      driveStatus(`✓ Uploaded: ${file.name} — `, 'ok');
-      const link = document.createElement('a');
-      link.href = file.webViewLink; link.target = '_blank'; link.rel = 'noopener noreferrer';
-      link.textContent = 'Open in Drive'; link.style.cssText = 'color:inherit;font-weight:600;';
-      document.getElementById('drive-status').appendChild(link);
-    } catch (err) {
-      console.error('Drive upload error:', err);
-      driveStatus('Upload failed: ' + err.message, 'error');
-    } finally { driveSetBusy(false); }
-  };
-  if (_driveAccessToken) {
-    try { await doUpload(_driveAccessToken); return; } catch { _driveAccessToken = null; }
-  }
-  _driveTokenClient.callback = async (resp) => {
-    if (resp.error) { driveStatus('Google sign-in cancelled or failed.', 'error'); driveSetBusy(false); return; }
-    _driveAccessToken = resp.access_token;
-    await doUpload(_driveAccessToken);
-  };
-  _driveTokenClient.requestAccessToken({ prompt: '' });
-}
-
 
 // ══ CUSTOM OPTIONS (localStorage, permanent across sessions) ══
-const CUSTOM_STORAGE = { content: 'if_custom_content', recording: 'if_custom_recording' };
+const CUSTOM_STORAGE = { topics: 'if_custom_topics', content: 'if_custom_content', recording: 'if_custom_recording' };
 
 function getCustomOpts(group) {
   try { return JSON.parse(localStorage.getItem(CUSTOM_STORAGE[group]) || '[]'); }
@@ -1591,6 +1481,7 @@ function handleCustomAdd(group, input) {
 
 // ══ INIT ══
 document.addEventListener('DOMContentLoaded', () => {
+  renderCustomCards('topics');
   renderCustomCards('content');
   renderCustomCards('recording');
 });
@@ -1601,7 +1492,7 @@ function startOver() {
   Object.keys(state).forEach(k => {
     if (Array.isArray(state[k]))             state[k] = [];
     else if (k === 'tam' || k === 'contentMix') state[k] = 0;
-    else if (k === 'pvcChecked' || k === 'ccnCore' || k === 'ccnCasual' || k === 'ccnNew') state[k] = false;
+    else if (k === 'pvcChecked' || k === 'ccnConsidered') state[k] = false;
     else                                     state[k] = '';
   });
   document.querySelectorAll('textarea, input[type="text"]').forEach(el => el.value = '');
@@ -1615,6 +1506,7 @@ function startOver() {
   const reasonWrap = document.getElementById('pvc-reason-wrap');
   if (linkWrap) linkWrap.classList.remove('visible');
   if (reasonWrap) reasonWrap.classList.add('visible');
+  renderCustomCards('topics');
   renderCustomCards('content');
   renderCustomCards('recording');
   goToStep(1);
