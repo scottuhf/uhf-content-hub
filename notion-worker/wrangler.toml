@@ -1,0 +1,11 @@
+name = "uhf-notion-import"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+[vars]
+DATABASE_ID = "583bebcf8c904a22b17f0646711f38b8"
+# Set this to your GitHub Pages origin once known, e.g. "https://scottuhf.github.io"
+ALLOWED_ORIGIN = "*"
+
+# NOTION_TOKEN is set as a secret, NOT here:
+#   wrangler secret put NOTION_TOKEN

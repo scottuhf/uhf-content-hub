@@ -1048,8 +1048,10 @@ textarea { min-height: 88px; }
 
     <div class="export-actions">
       <button class="btn btn-export" onclick="exportDOCX()">⬇️ Download Doc</button>
+      <button class="btn btn-export" id="btn-notion" onclick="importToNotion()" style="background:linear-gradient(135deg,#3ECF6A 0%,#1a7ac8 100%);box-shadow:0 4px 18px rgba(62,207,106,0.35);">📤 Import to Notion</button>
       <button class="btn btn-ghost" onclick="startOver()">↺ New Reel</button>
     </div>
+    <div id="notion-status" style="margin-top:12px;font-family:'Oswald',sans-serif;font-size:0.78rem;letter-spacing:1px;text-transform:uppercase;display:none;"></div>
   </div>
 
 </div><!-- /main -->
@@ -1409,6 +1411,89 @@ async function buildDocxBlob() {
     console.error('DOCX build error:', err);
     alert('Export failed: ' + err.message);
     return null;
+  }
+}
+
+// ══ NOTION IMPORT ══
+// Cloudflare Worker proxy URL — same for everyone, holds the Notion token server-side.
+// After deploying the Worker (see notion-worker/README.md), paste its URL here.
+const NOTION_WORKER_URL = 'https://uhf-notion-import.scott-838.workers.dev';
+
+function buildNotionPayload() {
+  syncTextFields();
+  const title = (state.docName || state.topic || 'Untitled').trim() + ' IF';
+  const mixLabel = state.contentMix === 70 ? 'Proven (70%)'
+                 : state.contentMix === 20 ? 'Iteration (20%)'
+                 : state.contentMix === 10 ? 'Experimental (10%)' : null;
+
+  const cleanList = (arr, otherKey) => (arr || [])
+    .map(v => v === '__other__' ? (otherKey ? state[otherKey] : null) : v)
+    .filter(Boolean);
+
+  const notesParts = [];
+  if (state.s1notes) notesParts.push(state.s1notes);
+  if (!state.pvcChecked && state.pvcReason) notesParts.push('Pre-validated reason: ' + state.pvcReason);
+
+  return {
+    title,
+    topic: state.topic || '',
+    topicCategories: cleanList(state.topics),
+    idea: state.idea || '',
+    contentMix: mixLabel,
+    ccnConsidered: !!state.ccnConsidered,
+    notes: notesParts.join('\n\n'),
+    preValidatedUrl: state.pvcChecked ? (state.pvcLink || '') : '',
+    tam: state.tam || null,
+    format: cleanList(state.content, 'contentOther'),
+    recordingStyle: cleanList(state.recording, 'recordingOther'),
+  };
+}
+
+async function importToNotion() {
+  const btn = document.getElementById('btn-notion');
+  const status = document.getElementById('notion-status');
+  const setStatus = (msg, color) => {
+    status.textContent = msg;
+    status.style.color = color;
+    status.style.display = 'block';
+  };
+
+  if (!NOTION_WORKER_URL || NOTION_WORKER_URL.includes('YOUR-SUBDOMAIN')) {
+    setStatus('⚠ Notion Worker URL not configured. See notion-worker/README.md.', 'var(--pink)');
+    return;
+  }
+
+  syncTextFields();
+  if (!state.topic && !state.docName) {
+    setStatus('⚠ Add a topic or document name before importing.', 'var(--pink)');
+    return;
+  }
+
+  btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Sending to Notion…';
+  setStatus('Creating Notion page…', 'var(--muted)');
+
+  try {
+    const payload = buildNotionPayload();
+    const res = await fetch(NOTION_WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+    const link = data.url
+      ? ` <a href="${data.url}" target="_blank" style="color:var(--blue);text-decoration:underline;">Open in Notion ↗</a>`
+      : '';
+    status.innerHTML = `✓ Imported to Notion.${link}`;
+    status.style.color = 'var(--green)';
+    status.style.display = 'block';
+  } catch (err) {
+    setStatus('✗ Import failed: ' + err.message, 'var(--pink)');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = originalText;
   }
 }
 
