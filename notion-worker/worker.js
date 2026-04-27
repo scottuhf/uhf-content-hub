@@ -38,11 +38,11 @@ export default {
     catch { return json({ error: 'Invalid JSON' }, 400, cors); }
 
     const properties = {
-      // Title — page name
-      'Title': { title: [{ text: { content: body.title || 'Untitled' } }] },
+      // Title — Notion's default title column is called "Name"
+      'Name': { title: [{ text: { content: body.title || 'Untitled' } }] },
 
-      // Status — auto-set so it lands in the Content Ideas group
-      'Status': { status: { name: 'Content Ideas' } },
+      // Status — select type in this database
+      'Status': { select: { name: 'Content Ideas' } },
 
       // Step 1
       'Topic': richText(body.topic),

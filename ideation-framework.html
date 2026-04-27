@@ -1421,7 +1421,7 @@ const NOTION_WORKER_URL = 'https://uhf-notion-import.scott-838.workers.dev';
 
 function buildNotionPayload() {
   syncTextFields();
-  const title = (state.docName || state.topic || 'Untitled').trim() + ' IF';
+  const title = (state.docName || state.topic || 'Untitled').trim();
   const mixLabel = state.contentMix === 70 ? 'Proven (70%)'
                  : state.contentMix === 20 ? 'Iteration (20%)'
                  : state.contentMix === 10 ? 'Experimental (10%)' : null;
