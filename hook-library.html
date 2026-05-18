@@ -1628,7 +1628,7 @@ function handleCSVFile(input) {
       const hookText=(cols[col['Hook']]||'').trim(); const hookNeeded=!hookText;
       if(hookNeeded)hnCount++;
       pendingImportData.push({
-        id:now+idx, reelName, instagramUrl:'', text:hookText, hookNeeded,
+        id:now+idx, reelName, instagramUrl:(cols[col['Instagram URL']]||'').trim(), text:hookText, hookNeeded,
         type:'', category:rawCat, date:cols[col['Date']]||'',
         followsMultiplier:parseMx(cols[col['Follows (?x)']]),
         followers:parseN(cols[col['Follows']]),
