@@ -327,11 +327,14 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .ig-link { display: inline-flex; align-items: center; gap: 5px; background: rgba(225,48,108,0.1); border: 1px solid rgba(225,48,108,0.3); color: #e1306c; border-radius: 5px; padding: 5px 10px; font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1; }
 .ig-link:hover { background: rgba(225,48,108,0.2); border-color: #e1306c; color: #e1306c; }
 .ig-link svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
-.ig-embed-wrap { margin-bottom: 18px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
-.ig-embed-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border-dim); }
-.ig-embed-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
-.ig-embed-frame { width: 100%; display: flex; justify-content: center; padding: 0; }
-.ig-embed-frame iframe { border: none; display: block; max-width: 100%; }
+.ig-card-link { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1px solid rgba(225,48,108,0.25); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-decoration: none; transition: all 0.18s; cursor: pointer; }
+.ig-card-link:hover { border-color: #e1306c; background: rgba(225,48,108,0.06); }
+.ig-card-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(225,48,108,0.12); border: 1px solid rgba(225,48,108,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ig-card-icon svg { width: 20px; height: 20px; fill: #e1306c; }
+.ig-card-text { flex: 1; min-width: 0; }
+.ig-card-label { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; color: #e1306c; letter-spacing: 0.5px; margin-bottom: 3px; }
+.ig-card-url { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ig-card-arrow { font-size: 20px; color: rgba(225,48,108,0.5); flex-shrink: 0; }
 
 @media (max-width: 900px) {
   .site-header { padding: 0 16px; }
@@ -1246,23 +1249,18 @@ function openDetail(id) {
       ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed — no hook text recorded</span>' : `"${escHtml(h.text)}"` }
     </div>` : ''}
 
-    ${h.instagramUrl ? (() => {
-      // Extract reel embed URL: https://www.instagram.com/reel/ID/ → append embed/
-      const embedUrl = h.instagramUrl.replace(/\/?$/, '/') + 'embed/';
-      return `<div class="detail-section-title">Instagram Reel</div>
-      <div class="ig-embed-wrap">
-        <div class="ig-embed-header">
-          <span class="ig-embed-label">Embedded Preview</span>
-          <a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">
-            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            Open on Instagram ↗
-          </a>
-        </div>
-        <div class="ig-embed-frame">
-          <iframe src="${escHtml(embedUrl)}" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" loading="lazy"></iframe>
-        </div>
-      </div>`;
-    })() : ''}
+    ${h.instagramUrl ? `
+    <div class="detail-section-title">Instagram Reel</div>
+    <a class="ig-card-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">
+      <div class="ig-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </div>
+      <div class="ig-card-text">
+        <div class="ig-card-label">View on Instagram</div>
+        <div class="ig-card-url">${escHtml(h.instagramUrl)}</div>
+      </div>
+      <div class="ig-card-arrow">↗</div>
+    </a>` : ''}
 
     <div class="detail-section-title">Secondary Data</div>
     <div class="detail-secondary">
