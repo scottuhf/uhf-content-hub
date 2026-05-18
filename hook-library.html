@@ -116,8 +116,23 @@ body::before {
 }
 
 .header-right {
-  display: flex; align-items: center; gap: 12px;
+  display: flex; align-items: center; gap: 10px;
 }
+.btn-manage {
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-dim);
+  border-radius: 6px;
+  padding: 8px 14px;
+  cursor: pointer;
+  transition: all 0.18s;
+  white-space: nowrap;
+}
+.btn-manage:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
 .btn-add {
   font-family: 'Oswald', sans-serif;
   font-size: 12px; font-weight: 600;
@@ -306,6 +321,8 @@ body::before {
   color: var(--white);
 }
 .hook-meta-value.orange { color: var(--orange); }
+.hook-meta-value.blue   { color: var(--blue); }
+.hook-meta-value.pink   { color: var(--pink); }
 .hook-card-footer {
   display: flex;
   align-items: center;
@@ -335,7 +352,7 @@ body::before {
   border-radius: 8px;
   padding: 14px 18px;
   display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto;
+  grid-template-columns: 1fr auto auto auto auto auto auto;
   align-items: center;
   gap: 16px;
   transition: background 0.12s, border-color 0.2s;
@@ -346,11 +363,6 @@ body::before {
   font-size: 14px;
   color: #fff;
   font-weight: 500;
-}
-.hook-list-meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
 }
 .hook-list-stat {
   display: flex;
@@ -378,11 +390,11 @@ body::before {
   border-radius: 3px;
   white-space: nowrap;
 }
-.type-q       { background: rgba(51,154,233,0.15);  color: var(--blue); }
-.type-s       { background: rgba(237,10,115,0.15);  color: var(--pink); }
-.type-w       { background: rgba(255,107,53,0.15);  color: var(--orange); }
-.type-n       { background: rgba(62,207,106,0.12);  color: var(--green); }
-.type-c       { background: rgba(155,89,182,0.15);  color: var(--purple); }
+.type-c0 { background: rgba(51,154,233,0.15);  color: var(--blue); }
+.type-c1 { background: rgba(237,10,115,0.15);  color: var(--pink); }
+.type-c2 { background: rgba(255,107,53,0.15);  color: var(--orange); }
+.type-c3 { background: rgba(62,207,106,0.12);  color: var(--green); }
+.type-c4 { background: rgba(155,89,182,0.15);  color: var(--purple); }
 
 .cat-badge {
   display: inline-block;
@@ -516,6 +528,72 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
 .btn-secondary:hover { color: #fff; border-color: #fff; }
 
+/* ── MANAGE MODAL ── */
+.manage-modal { max-width: 640px; }
+.manage-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+.manage-section-title {
+  font-size: 10px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.manage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  max-height: 260px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding-right: 2px;
+}
+.manage-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--bg);
+  border: 1px solid var(--border-dim);
+  border-radius: 5px;
+  padding: 7px 10px;
+  font-size: 13px;
+  color: #fff;
+}
+.manage-add-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.manage-add-row .form-control {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+.btn-add-item {
+  font-family: 'Oswald', sans-serif;
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.btn-add-item:hover { background: #e05a25; }
+.manage-empty {
+  font-size: 12px;
+  color: var(--text-dim);
+  padding: 8px 0;
+  font-style: italic;
+}
+
 /* ── CONFIRM ── */
 .confirm-overlay {
   position: fixed; inset: 0;
@@ -549,6 +627,8 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   .header-nav { gap: 2px; padding-left: 12px; }
   .nav-tab { padding: 5px 8px; font-size: 10px; }
   .hook-list-item { grid-template-columns: 1fr; }
+  .manage-cols { grid-template-columns: 1fr; }
+  .btn-manage { display: none; }
 }
 </style>
 </head>
@@ -574,6 +654,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <a href="content-database.html" class="nav-tab">Database</a>
   </nav>
   <div class="header-right">
+    <button class="btn-manage" onclick="openManage()">Manage Lists</button>
     <button class="btn-add" onclick="openModal()">+ Add Hook</button>
   </div>
 </header>
@@ -599,14 +680,14 @@ textarea.form-control { resize: vertical; min-height: 90px; }
       <div class="stat-card-sub">distinct types</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Avg Score</div>
-      <div class="stat-card-value blue" id="statAvgScore">—</div>
-      <div class="stat-card-sub">performance score</div>
+      <div class="stat-card-label">Avg 3-Sec Retention</div>
+      <div class="stat-card-value blue" id="statAvgRet">—</div>
+      <div class="stat-card-sub">across logged hooks</div>
     </div>
     <div class="stat-card">
-      <div class="stat-card-label">Top Hook Score</div>
-      <div class="stat-card-value green" id="statTopScore">—</div>
-      <div class="stat-card-sub" id="statTopHook" style="font-style:italic;">—</div>
+      <div class="stat-card-label">Avg Skip Rate</div>
+      <div class="stat-card-value green" id="statAvgSkip">—</div>
+      <div class="stat-card-sub">across logged hooks</div>
     </div>
   </div>
 
@@ -615,23 +696,9 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <input type="text" id="searchInput" placeholder="Search hooks..." oninput="applyFilters()">
     <select id="filterType" onchange="applyFilters()">
       <option value="">All Types</option>
-      <option>Question</option>
-      <option>Statement</option>
-      <option>Warning</option>
-      <option>Number</option>
-      <option>Curiosity</option>
     </select>
     <select id="filterCat" onchange="applyFilters()">
       <option value="">All Categories</option>
-      <option>Waiver Wire</option>
-      <option>Trade Advice</option>
-      <option>Sleeper</option>
-      <option>Rankings</option>
-      <option>Buy/Sell</option>
-      <option>Start/Sit</option>
-      <option>DFS</option>
-      <option>Injury</option>
-      <option>Player Analysis</option>
     </select>
     <select id="filterTier" onchange="applyFilters()">
       <option value="">All Tiers</option>
@@ -654,7 +721,7 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   <div id="hooksContainer"></div>
 </main>
 
-<!-- MODAL -->
+<!-- ADD / EDIT HOOK MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal" id="modalBox">
     <div class="modal-header">
@@ -668,49 +735,46 @@ textarea.form-control { resize: vertical; min-height: 90px; }
         <textarea id="fText" class="form-control" placeholder="Your opening hook line..." style="min-height:100px;font-size:15px;"></textarea>
       </div>
       <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Type</label>
-          <select id="fType" class="form-control">
-            <option>Question</option>
-            <option>Statement</option>
-            <option>Warning</option>
-            <option>Number</option>
-            <option>Curiosity</option>
-          </select>
+          <select id="fType" class="form-control"></select>
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Content Category</label>
-          <select id="fCat" class="form-control">
-            <option>Waiver Wire</option>
-            <option>Trade Advice</option>
-            <option>Sleeper</option>
-            <option>Rankings</option>
-            <option>Buy/Sell</option>
-            <option>Start/Sit</option>
-            <option>DFS</option>
-            <option>Injury</option>
-            <option>Player Analysis</option>
-          </select>
+          <select id="fCat" class="form-control"></select>
         </div>
       </div>
-      <div class="form-row">
-        <div class="form-group">
+      <div class="form-row" style="margin-top:14px;">
+        <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Performance Score (1–10)</label>
           <input type="number" id="fScore" class="form-control" min="1" max="10" step="0.1" placeholder="8.5">
         </div>
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Followers</label>
+          <input type="number" id="fFollowers" class="form-control" min="0" placeholder="e.g. 12500">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:14px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">3-Sec Retention %</label>
+          <input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 45.0">
+        </div>
+        <div class="form-group" style="margin-bottom:0;">
+          <label class="form-label">Skip Rate %</label>
+          <input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 12.5">
+        </div>
+      </div>
+      <div class="form-row" style="margin-top:14px;">
+        <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Times Used</label>
           <input type="number" id="fUses" class="form-control" min="0" placeholder="0">
         </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
+        <div class="form-group" style="margin-bottom:0;">
           <label class="form-label">Avg Views When Used</label>
           <input type="number" id="fAvgViews" class="form-control" min="0" placeholder="0">
         </div>
-        <div class="form-group" style="visibility:hidden;"></div>
       </div>
-      <div class="form-group">
+      <div class="form-group" style="margin-top:14px;">
         <label class="form-label">Notes / Context</label>
         <textarea id="fNotes" class="form-control" placeholder="When does this hook work best? Any context..."></textarea>
       </div>
@@ -718,6 +782,39 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
       <button class="btn btn-primary" onclick="saveHook()">Save Hook</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE LISTS MODAL -->
+<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:250;">
+  <div class="modal manage-modal" id="manageBox">
+    <div class="modal-header">
+      <div class="modal-title">Manage Lists</div>
+      <button class="modal-close" onclick="closeManage()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="manage-cols">
+        <div>
+          <div class="manage-section-title">Hook Types</div>
+          <div class="manage-list" id="manageTypesList"></div>
+          <div class="manage-add-row">
+            <input type="text" id="newTypeInput" class="form-control" placeholder="New type...">
+            <button class="btn-add-item" onclick="addType()">+ Add</button>
+          </div>
+        </div>
+        <div>
+          <div class="manage-section-title">Content Categories</div>
+          <div class="manage-list" id="manageCatsList"></div>
+          <div class="manage-add-row">
+            <input type="text" id="newCatInput" class="form-control" placeholder="New category...">
+            <button class="btn-add-item" onclick="addCategory()">+ Add</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeManage()">Done</button>
     </div>
   </div>
 </div>
@@ -736,61 +833,47 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 <script>
 const STORAGE_KEY = 'uhf_hook_library';
-let hooks = [];
+const TYPES_KEY   = 'uhf_hook_types';
+const CATS_KEY    = 'uhf_hook_categories';
+
+let hooks          = [];
+let hookTypes      = [];
+let hookCategories = [];
 let deleteTargetId = null;
-let currentView = 'grid';
+let currentView    = 'grid';
 
-const TYPE_CLASSES = {
-  Question: 'type-q',
-  Statement: 'type-s',
-  Warning:   'type-w',
-  Number:    'type-n',
-  Curiosity: 'type-c',
-};
+const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
+const DEFAULT_CATS  = ['Waiver Wire', 'Trade Advice', 'Sleeper', 'Rankings', 'Buy/Sell', 'Start/Sit', 'DFS', 'Injury', 'Player Analysis'];
+const TYPE_COLOR_COUNT = 5;
 
-const SEED_DATA = [
-  { id: 1,  text: "If your league still has this guy available, you're stealing...", type: 'Statement', category: 'Waiver Wire',    score: 9.2, uses: 8,  avgViews: 87400,  notes: '' },
-  { id: 2,  text: "Stop holding these guys — the market is about to collapse",       type: 'Warning',   category: 'Trade Advice',   score: 8.8, uses: 12, avgViews: 102300, notes: '' },
-  { id: 3,  text: "This name will be everywhere come September...",                  type: 'Curiosity', category: 'Sleeper',        score: 8.1, uses: 6,  avgViews: 74200,  notes: '' },
-  { id: 4,  text: "Everyone loves him — that's exactly why you should fade",         type: 'Statement', category: 'Rankings',       score: 7.9, uses: 9,  avgViews: 91800,  notes: '' },
-  { id: 5,  text: "The combine just changed EVERYTHING for these guys",              type: 'Statement', category: 'Buy/Sell',       score: 9.4, uses: 5,  avgViews: 128600, notes: '' },
-  { id: 6,  text: "You WILL bench the wrong guy if you don't watch this first",      type: 'Warning',   category: 'Start/Sit',     score: 9.1, uses: 14, avgViews: 108900, notes: '' },
-  { id: 7,  text: "The window to sell these guys closes THIS WEEK",                  type: 'Warning',   category: 'Trade Advice',   score: 8.6, uses: 11, avgViews: 96400,  notes: '' },
-  { id: 8,  text: "Championship runs are won on the waiver wire. Grab these now",    type: 'Statement', category: 'Waiver Wire',    score: 8.9, uses: 7,  avgViews: 99200,  notes: '' },
-  { id: 9,  text: "It's never too early. Your league mates aren't paying attention yet", type: 'Statement', category: 'Rankings',  score: 7.7, uses: 4,  avgViews: 68900,  notes: '' },
-  { id: 10, text: "The tape doesn't lie — this receiver is about to EXPLODE",        type: 'Statement', category: 'Player Analysis', score: 8.4, uses: 10, avgViews: 89100, notes: '' },
-  { id: 11, text: "One injury and this guy is an RB1. Don't wait",                   type: 'Warning',   category: 'Sleeper',        score: 8.2, uses: 9,  avgViews: 71300,  notes: '' },
-  { id: 12, text: "Stop winging it. Here is the exact process I use every year",     type: 'Statement', category: 'Start/Sit',     score: 9.3, uses: 6,  avgViews: 131200, notes: '' },
-  { id: 13, text: "These guys are on sale right now. Don't miss the window",          type: 'Warning',   category: 'Buy/Sell',       score: 8.0, uses: 8,  avgViews: 78400,  notes: '' },
-  { id: 14, text: "3 players you need to drop BEFORE Sunday",                        type: 'Number',    category: 'Waiver Wire',    score: 8.7, uses: 13, avgViews: 94700,  notes: '' },
-  { id: 15, text: "What if I told you this RB finishes as a top-5 this year?",       type: 'Question',  category: 'Sleeper',        score: 8.5, uses: 7,  avgViews: 86300,  notes: '' },
-  { id: 16, text: "Your league mates don't want you to know this",                   type: 'Curiosity', category: 'Trade Advice',   score: 9.0, uses: 11, avgViews: 112500, notes: '' },
-  { id: 17, text: "5 moves to make RIGHT NOW for the playoffs",                      type: 'Number',    category: 'Trade Advice',   score: 8.8, uses: 9,  avgViews: 103100, notes: '' },
-  { id: 18, text: "This 'questionable' tag means more than you think",               type: 'Curiosity', category: 'Injury',         score: 7.8, uses: 6,  avgViews: 74600,  notes: '' },
-  { id: 19, text: "Nobody is talking about this — and that's your edge",             type: 'Curiosity', category: 'Player Analysis', score: 9.1, uses: 8, avgViews: 108200, notes: '' },
-  { id: 20, text: "Do NOT make your start/sit decision until you see this",          type: 'Warning',   category: 'Start/Sit',     score: 9.5, uses: 15, avgViews: 119800, notes: '' },
-];
+function getTypeClass(type) {
+  const idx = hookTypes.indexOf(type);
+  return 'type-c' + (Math.max(idx, 0) % TYPE_COLOR_COUNT);
+}
 
+/* ── STORAGE ── */
 function loadData() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
-    hooks = JSON.parse(stored);
-  } else {
-    hooks = SEED_DATA.map(h => ({ ...h }));
-    saveData();
-  }
+  const sh = localStorage.getItem(STORAGE_KEY);
+  hooks = sh ? JSON.parse(sh) : [];
+
+  const st = localStorage.getItem(TYPES_KEY);
+  hookTypes = st ? JSON.parse(st) : [...DEFAULT_TYPES];
+
+  const sc = localStorage.getItem(CATS_KEY);
+  hookCategories = sc ? JSON.parse(sc) : [...DEFAULT_CATS];
 }
 
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks));
-}
+function saveData()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks)); }
+function saveTypes() { localStorage.setItem(TYPES_KEY,   JSON.stringify(hookTypes)); }
+function saveCats()  { localStorage.setItem(CATS_KEY,    JSON.stringify(hookCategories)); }
 
+/* ── TIER ── */
 function tier(score) {
+  if (!score) return 'low';
   if (score >= 8.5) return 'high';
   if (score >= 7.0) return 'mid';
   return 'low';
 }
-
 function tierLabel(score) {
   const t = tier(score);
   if (t === 'high') return { icon: '🔥', label: 'High', cls: 'tier-high' };
@@ -798,32 +881,77 @@ function tierLabel(score) {
   return { icon: '💤', label: 'Low', cls: 'tier-low' };
 }
 
+/* ── FORMAT ── */
 function fmt(n) {
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+  if (!n) return '—';
+  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+  if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
   return n.toString();
 }
+function fmtPct(n) {
+  if (n === undefined || n === null || n === '') return '—';
+  return Number(n).toFixed(1) + '%';
+}
+function fmtScore(n) {
+  if (!n) return '—';
+  return Number(n).toFixed(1);
+}
 
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── STATS ── */
 function updateStats() {
-  document.getElementById('statTotal').textContent = hooks.length;
-  const types = new Set(hooks.map(h => h.type));
-  document.getElementById('statTypes').textContent = types.size;
-  const avgScore = hooks.length > 0
-    ? (hooks.reduce((a, h) => a + h.score, 0) / hooks.length).toFixed(1)
+  document.getElementById('statTotal').textContent = hooks.length || '—';
+  document.getElementById('statTypes').textContent = hookTypes.length || '—';
+
+  const withRet = hooks.filter(h => h.retention3s);
+  const avgRet = withRet.length > 0
+    ? (withRet.reduce((a, h) => a + h.retention3s, 0) / withRet.length).toFixed(1) + '%'
     : '—';
-  document.getElementById('statAvgScore').textContent = avgScore;
-  if (hooks.length > 0) {
-    const top = hooks.reduce((a, b) => a.score > b.score ? a : b);
-    document.getElementById('statTopScore').textContent = top.score.toFixed(1);
-    const short = top.text.length > 36 ? top.text.slice(0, 36) + '…' : top.text;
-    document.getElementById('statTopHook').textContent = short;
+  document.getElementById('statAvgRet').textContent = avgRet;
+
+  const withSkip = hooks.filter(h => h.skipRate);
+  const avgSkip = withSkip.length > 0
+    ? (withSkip.reduce((a, h) => a + h.skipRate, 0) / withSkip.length).toFixed(1) + '%'
+    : '—';
+  document.getElementById('statAvgSkip').textContent = avgSkip;
+}
+
+/* ── POPULATE SELECTS ── */
+function populateFilterSelects() {
+  const typeEl = document.getElementById('filterType');
+  const catEl  = document.getElementById('filterCat');
+  const prevType = typeEl.value;
+  const prevCat  = catEl.value;
+
+  typeEl.innerHTML = '<option value="">All Types</option>' +
+    hookTypes.map(t => `<option${prevType === t ? ' selected' : ''}>${escHtml(t)}</option>`).join('');
+  catEl.innerHTML = '<option value="">All Categories</option>' +
+    hookCategories.map(c => `<option${prevCat === c ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
+}
+
+function populateModalSelects(hook) {
+  document.getElementById('fType').innerHTML =
+    hookTypes.map(t => `<option>${escHtml(t)}</option>`).join('');
+  document.getElementById('fCat').innerHTML =
+    hookCategories.map(c => `<option>${escHtml(c)}</option>`).join('');
+
+  if (hook) {
+    document.getElementById('fType').value = hook.type;
+    document.getElementById('fCat').value  = hook.category;
   }
 }
 
+/* ── FILTER ── */
 function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const typeF = document.getElementById('filterType').value;
-  const catF  = document.getElementById('filterCat').value;
-  const tierF = document.getElementById('filterTier').value;
+  const typeF  = document.getElementById('filterType').value;
+  const catF   = document.getElementById('filterCat').value;
+  const tierF  = document.getElementById('filterTier').value;
 
   return hooks.filter(h => {
     const matchSearch = !search ||
@@ -836,23 +964,14 @@ function getFiltered() {
   });
 }
 
+/* ── BADGE ── */
 function typeBadgeHtml(type) {
-  const cls = TYPE_CLASSES[type] || 'type-s';
-  return `<span class="type-badge ${cls}">${escHtml(type)}</span>`;
+  return `<span class="type-badge ${getTypeClass(type)}">${escHtml(type)}</span>`;
 }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
+/* ── RENDER GRID ── */
 function renderGrid(filtered) {
-  if (filtered.length === 0) {
-    return `<div class="empty-state">
-      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-      <h3>No hooks found</h3>
-      <p>Try adjusting your search or filters.</p>
-    </div>`;
-  }
+  if (filtered.length === 0) return emptyStateHtml();
   return `<div class="hooks-grid">${filtered.map(h => {
     const tl = tierLabel(h.score);
     return `<div class="hook-card">
@@ -864,15 +983,19 @@ function renderGrid(filtered) {
       <div class="hook-card-meta">
         <div class="hook-meta-item">
           <span class="hook-meta-label">Score</span>
-          <span class="hook-meta-value orange">${h.score.toFixed(1)}</span>
+          <span class="hook-meta-value orange">${fmtScore(h.score)}</span>
         </div>
         <div class="hook-meta-item">
-          <span class="hook-meta-label">Uses</span>
-          <span class="hook-meta-value">${h.uses}</span>
+          <span class="hook-meta-label">Followers</span>
+          <span class="hook-meta-value">${fmt(h.followers)}</span>
         </div>
         <div class="hook-meta-item">
-          <span class="hook-meta-label">Avg Views</span>
-          <span class="hook-meta-value">${fmt(h.avgViews)}</span>
+          <span class="hook-meta-label">3-Sec Ret</span>
+          <span class="hook-meta-value blue">${fmtPct(h.retention3s)}</span>
+        </div>
+        <div class="hook-meta-item">
+          <span class="hook-meta-label">Skip Rate</span>
+          <span class="hook-meta-value pink">${fmtPct(h.skipRate)}</span>
         </div>
       </div>
       <div class="hook-card-footer">
@@ -893,14 +1016,9 @@ function renderGrid(filtered) {
   }).join('')}</div>`;
 }
 
+/* ── RENDER LIST ── */
 function renderList(filtered) {
-  if (filtered.length === 0) {
-    return `<div class="empty-state">
-      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-      <h3>No hooks found</h3>
-      <p>Try adjusting your search or filters.</p>
-    </div>`;
-  }
+  if (filtered.length === 0) return emptyStateHtml();
   return `<div class="hooks-list">${filtered.map(h => {
     const tl = tierLabel(h.score);
     return `<div class="hook-list-item">
@@ -912,16 +1030,20 @@ function renderList(filtered) {
         </div>
       </div>
       <div class="hook-list-stat">
-        <span class="hook-list-stat-val" style="color:var(--orange);">${h.score.toFixed(1)}</span>
+        <span class="hook-list-stat-val" style="color:var(--orange);">${fmtScore(h.score)}</span>
         <span class="hook-list-stat-lbl">Score</span>
       </div>
       <div class="hook-list-stat">
-        <span class="hook-list-stat-val">${h.uses}</span>
-        <span class="hook-list-stat-lbl">Uses</span>
+        <span class="hook-list-stat-val">${fmt(h.followers)}</span>
+        <span class="hook-list-stat-lbl">Followers</span>
       </div>
       <div class="hook-list-stat">
-        <span class="hook-list-stat-val">${fmt(h.avgViews)}</span>
-        <span class="hook-list-stat-lbl">Avg Views</span>
+        <span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span>
+        <span class="hook-list-stat-lbl">3-Sec Ret</span>
+      </div>
+      <div class="hook-list-stat">
+        <span class="hook-list-stat-val" style="color:var(--pink);">${fmtPct(h.skipRate)}</span>
+        <span class="hook-list-stat-lbl">Skip Rate</span>
       </div>
       <span class="tier-badge ${tl.cls}">${tl.icon}</span>
       <div class="hook-actions">
@@ -939,15 +1061,20 @@ function renderList(filtered) {
   }).join('')}</div>`;
 }
 
+function emptyStateHtml() {
+  return `<div class="empty-state">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+    <h3>No hooks found</h3>
+    <p>Try adjusting your search or filters, or add your first hook.</p>
+  </div>`;
+}
+
 function applyFilters() {
   const filtered = getFiltered();
-  document.getElementById('resultsCount').textContent = `${filtered.length} hook${filtered.length !== 1 ? 's' : ''}`;
-  const container = document.getElementById('hooksContainer');
-  if (currentView === 'grid') {
-    container.innerHTML = renderGrid(filtered);
-  } else {
-    container.innerHTML = renderList(filtered);
-  }
+  document.getElementById('resultsCount').textContent =
+    `${filtered.length} hook${filtered.length !== 1 ? 's' : ''}`;
+  document.getElementById('hooksContainer').innerHTML =
+    currentView === 'grid' ? renderGrid(filtered) : renderList(filtered);
 }
 
 function setView(view) {
@@ -957,7 +1084,7 @@ function setView(view) {
   applyFilters();
 }
 
-// ── COPY ──
+/* ── COPY ── */
 function copyHook(id, btn) {
   const hook = hooks.find(h => h.id === id);
   if (!hook) return;
@@ -965,27 +1092,25 @@ function copyHook(id, btn) {
     btn.classList.add('copied');
     const orig = btn.innerHTML;
     btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
-    setTimeout(() => {
-      btn.classList.remove('copied');
-      btn.innerHTML = orig;
-    }, 1800);
-  }).catch(() => {
-    prompt('Copy this hook:', hook.text);
-  });
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
+  }).catch(() => { prompt('Copy this hook:', hook.text); });
 }
 
-// ── MODAL ──
+/* ── HOOK MODAL ── */
 function openModal(hook) {
-  document.getElementById('editId').value = hook ? hook.id : '';
+  populateModalSelects(hook);
+  document.getElementById('editId').value       = hook ? hook.id : '';
   document.getElementById('modalTitle').textContent = hook ? 'Edit Hook' : 'Add Hook';
-  document.getElementById('fText').value = hook ? hook.text : '';
-  document.getElementById('fType').value = hook ? hook.type : 'Statement';
-  document.getElementById('fCat').value = hook ? hook.category : 'Waiver Wire';
-  document.getElementById('fScore').value = hook ? hook.score : '';
-  document.getElementById('fUses').value = hook ? hook.uses : '';
-  document.getElementById('fAvgViews').value = hook ? hook.avgViews : '';
-  document.getElementById('fNotes').value = hook ? hook.notes : '';
+  document.getElementById('fText').value        = hook ? hook.text : '';
+  document.getElementById('fScore').value       = hook ? (hook.score || '') : '';
+  document.getElementById('fFollowers').value   = hook ? (hook.followers || '') : '';
+  document.getElementById('fRetention3s').value = hook ? (hook.retention3s !== undefined ? hook.retention3s : '') : '';
+  document.getElementById('fSkipRate').value    = hook ? (hook.skipRate !== undefined ? hook.skipRate : '') : '';
+  document.getElementById('fUses').value        = hook ? (hook.uses || '') : '';
+  document.getElementById('fAvgViews').value    = hook ? (hook.avgViews || '') : '';
+  document.getElementById('fNotes').value       = hook ? (hook.notes || '') : '';
   document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('fText').focus(), 120);
 }
 
 function closeModal() {
@@ -997,18 +1122,23 @@ function handleOverlayClick(e) {
 }
 
 function saveHook() {
-  const id = document.getElementById('editId').value;
+  const id   = document.getElementById('editId').value;
+  const text = document.getElementById('fText').value.trim();
+  if (!text) { alert('Hook text is required.'); return; }
+
   const hook = {
-    id: id ? parseInt(id) : Date.now(),
-    text: document.getElementById('fText').value.trim(),
-    type: document.getElementById('fType').value,
-    category: document.getElementById('fCat').value,
-    score: parseFloat(document.getElementById('fScore').value) || 0,
-    uses: parseInt(document.getElementById('fUses').value) || 0,
-    avgViews: parseInt(document.getElementById('fAvgViews').value) || 0,
-    notes: document.getElementById('fNotes').value.trim(),
+    id:          id ? parseInt(id) : Date.now(),
+    text,
+    type:        document.getElementById('fType').value,
+    category:    document.getElementById('fCat').value,
+    score:       parseFloat(document.getElementById('fScore').value)       || 0,
+    followers:   parseInt(document.getElementById('fFollowers').value)     || 0,
+    retention3s: parseFloat(document.getElementById('fRetention3s').value) || 0,
+    skipRate:    parseFloat(document.getElementById('fSkipRate').value)    || 0,
+    uses:        parseInt(document.getElementById('fUses').value)          || 0,
+    avgViews:    parseInt(document.getElementById('fAvgViews').value)      || 0,
+    notes:       document.getElementById('fNotes').value.trim(),
   };
-  if (!hook.text) { alert('Hook text is required.'); return; }
 
   if (id) {
     const idx = hooks.findIndex(h => h.id === parseInt(id));
@@ -1027,17 +1157,15 @@ function editHook(id) {
   if (hook) openModal(hook);
 }
 
-// ── DELETE ──
+/* ── DELETE ── */
 function requestDelete(id) {
   deleteTargetId = id;
   document.getElementById('confirmOverlay').classList.add('open');
 }
-
 function closeConfirm() {
   deleteTargetId = null;
   document.getElementById('confirmOverlay').classList.remove('open');
 }
-
 function confirmDelete() {
   if (deleteTargetId !== null) {
     hooks = hooks.filter(h => h.id !== deleteTargetId);
@@ -1048,16 +1176,94 @@ function confirmDelete() {
   closeConfirm();
 }
 
-// ── KEYBOARD ──
+/* ── MANAGE MODAL ── */
+function openManage() {
+  renderManageLists();
+  document.getElementById('manageOverlay').classList.add('open');
+}
+function closeManage() {
+  document.getElementById('manageOverlay').classList.remove('open');
+}
+function handleManageOverlayClick(e) {
+  if (e.target === document.getElementById('manageOverlay')) closeManage();
+}
+
+function renderManageLists() {
+  const deleteIcon = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
+
+  document.getElementById('manageTypesList').innerHTML = hookTypes.length > 0
+    ? hookTypes.map((t, i) =>
+        `<div class="manage-item">
+          <span>${escHtml(t)}</span>
+          <button class="action-btn delete" onclick="removeType(${i})" title="Remove">${deleteIcon}</button>
+        </div>`
+      ).join('')
+    : `<div class="manage-empty">No types yet — add one below</div>`;
+
+  document.getElementById('manageCatsList').innerHTML = hookCategories.length > 0
+    ? hookCategories.map((c, i) =>
+        `<div class="manage-item">
+          <span>${escHtml(c)}</span>
+          <button class="action-btn delete" onclick="removeCategory(${i})" title="Remove">${deleteIcon}</button>
+        </div>`
+      ).join('')
+    : `<div class="manage-empty">No categories yet — add one below</div>`;
+}
+
+function addType() {
+  const input = document.getElementById('newTypeInput');
+  const val   = input.value.trim();
+  if (!val) { input.focus(); return; }
+  if (hookTypes.includes(val)) { input.select(); return; }
+  hookTypes.push(val);
+  saveTypes();
+  input.value = '';
+  renderManageLists();
+  populateFilterSelects();
+  updateStats();
+}
+
+function removeType(idx) {
+  hookTypes.splice(idx, 1);
+  saveTypes();
+  renderManageLists();
+  populateFilterSelects();
+  updateStats();
+}
+
+function addCategory() {
+  const input = document.getElementById('newCatInput');
+  const val   = input.value.trim();
+  if (!val) { input.focus(); return; }
+  if (hookCategories.includes(val)) { input.select(); return; }
+  hookCategories.push(val);
+  saveCats();
+  input.value = '';
+  renderManageLists();
+  populateFilterSelects();
+}
+
+function removeCategory(idx) {
+  hookCategories.splice(idx, 1);
+  saveCats();
+  renderManageLists();
+  populateFilterSelects();
+}
+
+/* ── KEYBOARD ── */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') {
-    closeModal();
-    closeConfirm();
-  }
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); }
+});
+document.getElementById('newTypeInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addType();
+});
+document.getElementById('newCatInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter') addCategory();
 });
 
-// ── INIT ──
+/* ── INIT ── */
 loadData();
+populateFilterSelects();
 updateStats();
 applyFilters();
 </script>
