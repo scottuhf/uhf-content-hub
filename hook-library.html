@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hook Library — Upper Hand Fantasy</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -34,7 +35,7 @@ body::before {
 /* ── HEADER ── */
 .site-header {
   position: fixed; top: 4px; left: 0; right: 0; z-index: 99;
-  background: rgba(6,21,37,0.92); backdrop-filter: blur(12px);
+  background: rgba(6,21,37,0.95); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-dim);
   display: flex; align-items: center; justify-content: space-between;
   padding: 0 40px; height: 64px; gap: 24px;
@@ -45,31 +46,16 @@ body::before {
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
 .logo-top { font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
 .logo-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 3px; }
-
 .header-nav { display: flex; align-items: center; gap: 4px; border-left: 1px solid var(--border-dim); padding-left: 20px; height: 100%; }
-.nav-tab {
-  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500;
-  letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted);
-  text-decoration: none; padding: 6px 14px; border-radius: 4px; border: 1px solid transparent; transition: all 0.18s ease; white-space: nowrap;
-}
+.nav-tab { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); text-decoration: none; padding: 6px 14px; border-radius: 4px; border: 1px solid transparent; transition: all 0.18s; white-space: nowrap; }
 .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
 .nav-tab.active { color: var(--orange); background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); }
-
 .header-right { display: flex; align-items: center; gap: 8px; }
-.btn-outline {
-  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase; background: transparent;
-  color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 6px;
-  padding: 8px 14px; cursor: pointer; transition: all 0.18s; white-space: nowrap;
-}
+.btn-outline { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 14px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .btn-outline:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
 .btn-import { color: var(--blue); border-color: rgba(51,154,233,0.3); }
 .btn-import:hover { color: var(--blue); border-color: var(--blue); background: rgba(51,154,233,0.08); }
-.btn-add {
-  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase; background: var(--pink); color: #fff;
-  border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.18s; white-space: nowrap;
-}
+.btn-add { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: var(--pink); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .btn-add:hover { background: #c4085f; transform: translateY(-1px); }
 
 /* ── MAIN ── */
@@ -86,68 +72,56 @@ body::before {
 .stat-card-value.pink  { color: var(--pink); }
 .stat-card-value.blue  { color: var(--blue); }
 .stat-card-value.green { color: var(--green); }
-.stat-card-sub { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.stat-card-sub { font-size: 11px; color: var(--text-muted); }
+
+/* ── CHARTS PANEL ── */
+.charts-panel { margin-bottom: 24px; display: none; }
+.charts-panel.open { display: block; }
+.charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.chart-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; }
+.chart-card-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
 
 /* ── FILTER BAR ── */
-.filter-bar {
-  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
-  padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
-}
-.filter-bar input, .filter-bar select {
-  background: var(--bg); border: 1px solid var(--border-dim); color: #fff;
-  border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif;
-  font-size: 13px; outline: none; transition: border-color 0.18s;
-}
+.filter-bar { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-bar input, .filter-bar select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; }
 .filter-bar input:focus, .filter-bar select:focus { border-color: var(--orange); }
-.filter-bar input { flex: 1; min-width: 180px; }
-.filter-bar select { min-width: 130px; cursor: pointer; }
+.filter-bar input { flex: 1; min-width: 160px; }
+.filter-bar select { min-width: 120px; cursor: pointer; }
 .filter-bar select option { background: #0d1e35; }
-.filter-hook-needed {
-  background: var(--bg); border: 1px solid var(--border-dim);
-  color: var(--text-muted); border-radius: 6px; padding: 8px 12px;
-  font-family: 'Roboto', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.18s;
-  white-space: nowrap;
-}
-.filter-hook-needed.active { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
-.view-toggle { display: flex; gap: 4px; margin-left: auto; }
+.filter-pill { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+.filter-pill:hover { color: #fff; }
+.filter-pill.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.08); }
+.filter-pill.active-red { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
+.filter-pill.active-blue { border-color: var(--blue); color: var(--blue); background: rgba(51,154,233,0.08); }
+.sort-dir-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 14px; transition: all 0.18s; line-height: 1; }
+.sort-dir-btn:hover { color: #fff; border-color: var(--orange); }
+.view-toggle { display: flex; gap: 4px; }
 .view-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
 .view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
 .view-btn svg { width: 16px; height: 16px; fill: currentColor; }
-.results-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+.results-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
 
 /* ── GRID ── */
 .hooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
 
+/* ── CARDS ── */
 .hook-card {
   background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
   padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
-  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative; cursor: pointer;
 }
-.hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-color: rgba(255,107,53,0.3); }
+.hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); border-color: rgba(255,107,53,0.4); }
 .hook-card.hook-needed { border-left: 3px solid var(--red); }
+.hook-card.select-mode { cursor: pointer; user-select: none; }
+.hook-card.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
 .hook-card-top { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-
-.reel-name {
-  font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; line-height: 1.3;
-}
+.reel-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
 .reel-name a { color: #fff; text-decoration: none; }
-.reel-name a:hover { color: var(--blue); text-decoration: underline; }
-.ig-icon { display: inline-flex; align-items: center; gap: 3px; margin-left: 4px; color: var(--pink); font-size: 10px; vertical-align: middle; }
-
-.hook-text {
-  font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.75);
-  line-height: 1.5; font-style: italic;
-}
-.hook-needed-badge {
-  display: inline-flex; align-items: center; gap: 5px;
-  background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.35);
-  color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
-}
-
-.hook-card-metrics {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
-}
+.reel-name a:hover { color: var(--blue); }
+.hook-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; font-style: italic; }
+.hook-needed-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.35); color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+.hook-card-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
 .metric-item { display: flex; flex-direction: column; gap: 2px; }
 .metric-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
 .metric-value { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: #fff; line-height: 1; }
@@ -155,35 +129,45 @@ body::before {
 .metric-value.blue   { color: var(--blue); }
 .metric-value.pink   { color: var(--pink); }
 .metric-value.green  { color: var(--green); }
-
-.hook-card-secondary {
-  display: flex; gap: 14px; padding-top: 8px; border-top: 1px solid var(--border-dim);
-}
-.sec-item { display: flex; flex-direction: column; gap: 2px; }
+.hook-card-secondary { display: flex; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.sec-item { display: flex; flex-direction: column; gap: 1px; }
 .sec-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
 .sec-value { font-size: 12px; font-weight: 500; color: var(--text-muted); }
-
-.hook-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border-dim); }
-.hook-actions { display: flex; gap: 6px; }
+.hook-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-dim); }
+.hook-actions { display: flex; gap: 5px; }
 
 /* ── LIST VIEW ── */
 .hooks-list { display: flex; flex-direction: column; gap: 8px; }
-.hook-list-item {
-  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 8px;
-  padding: 12px 18px; display: grid; grid-template-columns: 1fr auto auto auto auto auto;
-  align-items: center; gap: 16px; transition: border-color 0.2s;
-}
-.hook-list-item:hover { border-color: rgba(255,107,53,0.3); }
+.hook-list-item { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 18px; display: grid; grid-template-columns: 1fr auto auto auto auto auto; align-items: center; gap: 14px; transition: border-color 0.18s, background 0.15s; cursor: pointer; position: relative; }
+.hook-list-item:hover { border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.04); }
 .hook-list-item.hook-needed { border-left: 3px solid var(--red); }
-.hook-list-main {}
-.hook-list-reel { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+.hook-list-item.select-mode { user-select: none; }
+.hook-list-item.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
+.hook-list-reel { font-size: 14px; font-weight: 600; color: #fff; }
 .hook-list-reel a { color: #fff; text-decoration: none; }
-.hook-list-reel a:hover { color: var(--blue); }
 .hook-list-hook { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
-.hook-list-badges { display: flex; gap: 5px; margin-top: 4px; }
+.hook-list-badges { display: flex; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
 .hook-list-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
 .hook-list-stat-val { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
 .hook-list-stat-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+
+/* ── SELECT MODE ── */
+.select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: inherit; }
+.card-checkbox-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
+.card-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--orange); }
+.list-checkbox-wrap { display: flex; align-items: center; z-index: 10; position: relative; }
+
+/* ── BULK BAR ── */
+.bulk-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: rgba(10,24,42,0.98); border-top: 2px solid var(--orange); backdrop-filter: blur(16px); padding: 14px 40px; display: flex; align-items: center; gap: 12px; transform: translateY(100%); transition: transform 0.25s ease; }
+.bulk-bar.open { transform: translateY(0); }
+.bulk-count { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-muted); min-width: 110px; }
+.bulk-count strong { color: var(--orange); font-size: 20px; }
+.btn-bulk { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px; padding: 8px 16px; cursor: pointer; transition: all 0.18s; border: 1px solid var(--border-dim); background: transparent; color: var(--text-muted); }
+.btn-bulk:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.btn-bulk-delete { background: rgba(231,76,60,0.12); color: var(--red); border-color: rgba(231,76,60,0.4); }
+.btn-bulk-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-bulk-delete:disabled { opacity: 0.4; pointer-events: none; }
+.bulk-spacer { margin-left: auto; }
 
 /* ── BADGES ── */
 .type-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
@@ -194,13 +178,16 @@ body::before {
 .type-c4 { background: rgba(155,89,182,0.15);  color: var(--purple); }
 .cat-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted); white-space: nowrap; }
 .date-badge { font-size: 10px; color: var(--text-dim); }
+.outlier-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+.outlier-star { background: rgba(255,215,0,0.15); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+.outlier-near { background: rgba(255,107,53,0.12); color: var(--orange); border: 1px solid rgba(255,107,53,0.25); }
+
+/* ── SCORE BADGE ── */
+.score-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.score-num { font-size: 18px; font-weight: 700; }
 
 /* ── ACTION BUTTONS ── */
-.action-btn {
-  background: none; border: 1px solid var(--border-dim); color: var(--text-muted);
-  border-radius: 5px; width: 30px; height: 30px;
-  display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;
-}
+.action-btn { background: none; border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
 .action-btn:hover { border-color: #fff; color: #fff; }
 .action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
 .action-btn.copy:hover { border-color: var(--green); color: var(--green); }
@@ -213,51 +200,70 @@ body::before {
 .empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: var(--text-dim); }
 
-/* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
-  display: flex; align-items: center; justify-content: center; padding: 20px;
-  backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: all 0.2s;
-}
+/* ── MODAL BASE ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: all 0.2s; }
 .modal-overlay.open { opacity: 1; visibility: visible; }
-.modal {
-  background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 12px;
-  width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto;
-  transform: translateY(16px); transition: transform 0.2s;
-}
+.modal { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 12px; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.2s; }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; }
-.modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
-.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px; transition: color 0.15s; }
+.modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
+.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 4px; transition: color 0.15s; flex-shrink: 0; }
 .modal-close:hover { color: #fff; }
 .modal-body { padding: 18px 24px; }
 .modal-footer { padding: 14px 24px 18px; border-top: 1px solid var(--border-dim); display: flex; gap: 10px; justify-content: flex-end; }
 
-.form-section-label {
-  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--text-dim); margin: 16px 0 10px; padding-bottom: 6px;
-  border-bottom: 1px solid var(--border-dim);
-}
+/* ── DETAIL MODAL ── */
+.detail-modal { max-width: 740px; }
+.detail-header-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.detail-score-row { display: flex; align-items: center; gap: 20px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; }
+.detail-score-main { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 70px; }
+.detail-score-num { font-family: 'Oswald', sans-serif; font-size: 40px; font-weight: 700; line-height: 1; }
+.detail-score-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+.detail-score-gauge-wrap { flex: 1; }
+.detail-score-gauge-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.detail-score-gauge { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+.detail-score-gauge-fill { height: 100%; border-radius: 5px; transition: width 0.6s ease; }
+.detail-score-breakdown { font-size: 11px; color: var(--text-dim); display: flex; gap: 16px; flex-wrap: wrap; }
+.detail-score-breakdown span { color: var(--text-muted); }
+.detail-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+.detail-metric { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; }
+.detail-metric-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.detail-metric-val { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; color: #fff; }
+.detail-section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
+.detail-bars { margin-bottom: 18px; }
+.detail-bar-row { margin-bottom: 12px; }
+.detail-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.detail-bar-name { font-size: 11px; color: var(--text-muted); }
+.detail-bar-val { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; }
+.detail-bar-track { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: visible; position: relative; }
+.detail-bar-fill { height: 100%; border-radius: 5px; position: relative; transition: width 0.5s ease; }
+.detail-bar-bench { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px; }
+.detail-hook-box { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); font-style: italic; }
+.detail-chart-wrap { margin-bottom: 18px; }
+.detail-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+.detail-sec { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 10px; }
+.detail-sec-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
+.detail-sec-val { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.detail-notes { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── EDIT / ADD FORM ── */
+.form-section-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
 .form-section-label:first-child { margin-top: 0; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
-.form-row.three { grid-template-columns: 1fr 1fr 1fr; }
 .form-group { display: flex; flex-direction: column; gap: 5px; }
 .form-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
-.form-control {
-  background: var(--bg); border: 1px solid var(--border-dim); color: #fff;
-  border-radius: 6px; padding: 9px 12px; font-family: 'Roboto', sans-serif;
-  font-size: 13px; outline: none; transition: border-color 0.18s; width: 100%;
-}
+.form-control { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 9px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; width: 100%; }
 .form-control:focus { border-color: var(--orange); }
 .form-control option { background: #0d1e35; }
 textarea.form-control { resize: vertical; min-height: 80px; }
 .form-full { margin-bottom: 12px; }
-
 .btn { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 6px; padding: 10px 22px; cursor: pointer; transition: all 0.18s; }
 .btn-primary { background: var(--pink); color: #fff; }
 .btn-primary:hover { background: #c4085f; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
 .btn-secondary:hover { color: #fff; border-color: #fff; }
+.btn-edit { background: rgba(51,154,233,0.12); color: var(--blue); border: 1px solid rgba(51,154,233,0.3); }
+.btn-edit:hover { background: var(--blue); color: #fff; }
 
 /* ── MANAGE MODAL ── */
 .manage-modal { max-width: 640px; }
@@ -265,7 +271,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .manage-section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
 .manage-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
 .manage-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 5px; padding: 7px 10px; font-size: 13px; color: #fff; }
-.manage-add-row { display: flex; gap: 8px; margin-top: 4px; }
+.manage-add-row { display: flex; gap: 8px; }
 .manage-add-row .form-control { flex: 1; padding: 8px 10px; font-size: 13px; }
 .btn-add-item { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--orange); color: #fff; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
 .btn-add-item:hover { background: #e05a25; }
@@ -284,52 +290,6 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .import-option-label { font-size: 13px; font-weight: 600; color: #fff; }
 .import-option-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-/* ── SELECT MODE ── */
-.hook-card { position: relative; }
-.hook-card.select-mode { cursor: pointer; user-select: none; }
-.hook-card.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
-.hook-list-item.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
-.hook-list-item.select-mode { cursor: pointer; user-select: none; }
-.select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: 10px; }
-.list-select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: 8px; }
-.card-checkbox-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
-.card-checkbox {
-  width: 20px; height: 20px; cursor: pointer; accent-color: var(--orange);
-  border-radius: 4px; flex-shrink: 0;
-}
-.list-checkbox-wrap { display: flex; align-items: center; padding-right: 4px; z-index: 10; position: relative; }
-
-/* ── BULK ACTION BAR ── */
-.bulk-bar {
-  position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
-  background: rgba(10, 24, 42, 0.98);
-  border-top: 2px solid var(--orange);
-  backdrop-filter: blur(16px);
-  padding: 14px 40px;
-  display: flex; align-items: center; gap: 12px;
-  transform: translateY(100%); transition: transform 0.25s ease;
-}
-.bulk-bar.open { transform: translateY(0); }
-.bulk-count {
-  font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-muted);
-  min-width: 110px;
-}
-.bulk-count strong { color: var(--orange); font-size: 20px; }
-.btn-bulk {
-  font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
-  letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px;
-  padding: 8px 16px; cursor: pointer; transition: all 0.18s; border: 1px solid var(--border-dim);
-  background: transparent; color: var(--text-muted);
-}
-.btn-bulk:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
-.btn-bulk-delete {
-  background: rgba(231,76,60,0.12); color: var(--red); border-color: rgba(231,76,60,0.4);
-}
-.btn-bulk-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
-.btn-bulk-delete:disabled { opacity: 0.4; pointer-events: none; }
-.bulk-spacer { margin-left: auto; }
-.btn-bulk-cancel { color: var(--text-muted); }
-
 /* ── CONFIRM ── */
 .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.15s; }
 .confirm-overlay.open { opacity: 1; visibility: visible; }
@@ -346,12 +306,15 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   .main { padding: 88px 16px 60px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .hooks-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
   .header-nav { gap: 2px; padding-left: 10px; }
   .nav-tab { padding: 5px 7px; font-size: 10px; }
   .hook-list-item { grid-template-columns: 1fr; }
   .manage-cols { grid-template-columns: 1fr; }
   .btn-outline { display: none; }
   .hook-card-metrics { grid-template-columns: repeat(2, 1fr); }
+  .detail-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-secondary { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -389,10 +352,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div class="page-header">
     <div>
       <div class="page-title">Hook Library</div>
-      <div class="page-sub">Reel analytics + hooks — import from your Analytics Sheet CSV</div>
+      <div class="page-sub">Reel analytics + hooks — click any card to explore performance</div>
     </div>
   </div>
 
+  <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card">
       <div class="stat-card-label">Total Reels</div>
@@ -407,31 +371,60 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <div class="stat-card" style="border-left-color:var(--blue);">
       <div class="stat-card-label">Avg 3-Sec Retention</div>
       <div class="stat-card-value blue" id="statAvgRet">—</div>
-      <div class="stat-card-sub">across logged reels</div>
+      <div class="stat-card-sub" id="statRetBench">across logged reels</div>
     </div>
-    <div class="stat-card" style="border-left-color:var(--green);">
-      <div class="stat-card-label">Avg Skip Rate</div>
-      <div class="stat-card-value green" id="statAvgSkip">—</div>
-      <div class="stat-card-sub">across logged reels</div>
+    <div class="stat-card" style="border-left-color:#FFD700;">
+      <div class="stat-card-label">Outlier Reels</div>
+      <div class="stat-card-value" style="color:#FFD700;" id="statOutliers">—</div>
+      <div class="stat-card-sub">10+ followers gained</div>
     </div>
   </div>
 
+  <!-- CHARTS PANEL -->
+  <div class="charts-panel" id="chartsPanel">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">📈 Followers Over Time</div>
+        <canvas id="chartFollowsTime" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">🔍 Views vs Follows (Scatter)</div>
+        <canvas id="chartViewsFollows" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">📊 Avg 3-Sec Retention by Category</div>
+        <canvas id="chartRetCategory" height="180"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER BAR -->
   <div class="filter-bar">
     <input type="text" id="searchInput" placeholder="Search reels or hooks..." oninput="applyFilters()">
-    <select id="filterCat" onchange="applyFilters()">
-      <option value="">All Categories</option>
+    <select id="filterCat" onchange="applyFilters()"><option value="">All Categories</option></select>
+    <select id="filterType" onchange="applyFilters()"><option value="">All Hook Types</option></select>
+    <select id="sortKey" onchange="applyFilters()">
+      <option value="date">Sort: Recent</option>
+      <option value="score">Sort: Score</option>
+      <option value="follows">Sort: Follows</option>
+      <option value="views">Sort: Views</option>
+      <option value="ret3s">Sort: 3-Sec Ret</option>
+      <option value="skip">Sort: Skip Rate</option>
+      <option value="likes">Sort: Likes</option>
+      <option value="shares">Sort: Shares</option>
+      <option value="name">Sort: Name A–Z</option>
+      <option value="category">Sort: Category</option>
     </select>
-    <select id="filterType" onchange="applyFilters()">
-      <option value="">All Hook Types</option>
-    </select>
-    <button class="filter-hook-needed" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
-    <button class="filter-hook-needed" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
+    <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Toggle sort direction">↓</button>
+    <button class="filter-pill" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
+    <button class="filter-pill" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
+    <button class="filter-pill" id="btnCharts" onclick="toggleCharts()">📊 Charts</button>
     <span class="results-label" id="resultsCount">0 reels</span>
     <div class="view-toggle">
-      <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid view">
+      <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid">
         <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
       </button>
-      <button class="view-btn" id="btnList" onclick="setView('list')" title="List view">
+      <button class="view-btn" id="btnList" onclick="setView('list')" title="List">
         <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
       </button>
     </div>
@@ -440,8 +433,25 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div id="hooksContainer"></div>
 </main>
 
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailOverlay" onclick="handleDetailOverlayClick(event)">
+  <div class="modal detail-modal">
+    <div class="modal-header">
+      <div style="flex:1;min-width:0;">
+        <div class="modal-title" id="detailTitle">Reel Name</div>
+        <div class="detail-header-meta" id="detailMeta"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:2px;">
+        <button class="btn btn-edit" id="detailEditBtn" onclick="editFromDetail()">Edit</button>
+        <button class="modal-close" onclick="closeDetail()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
 <!-- ADD / EDIT MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)" style="z-index:210;">
   <div class="modal" id="modalBox">
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Add Reel</div>
@@ -449,125 +459,57 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
     <div class="modal-body">
       <input type="hidden" id="editId">
-
       <div class="form-section-label">Reel Info</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Reel Name</label>
-          <input type="text" id="fReelName" class="form-control" placeholder="e.g. Bad, Good, Best Landing Spots">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Instagram URL</label>
-          <input type="url" id="fInstagramUrl" class="form-control" placeholder="https://www.instagram.com/reel/...">
-        </div>
+        <div class="form-group"><label class="form-label">Reel Name</label><input type="text" id="fReelName" class="form-control" placeholder="e.g. Bad, Good, Best..."></div>
+        <div class="form-group"><label class="form-label">Instagram URL</label><input type="url" id="fInstagramUrl" class="form-control" placeholder="https://www.instagram.com/reel/..."></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Category</label>
-          <select id="fCat" class="form-control"></select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="text" id="fDate" class="form-control" placeholder="4/28/2026">
-        </div>
+        <div class="form-group"><label class="form-label">Category</label><select id="fCat" class="form-control"></select></div>
+        <div class="form-group"><label class="form-label">Date</label><input type="text" id="fDate" class="form-control" placeholder="4/28/2026"></div>
       </div>
-
       <div class="form-section-label">Hook</div>
       <div class="form-full form-group">
-        <label class="form-label">Hook Text <span style="color:var(--text-dim);font-size:9px;">(leave blank to flag as Hook Needed)</span></label>
-        <textarea id="fText" class="form-control" placeholder="Your opening hook line... leave empty to flag as Hook Needed" style="min-height:80px;font-size:14px;"></textarea>
+        <label class="form-label">Hook Text <span style="color:var(--text-dim);font-size:9px;">(blank = Hook Needed flag)</span></label>
+        <textarea id="fText" class="form-control" style="min-height:80px;font-size:14px;" placeholder="Opening hook line..."></textarea>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Hook Type</label>
-          <select id="fType" class="form-control"></select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Performance Score (1–10)</label>
-          <input type="number" id="fScore" class="form-control" min="1" max="10" step="0.1" placeholder="e.g. 8.5">
-        </div>
+        <div class="form-group"><label class="form-label">Hook Type</label><select id="fType" class="form-control"></select></div>
+        <div class="form-group"><label class="form-label" title="Auto-computed from data; set manually to override">Score Override (1–10)</label><input type="number" id="fScore" class="form-control" min="0" max="10" step="0.1" placeholder="Auto-computed"></div>
       </div>
-
       <div class="form-section-label">Key Metrics</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Followers Gained</label>
-          <input type="number" id="fFollowers" class="form-control" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Views</label>
-          <input type="number" id="fViews" class="form-control" min="0" placeholder="0">
-        </div>
+        <div class="form-group"><label class="form-label">Followers Gained</label><input type="number" id="fFollowers" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Views</label><input type="number" id="fViews" class="form-control" min="0" placeholder="0"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">3-Sec Retention %</label>
-          <input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 55.0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Skip Rate %</label>
-          <input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 57.0">
-        </div>
+        <div class="form-group"><label class="form-label">3-Sec Retention %</label><input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 55.0"></div>
+        <div class="form-group"><label class="form-label">Skip Rate %</label><input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 57.0"></div>
       </div>
-
       <div class="form-section-label">Additional Metrics</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Likes</label>
-          <input type="number" id="fLikes" class="form-control" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Comments</label>
-          <input type="number" id="fComments" class="form-control" min="0" placeholder="0">
-        </div>
+        <div class="form-group"><label class="form-label">Likes</label><input type="number" id="fLikes" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Comments</label><input type="number" id="fComments" class="form-control" min="0" placeholder="0"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Shares</label>
-          <input type="number" id="fShares" class="form-control" min="0" placeholder="0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Length (m:ss)</label>
-          <input type="text" id="fLength" class="form-control" placeholder="e.g. 1:26">
-        </div>
+        <div class="form-group"><label class="form-label">Shares</label><input type="number" id="fShares" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Length (m:ss)</label><input type="text" id="fLength" class="form-control" placeholder="e.g. 1:26"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Avg Watch Time (m:ss)</label>
-          <input type="text" id="fAvgWtSec" class="form-control" placeholder="e.g. 0:22">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Avg WT %</label>
-          <input type="number" id="fAvgWtPct" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 18.4">
-        </div>
+        <div class="form-group"><label class="form-label">Avg Watch Time (m:ss)</label><input type="text" id="fAvgWtSec" class="form-control" placeholder="e.g. 0:22"></div>
+        <div class="form-group"><label class="form-label">Avg WT %</label><input type="number" id="fAvgWtPct" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 18.4"></div>
       </div>
-
       <div class="form-section-label">Multipliers <span style="font-weight:400;color:var(--text-dim);">(least important)</span></div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Follows (?x)</label>
-          <input type="number" id="fFollowsX" class="form-control" min="0" step="0.1" placeholder="0.0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Views (?x)</label>
-          <input type="number" id="fViewsX" class="form-control" min="0" step="0.1" placeholder="1.0">
-        </div>
+        <div class="form-group"><label class="form-label">Follows (?x)</label><input type="number" id="fFollowsX" class="form-control" min="0" step="0.1" placeholder="0.0"></div>
+        <div class="form-group"><label class="form-label">Views (?x)</label><input type="number" id="fViewsX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Likes (?x)</label>
-          <input type="number" id="fLikesX" class="form-control" min="0" step="0.1" placeholder="1.0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Shares (?x)</label>
-          <input type="number" id="fSharesX" class="form-control" min="0" step="0.1" placeholder="1.0">
-        </div>
+        <div class="form-group"><label class="form-label">Likes (?x)</label><input type="number" id="fLikesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
+        <div class="form-group"><label class="form-label">Shares (?x)</label><input type="number" id="fSharesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
       </div>
-
       <div class="form-section-label">Notes</div>
-      <div class="form-full form-group">
-        <textarea id="fNotes" class="form-control" placeholder="Any context, observations, or notes..."></textarea>
-      </div>
+      <div class="form-full form-group"><textarea id="fNotes" class="form-control" placeholder="Any context or observations..."></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -576,37 +518,19 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- IMPORT RESULT MODAL -->
-<div class="modal-overlay" id="importOverlay" onclick="handleImportOverlayClick(event)" style="z-index:210;">
-  <div class="modal import-modal" id="importBox">
-    <div class="modal-header">
-      <div class="modal-title">Import CSV</div>
-      <button class="modal-close" onclick="closeImport()">&#x2715;</button>
-    </div>
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importOverlay" onclick="handleImportOverlayClick(event)" style="z-index:220;">
+  <div class="modal import-modal">
+    <div class="modal-header"><div class="modal-title">Import CSV</div><button class="modal-close" onclick="closeImport()">&#x2715;</button></div>
     <div class="modal-body">
       <div class="import-result">
         <div class="import-count" id="importCount">0</div>
         <div class="import-sub" id="importSub">reels found in CSV</div>
-        <div class="import-warning" id="importWarning" style="display:none;">
-          <span>⚠</span>
-          <span id="importWarningText"></span>
-        </div>
+        <div class="import-warning" id="importWarning" style="display:none;"><span>⚠</span><span id="importWarningText"></span></div>
       </div>
       <div class="import-options">
-        <label class="import-option">
-          <input type="radio" name="importMode" value="append" checked>
-          <div>
-            <div class="import-option-label">Append to library</div>
-            <div class="import-option-desc">Add imported reels to existing entries</div>
-          </div>
-        </label>
-        <label class="import-option">
-          <input type="radio" name="importMode" value="replace">
-          <div>
-            <div class="import-option-label">Replace library</div>
-            <div class="import-option-desc">Clear all existing entries and import fresh</div>
-          </div>
-        </label>
+        <label class="import-option"><input type="radio" name="importMode" value="append" checked><div><div class="import-option-label">Append to library</div><div class="import-option-desc">Add imported reels to existing entries</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="replace"><div><div class="import-option-label">Replace library</div><div class="import-option-desc">Clear all existing entries and import fresh</div></div></label>
       </div>
     </div>
     <div class="modal-footer">
@@ -617,35 +541,24 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 </div>
 
 <!-- MANAGE LISTS MODAL -->
-<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:220;">
-  <div class="modal manage-modal" id="manageBox">
-    <div class="modal-header">
-      <div class="modal-title">Manage Lists</div>
-      <button class="modal-close" onclick="closeManage()">&#x2715;</button>
-    </div>
+<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:230;">
+  <div class="modal manage-modal">
+    <div class="modal-header"><div class="modal-title">Manage Lists</div><button class="modal-close" onclick="closeManage()">&#x2715;</button></div>
     <div class="modal-body">
       <div class="manage-cols">
         <div>
           <div class="manage-section-title">Hook Types</div>
           <div class="manage-list" id="manageTypesList"></div>
-          <div class="manage-add-row">
-            <input type="text" id="newTypeInput" class="form-control" placeholder="New type...">
-            <button class="btn-add-item" onclick="addType()">+ Add</button>
-          </div>
+          <div class="manage-add-row"><input type="text" id="newTypeInput" class="form-control" placeholder="New type..."><button class="btn-add-item" onclick="addType()">+ Add</button></div>
         </div>
         <div>
           <div class="manage-section-title">Content Categories</div>
           <div class="manage-list" id="manageCatsList"></div>
-          <div class="manage-add-row">
-            <input type="text" id="newCatInput" class="form-control" placeholder="New category...">
-            <button class="btn-add-item" onclick="addCategory()">+ Add</button>
-          </div>
+          <div class="manage-add-row"><input type="text" id="newCatInput" class="form-control" placeholder="New category..."><button class="btn-add-item" onclick="addCategory()">+ Add</button></div>
         </div>
       </div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeManage()">Done</button>
-    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeManage()">Done</button></div>
   </div>
 </div>
 
@@ -654,18 +567,16 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div class="bulk-count"><strong id="bulkSelectedCount">0</strong> selected</div>
   <button class="btn-bulk" onclick="selectAll()">Select All</button>
   <button class="btn-bulk" onclick="deselectAll()">Deselect All</button>
-  <button class="btn-bulk btn-bulk-delete" id="btnBulkDelete" onclick="requestBulkDelete()" disabled>
-    🗑 Delete Selected
-  </button>
+  <button class="btn-bulk btn-bulk-delete" id="btnBulkDelete" onclick="requestBulkDelete()" disabled>🗑 Delete Selected</button>
   <div class="bulk-spacer"></div>
-  <button class="btn-bulk btn-bulk-cancel" onclick="toggleSelectMode()">✕ Cancel</button>
+  <button class="btn-bulk" onclick="toggleSelectMode()">✕ Cancel</button>
 </div>
 
-<!-- CONFIRM DELETE -->
+<!-- CONFIRM -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <h3 id="confirmTitle">Delete Reel?</h3>
-    <p id="confirmMsg">This entry will be permanently removed from your library.</p>
+    <h3 id="confirmTitle">Delete?</h3>
+    <p id="confirmMsg"></p>
     <p class="confirm-warning" id="confirmWarning" style="display:none;"></p>
     <div class="confirm-btns">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
@@ -675,59 +586,125 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 </div>
 
 <script>
-/* ── STORAGE KEYS ── */
+/* ══════════════════════════════════════════════
+   STORAGE & STATE
+══════════════════════════════════════════════ */
 const STORAGE_KEY = 'uhf_hook_library';
 const TYPES_KEY   = 'uhf_hook_types';
 const CATS_KEY    = 'uhf_hook_categories';
 
-/* ── STATE ── */
-let hooks          = [];
-let hookTypes      = [];
-let hookCategories = [];
-let deleteTargetId = null;
-let currentView    = 'grid';
+let hooks = [], hookTypes = [], hookCategories = [];
+let deleteTargetId = null, isBulkDelete = false;
+let currentView = 'grid';
 let filterHookNeededOnly = false;
+let selectMode = false, selectedIds = new Set();
 let pendingImportData = [];
-let selectMode    = false;
-let selectedIds   = new Set();
-let isBulkDelete  = false;
+let sortKey = 'date', sortDir = 'desc';
+let chartsOpen = false;
+let libCharts = {}, detailChartInst = null;
+let currentDetailId = null;
 
 const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
 const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
 const TYPE_COLOR_COUNT = 5;
 
+Chart.defaults.color = '#5a8ab0';
+Chart.defaults.borderColor = '#1a3a5c';
+
 /* ── STORAGE ── */
 function loadData() {
-  const sh = localStorage.getItem(STORAGE_KEY);
-  hooks = sh ? JSON.parse(sh) : [];
-  const st = localStorage.getItem(TYPES_KEY);
-  hookTypes = st ? JSON.parse(st) : [...DEFAULT_TYPES];
-  const sc = localStorage.getItem(CATS_KEY);
-  hookCategories = sc ? JSON.parse(sc) : [...DEFAULT_CATS];
+  hooks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  hookTypes = JSON.parse(localStorage.getItem(TYPES_KEY) || 'null') || [...DEFAULT_TYPES];
+  hookCategories = JSON.parse(localStorage.getItem(CATS_KEY) || 'null') || [...DEFAULT_CATS];
 }
 function saveData()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks)); }
 function saveTypes() { localStorage.setItem(TYPES_KEY,   JSON.stringify(hookTypes)); }
 function saveCats()  { localStorage.setItem(CATS_KEY,    JSON.stringify(hookCategories)); }
 
-/* ── HELPERS ── */
-function escHtml(str) {
-  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ══════════════════════════════════════════════
+   SCORING ENGINE
+══════════════════════════════════════════════ */
+function computeScore(h) {
+  const ret     = h.retention3s || 0;
+  const follows = h.followers   || 0;
+  const skip    = h.skipRate    || 0;
+
+  // If no real data, fall back to manual score
+  if (!ret && !follows) return h.score || 0;
+
+  // Retention component (0–5)
+  let retScore = 0;
+  if      (ret >= 60) retScore = 5;
+  else if (ret >= 55) retScore = 4;
+  else if (ret >= 50) retScore = 3;
+  else if (ret >= 45) retScore = 2;
+  else if (ret >= 40) retScore = 1;
+  else if (ret >   0) retScore = 0.5;
+
+  // Follows component (0–5)
+  let followScore = 0;
+  if      (follows >= 20) followScore = 5;
+  else if (follows >= 10) followScore = 3.5;
+  else if (follows >=  5) followScore = 2;
+  else if (follows >=  1) followScore = 1;
+
+  // Skip rate adjustment (minor)
+  let skipAdj = 0;
+  if (skip > 65 && skip > 0)    skipAdj = -0.5;
+  else if (skip > 0 && skip < 50) skipAdj =  0.5;
+
+  const raw = retScore + followScore + skipAdj;
+  return Math.round(Math.min(10, Math.max(0, raw)) * 10) / 10;
+}
+
+function getOutlier(h) {
+  const f = h.followers || 0;
+  if (f >= 10) return 'outlier';
+  if (f >= 6)  return 'near-outlier';
+  return null;
+}
+
+function scoreInfo(score) {
+  if (score >= 8)  return { label: 'Great',    color: 'var(--green)' };
+  if (score >= 6)  return { label: 'Solid',    color: 'var(--blue)' };
+  if (score >= 4)  return { label: 'Mid',      color: 'var(--orange)' };
+  if (score >= 2)  return { label: 'Bad',      color: 'var(--text-muted)' };
+  return                   { label: 'Terrible', color: 'var(--red)' };
+}
+
+function retInfo(ret) {
+  if (!ret) return { color: 'var(--text-dim)', label: '—' };
+  if (ret >= 60) return { color: 'var(--green)',  label: 'Great' };
+  if (ret >= 50) return { color: 'var(--blue)',   label: 'Solid' };
+  if (ret >= 45) return { color: 'var(--orange)', label: 'Below Avg' };
+  return              { color: 'var(--red)',    label: 'Weak' };
+}
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function fmt(n) {
-  if (!n && n !== 0) return '—';
-  n = Number(n);
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
+  if (!n && n !== 0) return '—'; n = Number(n);
+  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
   return n.toLocaleString();
 }
-function fmtPct(n) {
-  if (n === undefined || n === null || n === '' || n === 0) return '—';
-  return Number(n).toFixed(1) + '%';
-}
+function fmtPct(n) { return (!n && n !== 0) ? '—' : Number(n).toFixed(1)+'%'; }
 function fmtScore(n) { return (!n) ? '—' : Number(n).toFixed(1); }
 function getTypeClass(type) {
-  const idx = hookTypes.indexOf(type);
-  return 'type-c' + (Math.max(idx, 0) % TYPE_COLOR_COUNT);
+  return 'type-c' + (Math.max(hookTypes.indexOf(type), 0) % TYPE_COLOR_COUNT);
+}
+function parseDate(s) {
+  if (!s) return new Date(0);
+  const p = s.split('/');
+  return p.length === 3 ? new Date(+p[2], +p[0]-1, +p[1]) : new Date(s);
+}
+function libAvg(key) {
+  const vals = hooks.map(h => h[key] || 0).filter(v => v > 0);
+  return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
 }
 
 /* ── STATS ── */
@@ -737,107 +714,135 @@ function updateStats() {
   document.getElementById('statHooksNeeded').textContent = needed || '—';
   const withRet = hooks.filter(h => h.retention3s);
   document.getElementById('statAvgRet').textContent = withRet.length
-    ? (withRet.reduce((a, h) => a + h.retention3s, 0) / withRet.length).toFixed(1) + '%' : '—';
-  const withSkip = hooks.filter(h => h.skipRate);
-  document.getElementById('statAvgSkip').textContent = withSkip.length
-    ? (withSkip.reduce((a, h) => a + h.skipRate, 0) / withSkip.length).toFixed(1) + '%' : '—';
+    ? (withRet.reduce((a,h) => a+h.retention3s, 0)/withRet.length).toFixed(1)+'%' : '—';
+  const outliers = hooks.filter(h => (h.followers||0) >= 10).length;
+  document.getElementById('statOutliers').textContent = outliers || '—';
 }
 
 /* ── SELECTS ── */
 function populateFilterSelects() {
-  const catEl  = document.getElementById('filterCat');
-  const typeEl = document.getElementById('filterType');
-  const prevCat  = catEl.value;
-  const prevType = typeEl.value;
+  const catEl = document.getElementById('filterCat'), prevCat = catEl.value;
+  const typEl = document.getElementById('filterType'), prevTyp = typEl.value;
   catEl.innerHTML  = '<option value="">All Categories</option>' +
-    hookCategories.map(c => `<option${prevCat === c ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
-  typeEl.innerHTML = '<option value="">All Hook Types</option>' +
-    hookTypes.map(t => `<option${prevType === t ? ' selected' : ''}>${escHtml(t)}</option>`).join('');
+    hookCategories.map(c => `<option${prevCat===c?' selected':''}>${escHtml(c)}</option>`).join('');
+  typEl.innerHTML  = '<option value="">All Hook Types</option>' +
+    hookTypes.map(t => `<option${prevTyp===t?' selected':''}>${escHtml(t)}</option>`).join('');
 }
 function populateModalSelects(hook) {
   document.getElementById('fType').innerHTML = '<option value="">— None —</option>' +
     hookTypes.map(t => `<option>${escHtml(t)}</option>`).join('');
-  document.getElementById('fCat').innerHTML =
+  document.getElementById('fCat').innerHTML  =
     hookCategories.map(c => `<option>${escHtml(c)}</option>`).join('');
-  if (hook) {
-    document.getElementById('fType').value = hook.type || '';
-    document.getElementById('fCat').value  = hook.category || '';
-  }
+  if (hook) { document.getElementById('fType').value = hook.type||''; document.getElementById('fCat').value = hook.category||''; }
 }
 
-/* ── FILTER ── */
+/* ══════════════════════════════════════════════
+   FILTER + SORT
+══════════════════════════════════════════════ */
 function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const catF   = document.getElementById('filterCat').value;
   const typeF  = document.getElementById('filterType').value;
   return hooks.filter(h => {
     if (filterHookNeededOnly && !h.hookNeeded) return false;
-    const matchSearch = !search ||
-      (h.reelName || '').toLowerCase().includes(search) ||
-      (h.text || '').toLowerCase().includes(search) ||
-      (h.notes || '').toLowerCase().includes(search);
-    const matchCat  = !catF  || h.category === catF;
-    const matchType = !typeF || h.type === typeF;
-    return matchSearch && matchCat && matchType;
+    const matchS = !search ||
+      (h.reelName||'').toLowerCase().includes(search) ||
+      (h.text||'').toLowerCase().includes(search) ||
+      (h.notes||'').toLowerCase().includes(search) ||
+      (h.category||'').toLowerCase().includes(search);
+    return matchS && (!catF || h.category===catF) && (!typeF || h.type===typeF);
   });
 }
 
+function getSorted(list) {
+  return [...list].sort((a, b) => {
+    let va, vb;
+    switch (sortKey) {
+      case 'date':     va = parseDate(a.date); vb = parseDate(b.date); break;
+      case 'score':    va = computeScore(a);   vb = computeScore(b);   break;
+      case 'follows':  va = a.followers||0;    vb = b.followers||0;    break;
+      case 'views':    va = a.views||0;        vb = b.views||0;        break;
+      case 'ret3s':    va = a.retention3s||0;  vb = b.retention3s||0;  break;
+      case 'skip':     va = a.skipRate||0;     vb = b.skipRate||0;     break;
+      case 'likes':    va = a.likes||0;        vb = b.likes||0;        break;
+      case 'shares':   va = a.shares||0;       vb = b.shares||0;       break;
+      case 'name':     va = (a.reelName||'').toLowerCase(); vb = (b.reelName||'').toLowerCase(); break;
+      case 'category': va = (a.category||'').toLowerCase(); vb = (b.category||'').toLowerCase(); break;
+      default: return 0;
+    }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ?  1 : -1;
+    return 0;
+  });
+}
+
+function toggleSortDir() {
+  sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+  document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
+  applyFilters();
+}
 function toggleHookNeeded() {
   filterHookNeededOnly = !filterHookNeededOnly;
-  document.getElementById('btnHookNeeded').classList.toggle('active', filterHookNeededOnly);
+  document.getElementById('btnHookNeeded').classList.toggle('active-red', filterHookNeededOnly);
   applyFilters();
 }
 
-/* ── RENDER ── */
-function typeBadgeHtml(type) {
-  if (!type) return '';
-  return `<span class="type-badge ${getTypeClass(type)}">${escHtml(type)}</span>`;
-}
-function catBadgeHtml(cat) {
-  if (!cat) return '';
-  return `<span class="cat-badge">${escHtml(cat)}</span>`;
-}
-function reelLinkHtml(h) {
-  const name = escHtml(h.reelName || h.text || 'Untitled');
-  if (h.instagramUrl) {
-    return `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">${name}<span class="ig-icon">↗</span></a>`;
-  }
-  return name;
-}
+/* ══════════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════════ */
 const ICONS = {
-  copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
-  edit: `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
-  del:  `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`,
-  check:`<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
+  copy:  `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
+  edit:  `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
+  del:   `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`,
+  check: `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
 };
+
 function actionBtns(id) {
-  return `<div class="hook-actions">
+  return `<div class="hook-actions" onclick="event.stopPropagation()">
     <button class="action-btn copy" onclick="copyHook(${id},this)" title="Copy hook">${ICONS.copy}</button>
-    <button class="action-btn" onclick="editHook(${id})" title="Edit">${ICONS.edit}</button>
+    <button class="action-btn" onclick="openModal(hooks.find(h=>h.id===${id}))" title="Edit">${ICONS.edit}</button>
     <button class="action-btn delete" onclick="requestDelete(${id})" title="Delete">${ICONS.del}</button>
   </div>`;
 }
 
+function outlierBadgeHtml(h) {
+  const o = getOutlier(h);
+  if (o === 'outlier')      return `<span class="outlier-badge outlier-star">⭐ Outlier</span>`;
+  if (o === 'near-outlier') return `<span class="outlier-badge outlier-near">~ Near Outlier</span>`;
+  return '';
+}
+
+function scoreBadgeHtml(score) {
+  const si = scoreInfo(score);
+  return score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>${si.label}</span>` : '';
+}
+
+function typeBadgeHtml(t) { return t ? `<span class="type-badge ${getTypeClass(t)}">${escHtml(t)}</span>` : ''; }
+function catBadgeHtml(c)  { return c ? `<span class="cat-badge">${escHtml(c)}</span>` : ''; }
+function dateBadgeHtml(d) { return d ? `<span class="date-badge">${escHtml(d)}</span>` : ''; }
+function reelLinkHtml(h)  {
+  const name = escHtml(h.reelName || h.text || 'Untitled');
+  return h.instagramUrl
+    ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${name} ↗</a>`
+    : name;
+}
+
 function renderGrid(filtered) {
-  if (!filtered.length) return emptyStateHtml();
+  if (!filtered.length) return emptyHtml();
   return `<div class="hooks-grid">${filtered.map(h => {
-    const sel        = selectedIds.has(h.id);
-    const selCls     = selectMode ? ' select-mode' : '';
-    const selectedCls= sel ? ' selected' : '';
-    const needCls    = h.hookNeeded ? ' hook-needed' : '';
-    const hookContent = h.hookNeeded
-      ? `<span class="hook-needed-badge">⚠ Hook Needed</span>`
-      : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '');
-    return `<div class="hook-card${needCls}${selCls}${selectedCls}" id="card-${h.id}">
+    const score = computeScore(h);
+    const si    = scoreInfo(score);
+    const sel   = selectedIds.has(h.id);
+    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
+    return `<div class="hook-card${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="card-${h.id}" ${clickHandler}>
       ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
-      ${selectMode ? `<div class="card-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel ? 'checked' : ''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
+      ${selectMode ? `<div class="card-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
       <div class="hook-card-top">
-        ${catBadgeHtml(h.category)}
-        ${typeBadgeHtml(h.type)}
-        <span class="date-badge">${escHtml(h.date || '')}</span>
+        ${catBadgeHtml(h.category)} ${typeBadgeHtml(h.type)} ${dateBadgeHtml(h.date)}
+        ${outlierBadgeHtml(h)}
       </div>
       <div class="reel-name">${reelLinkHtml(h)}</div>
-      ${hookContent}
+      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '')}
       <div class="hook-card-metrics">
         <div class="metric-item"><span class="metric-label">Follows</span><span class="metric-value orange">${fmt(h.followers)}</span></div>
         <div class="metric-item"><span class="metric-label">Views</span><span class="metric-value">${fmt(h.views)}</span></div>
@@ -848,48 +853,41 @@ function renderGrid(filtered) {
         <div class="sec-item"><span class="sec-label">Likes</span><span class="sec-value">${fmt(h.likes)}</span></div>
         <div class="sec-item"><span class="sec-label">Shares</span><span class="sec-value">${fmt(h.shares)}</span></div>
         <div class="sec-item"><span class="sec-label">Comments</span><span class="sec-value">${fmt(h.comments)}</span></div>
-        <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length || '—')}</span></div>
-        ${h.score ? `<div class="sec-item"><span class="sec-label">Score</span><span class="sec-value" style="color:var(--orange);">${fmtScore(h.score)}</span></div>` : ''}
+        <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length||'—')}</span></div>
       </div>
-      ${!selectMode ? `<div class="hook-card-footer">
-        <div style="display:flex;gap:8px;align-items:center;">
-          ${h.followsMultiplier ? `<span class="cat-badge" style="color:var(--orange);">${h.followsMultiplier}x Follows</span>` : ''}
-          ${h.viewsMultiplier ? `<span class="cat-badge">${h.viewsMultiplier}x Views</span>` : ''}
-        </div>
-        ${actionBtns(h.id)}
-      </div>` : ''}
+      <div class="hook-card-footer">
+        ${score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>&nbsp;${si.label}</span>` : '<span></span>'}
+        ${!selectMode ? actionBtns(h.id) : ''}
+      </div>
     </div>`;
   }).join('')}</div>`;
 }
 
 function renderList(filtered) {
-  if (!filtered.length) return emptyStateHtml();
+  if (!filtered.length) return emptyHtml();
   return `<div class="hooks-list">${filtered.map(h => {
-    const sel        = selectedIds.has(h.id);
-    const selCls     = selectMode ? ' select-mode' : '';
-    const selectedCls= sel ? ' selected' : '';
-    const needCls    = h.hookNeeded ? ' hook-needed' : '';
-    const hookText = h.hookNeeded
-      ? `<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>`
-      : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0, 80))}${h.text.length > 80 ? '…' : ''}"</div>` : '');
-    return `<div class="hook-list-item${needCls}${selCls}${selectedCls}" style="position:relative;" id="listitem-${h.id}">
-      ${selectMode ? `<div class="list-select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
-      ${selectMode ? `<div class="list-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel ? 'checked' : ''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
-      <div class="hook-list-main">
-        <div class="hook-list-reel">${reelLinkHtml(h)}</div>
-        ${hookText}
-        <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}<span class="date-badge">${escHtml(h.date || '')}</span></div>
+    const score = computeScore(h);
+    const si    = scoreInfo(score);
+    const sel   = selectedIds.has(h.id);
+    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
+    return `<div class="hook-list-item${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="listitem-${h.id}" style="position:relative;" ${clickHandler}>
+      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
+      ${selectMode ? `<div class="list-checkbox-wrap" style="position:relative;z-index:10;"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
+      <div>
+        <div class="hook-list-reel">${reelLinkHtml(h)} ${outlierBadgeHtml(h)}</div>
+        ${h.hookNeeded ? '<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0,80))}${h.text.length>80?'…':''}"</div>` : '')}
+        <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}${dateBadgeHtml(h.date)}</div>
       </div>
       <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span><span class="hook-list-stat-lbl">Follows</span></div>
       <div class="hook-list-stat"><span class="hook-list-stat-val">${fmt(h.views)}</span><span class="hook-list-stat-lbl">Views</span></div>
       <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span><span class="hook-list-stat-lbl">3-Sec Ret</span></div>
-      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--pink);">${fmtPct(h.skipRate)}</span><span class="hook-list-stat-lbl">Skip Rate</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:${si.color};">${fmtScore(score)}</span><span class="hook-list-stat-lbl">Score</span></div>
       ${!selectMode ? actionBtns(h.id) : ''}
     </div>`;
   }).join('')}</div>`;
 }
 
-function emptyStateHtml() {
+function emptyHtml() {
   return `<div class="empty-state">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
     <h3>No reels found</h3>
@@ -898,379 +896,558 @@ function emptyStateHtml() {
 }
 
 function applyFilters() {
-  const filtered = getFiltered();
-  document.getElementById('resultsCount').textContent = `${filtered.length} reel${filtered.length !== 1 ? 's' : ''}`;
+  const filtered = getSorted(getFiltered());
+  document.getElementById('resultsCount').textContent = `${filtered.length} reel${filtered.length!==1?'s':''}`;
   document.getElementById('hooksContainer').innerHTML =
     currentView === 'grid' ? renderGrid(filtered) : renderList(filtered);
 }
 function setView(v) {
   currentView = v;
-  document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
-  document.getElementById('btnList').classList.toggle('active', v === 'list');
+  document.getElementById('btnGrid').classList.toggle('active', v==='grid');
+  document.getElementById('btnList').classList.toggle('active', v==='list');
   applyFilters();
 }
 
-/* ── COPY ── */
-function copyHook(id, btn) {
+/* ══════════════════════════════════════════════
+   DETAIL MODAL
+══════════════════════════════════════════════ */
+function openDetail(id) {
+  if (selectMode) { toggleSelect(id); return; }
   const h = hooks.find(x => x.id === id);
-  if (!h || !h.text) return;
-  navigator.clipboard.writeText(h.text).then(() => {
-    btn.classList.add('copied');
-    const orig = btn.innerHTML;
-    btn.innerHTML = ICONS.check;
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
-  }).catch(() => prompt('Copy hook:', h.text));
+  if (!h) return;
+  currentDetailId = id;
+
+  const score  = computeScore(h);
+  const si     = scoreInfo(score);
+  const ri     = retInfo(h.retention3s);
+  const outlier = getOutlier(h);
+  const avgRet  = libAvg('retention3s');
+  const avgSkip = libAvg('skipRate');
+  const avgFollows = libAvg('followers');
+
+  // Header
+  document.getElementById('detailTitle').textContent = h.reelName || h.text || 'Untitled';
+  document.getElementById('detailMeta').innerHTML =
+    catBadgeHtml(h.category) + typeBadgeHtml(h.type) + dateBadgeHtml(h.date) +
+    (outlier==='outlier' ? '<span class="outlier-badge outlier-star">⭐ Outlier</span>' :
+     outlier==='near-outlier' ? '<span class="outlier-badge outlier-near">~ Near Outlier</span>' : '');
+
+  // Retention score breakdown for display
+  const ret = h.retention3s||0, follows = h.followers||0, skip = h.skipRate||0;
+  let retPts = 0;
+  if(ret>=60)retPts=5; else if(ret>=55)retPts=4; else if(ret>=50)retPts=3; else if(ret>=45)retPts=2; else if(ret>=40)retPts=1; else if(ret>0)retPts=0.5;
+  let followPts = 0;
+  if(follows>=20)followPts=5; else if(follows>=10)followPts=3.5; else if(follows>=5)followPts=2; else if(follows>=1)followPts=1;
+  let skipAdj = skip>65&&skip>0?-0.5:skip>0&&skip<50?0.5:0;
+
+  // Body HTML
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-score-row">
+      <div class="detail-score-main">
+        <div class="detail-score-num" style="color:${si.color}">${fmtScore(score)}</div>
+        <div class="detail-score-label" style="color:${si.color}">${si.label}</div>
+      </div>
+      <div class="detail-score-gauge-wrap">
+        <div class="detail-score-gauge-label">Performance Score</div>
+        <div class="detail-score-gauge">
+          <div class="detail-score-gauge-fill" style="width:${score*10}%;background:${si.color}"></div>
+        </div>
+        <div class="detail-score-breakdown">
+          <span>Retention: +${retPts}</span>
+          <span>Follows: +${followPts}</span>
+          ${skipAdj ? `<span>Skip adj: ${skipAdj>0?'+':''}${skipAdj}</span>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-metrics-grid">
+      <div class="detail-metric"><div class="detail-metric-lbl">Followers Gained</div><div class="detail-metric-val" style="color:var(--orange)">${fmt(h.followers)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Views</div><div class="detail-metric-val">${fmt(h.views)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">3-Sec Retention</div><div class="detail-metric-val" style="color:${ri.color}">${fmtPct(h.retention3s)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Skip Rate</div><div class="detail-metric-val" style="color:var(--pink)">${fmtPct(h.skipRate)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Likes</div><div class="detail-metric-val">${fmt(h.likes)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Shares</div><div class="detail-metric-val">${fmt(h.shares)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Comments</div><div class="detail-metric-val">${fmt(h.comments)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Length</div><div class="detail-metric-val" style="font-size:18px">${escHtml(h.length||'—')}</div></div>
+    </div>
+
+    <div class="detail-section-title">Retention vs Skip Rate</div>
+    <div class="detail-bars">
+      <div class="detail-bar-row">
+        <div class="detail-bar-header">
+          <span class="detail-bar-name">3-Sec Retention</span>
+          <span class="detail-bar-val" style="color:${ri.color}">${fmtPct(h.retention3s)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgRet.toFixed(1)}%)</small></span>
+        </div>
+        <div class="detail-bar-track">
+          <div class="detail-bar-fill" style="width:${Math.min(h.retention3s||0,100)}%;background:${ri.color}"></div>
+          <div class="detail-bar-bench" style="left:${Math.min(avgRet,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
+          <div class="detail-bar-bench" style="left:50%;background:rgba(255,215,0,0.5);" title="50% benchmark"></div>
+        </div>
+      </div>
+      <div class="detail-bar-row" style="margin-top:14px;">
+        <div class="detail-bar-header">
+          <span class="detail-bar-name">Skip Rate <small style="color:var(--text-dim);font-size:10px;">(lower = better)</small></span>
+          <span class="detail-bar-val" style="color:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}">${fmtPct(h.skipRate)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgSkip.toFixed(1)}%)</small></span>
+        </div>
+        <div class="detail-bar-track">
+          <div class="detail-bar-fill" style="width:${Math.min(h.skipRate||0,100)}%;background:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}"></div>
+          <div class="detail-bar-bench" style="left:${Math.min(avgSkip,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section-title">vs Library Average</div>
+    <div class="detail-chart-wrap"><canvas id="detailChart" height="140"></canvas></div>
+
+    ${h.text || h.hookNeeded ? `
+    <div class="detail-section-title">Hook</div>
+    <div class="detail-hook-box">
+      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed — no hook text recorded</span>' : `"${escHtml(h.text)}"` }
+    </div>` : ''}
+
+    <div class="detail-section-title">Secondary Data</div>
+    <div class="detail-secondary">
+      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT%</div><div class="detail-sec-val">${fmtPct(h.avgWtPct)}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT Sec</div><div class="detail-sec-val">${escHtml(h.avgWtSec||'—')}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Follows ?x</div><div class="detail-sec-val">${h.followsMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Views ?x</div><div class="detail-sec-val">${h.viewsMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Likes ?x</div><div class="detail-sec-val">${h.likesMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Shares ?x</div><div class="detail-sec-val">${h.sharesMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">IG Link</div><div class="detail-sec-val">${h.instagramUrl ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" style="color:var(--blue);">View ↗</a>` : '—'}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Hook Type</div><div class="detail-sec-val">${escHtml(h.type||'—')}</div></div>
+    </div>
+
+    ${h.notes ? `<div class="detail-section-title">Notes</div><div class="detail-notes">${escHtml(h.notes)}</div>` : ''}
+  `;
+
+  document.getElementById('detailOverlay').classList.add('open');
+
+  // Init comparison chart after DOM is ready
+  setTimeout(() => {
+    if (detailChartInst) detailChartInst.destroy();
+    const ctx = document.getElementById('detailChart');
+    if (!ctx) return;
+    detailChartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['3-Sec Ret %', 'Skip Rate %', 'Follows', 'Score /10'],
+        datasets: [
+          {
+            label: 'This Reel',
+            data: [h.retention3s||0, h.skipRate||0, h.followers||0, score],
+            backgroundColor: ['rgba(51,154,233,0.7)','rgba(237,10,115,0.7)','rgba(255,107,53,0.7)','rgba(62,207,106,0.7)'],
+            borderRadius: 4,
+          },
+          {
+            label: 'Library Avg',
+            data: [avgRet, avgSkip, avgFollows, (() => {const s=hooks.map(x=>computeScore(x)).filter(Boolean);return s.length?(s.reduce((a,b)=>a+b,0)/s.length):0;})()],
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderRadius: 4,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        plugins: { legend: { labels: { font: { size: 11 } } } },
+        scales: {
+          x: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } }, beginAtZero: true }
+        }
+      }
+    });
+  }, 80);
 }
 
-/* ── HOOK MODAL ── */
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  currentDetailId = null;
+  if (detailChartInst) { detailChartInst.destroy(); detailChartInst = null; }
+}
+function handleDetailOverlayClick(e) { if (e.target === document.getElementById('detailOverlay')) closeDetail(); }
+
+function editFromDetail() {
+  const h = hooks.find(x => x.id === currentDetailId);
+  if (h) { closeDetail(); openModal(h); }
+}
+
+/* ══════════════════════════════════════════════
+   LIBRARY CHARTS
+══════════════════════════════════════════════ */
+function toggleCharts() {
+  chartsOpen = !chartsOpen;
+  document.getElementById('btnCharts').classList.toggle('active-blue', chartsOpen);
+  const panel = document.getElementById('chartsPanel');
+  panel.classList.toggle('open', chartsOpen);
+  if (chartsOpen) initLibCharts();
+}
+
+function initLibCharts() {
+  const sorted = [...hooks].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+
+  // ── Follows Over Time ──
+  if (libCharts.follows) libCharts.follows.destroy();
+  const ctxF = document.getElementById('chartFollowsTime');
+  libCharts.follows = new Chart(ctxF, {
+    type: 'line',
+    data: {
+      labels: sorted.map(h => h.date || ''),
+      datasets: [{
+        label: 'Followers Gained',
+        data: sorted.map(h => h.followers || 0),
+        borderColor: 'rgba(255,107,53,0.9)',
+        backgroundColor: 'rgba(255,107,53,0.1)',
+        fill: true, tension: 0.3, pointRadius: 3,
+        pointBackgroundColor: sorted.map(h => (h.followers||0)>=10 ? '#FFD700' : 'rgba(255,107,53,0.9)'),
+        pointRadius: sorted.map(h => (h.followers||0)>=10 ? 6 : 3),
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:9}, maxTicksLimit: 8, maxRotation: 45 } },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, beginAtZero: true }
+      }
+    }
+  });
+
+  // ── Views vs Follows Scatter ──
+  if (libCharts.scatter) libCharts.scatter.destroy();
+  const ctxS = document.getElementById('chartViewsFollows');
+  const scatterData = hooks.filter(h => h.views && h.followers !== undefined).map(h => ({
+    x: h.views || 0,
+    y: h.followers || 0,
+    label: h.reelName || 'Untitled'
+  }));
+  libCharts.scatter = new Chart(ctxS, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Reels',
+        data: scatterData,
+        backgroundColor: scatterData.map(d => d.y >= 10 ? 'rgba(255,215,0,0.8)' : d.y >= 6 ? 'rgba(255,107,53,0.7)' : 'rgba(51,154,233,0.5)'),
+        pointRadius: scatterData.map(d => d.y >= 10 ? 7 : 4),
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: ${fmt(ctx.raw.x)} views, ${ctx.raw.y} follows` } }
+      },
+      scales: {
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10}, callback: v => fmt(v) }, title: { display: true, text: 'Views', color: '#5a8ab0', font:{size:10} } },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, title: { display: true, text: 'Follows', color: '#5a8ab0', font:{size:10} }, beginAtZero: true }
+      }
+    }
+  });
+
+  // ── Avg Retention by Category ──
+  if (libCharts.retCat) libCharts.retCat.destroy();
+  const ctxR = document.getElementById('chartRetCategory');
+  const catMap = {};
+  hooks.forEach(h => {
+    if (!h.category || !h.retention3s) return;
+    if (!catMap[h.category]) catMap[h.category] = [];
+    catMap[h.category].push(h.retention3s);
+  });
+  const cats = Object.keys(catMap).sort();
+  const catAvgs = cats.map(c => catMap[c].reduce((a,b)=>a+b,0)/catMap[c].length);
+  libCharts.retCat = new Chart(ctxR, {
+    type: 'bar',
+    data: {
+      labels: cats,
+      datasets: [{
+        label: 'Avg 3-Sec Retention %',
+        data: catAvgs,
+        backgroundColor: catAvgs.map(v => v>=60?'rgba(62,207,106,0.7)':v>=50?'rgba(51,154,233,0.7)':v>=45?'rgba(255,107,53,0.7)':'rgba(231,76,60,0.7)'),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, min: 30, max: 80 },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} } }
+      }
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   HOOK MODAL (ADD / EDIT)
+══════════════════════════════════════════════ */
 function openModal(hook) {
+  if (typeof hook === 'number') hook = hooks.find(h => h.id === hook);
   populateModalSelects(hook);
-  document.getElementById('editId').value         = hook ? hook.id : '';
+  document.getElementById('editId').value        = hook ? hook.id : '';
   document.getElementById('modalTitle').textContent = hook ? 'Edit Reel' : 'Add Reel';
-  document.getElementById('fReelName').value      = hook ? (hook.reelName || '') : '';
-  document.getElementById('fInstagramUrl').value  = hook ? (hook.instagramUrl || '') : '';
-  document.getElementById('fDate').value          = hook ? (hook.date || '') : '';
-  document.getElementById('fText').value          = hook ? (hook.text || '') : '';
-  document.getElementById('fScore').value         = hook ? (hook.score || '') : '';
-  document.getElementById('fFollowers').value     = hook ? (hook.followers || '') : '';
-  document.getElementById('fViews').value         = hook ? (hook.views || '') : '';
-  document.getElementById('fRetention3s').value   = hook ? (hook.retention3s || '') : '';
-  document.getElementById('fSkipRate').value      = hook ? (hook.skipRate || '') : '';
-  document.getElementById('fLikes').value         = hook ? (hook.likes || '') : '';
-  document.getElementById('fComments').value      = hook ? (hook.comments || '') : '';
-  document.getElementById('fShares').value        = hook ? (hook.shares || '') : '';
-  document.getElementById('fLength').value        = hook ? (hook.length || '') : '';
-  document.getElementById('fAvgWtSec').value      = hook ? (hook.avgWtSec || '') : '';
-  document.getElementById('fAvgWtPct').value      = hook ? (hook.avgWtPct || '') : '';
-  document.getElementById('fFollowsX').value      = hook ? (hook.followsMultiplier || '') : '';
-  document.getElementById('fViewsX').value        = hook ? (hook.viewsMultiplier || '') : '';
-  document.getElementById('fLikesX').value        = hook ? (hook.likesMultiplier || '') : '';
-  document.getElementById('fSharesX').value       = hook ? (hook.sharesMultiplier || '') : '';
-  document.getElementById('fNotes').value         = hook ? (hook.notes || '') : '';
+  document.getElementById('fReelName').value     = hook ? (hook.reelName||'') : '';
+  document.getElementById('fInstagramUrl').value = hook ? (hook.instagramUrl||'') : '';
+  document.getElementById('fDate').value         = hook ? (hook.date||'') : '';
+  document.getElementById('fText').value         = hook ? (hook.text||'') : '';
+  document.getElementById('fScore').value        = hook ? (hook.score||'') : '';
+  document.getElementById('fFollowers').value    = hook ? (hook.followers||'') : '';
+  document.getElementById('fViews').value        = hook ? (hook.views||'') : '';
+  document.getElementById('fRetention3s').value  = hook ? (hook.retention3s||'') : '';
+  document.getElementById('fSkipRate').value     = hook ? (hook.skipRate||'') : '';
+  document.getElementById('fLikes').value        = hook ? (hook.likes||'') : '';
+  document.getElementById('fComments').value     = hook ? (hook.comments||'') : '';
+  document.getElementById('fShares').value       = hook ? (hook.shares||'') : '';
+  document.getElementById('fLength').value       = hook ? (hook.length||'') : '';
+  document.getElementById('fAvgWtSec').value     = hook ? (hook.avgWtSec||'') : '';
+  document.getElementById('fAvgWtPct').value     = hook ? (hook.avgWtPct||'') : '';
+  document.getElementById('fFollowsX').value     = hook ? (hook.followsMultiplier||'') : '';
+  document.getElementById('fViewsX').value       = hook ? (hook.viewsMultiplier||'') : '';
+  document.getElementById('fLikesX').value       = hook ? (hook.likesMultiplier||'') : '';
+  document.getElementById('fSharesX').value      = hook ? (hook.sharesMultiplier||'') : '';
+  document.getElementById('fNotes').value        = hook ? (hook.notes||'') : '';
   document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('fReelName').focus(), 120);
+  setTimeout(() => document.getElementById('fReelName').focus(), 100);
 }
 function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
+function handleOverlayClick(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
 
 function saveHook() {
   const id       = document.getElementById('editId').value;
   const reelName = document.getElementById('fReelName').value.trim();
   const text     = document.getElementById('fText').value.trim();
   if (!reelName && !text) { alert('Enter a reel name or hook text.'); return; }
-
   const hook = {
     id:               id ? parseInt(id) : Date.now(),
     reelName,
     instagramUrl:     document.getElementById('fInstagramUrl').value.trim(),
-    text,
-    hookNeeded:       !text,
+    text, hookNeeded: !text,
     type:             document.getElementById('fType').value,
     category:         document.getElementById('fCat').value,
     date:             document.getElementById('fDate').value.trim(),
-    score:            parseFloat(document.getElementById('fScore').value)        || 0,
-    followers:        parseInt(document.getElementById('fFollowers').value)      || 0,
-    views:            parseInt(document.getElementById('fViews').value)          || 0,
-    retention3s:      parseFloat(document.getElementById('fRetention3s').value)  || 0,
-    skipRate:         parseFloat(document.getElementById('fSkipRate').value)     || 0,
-    likes:            parseInt(document.getElementById('fLikes').value)          || 0,
-    comments:         parseInt(document.getElementById('fComments').value)       || 0,
-    shares:           parseInt(document.getElementById('fShares').value)         || 0,
+    score:            parseFloat(document.getElementById('fScore').value)||0,
+    followers:        parseInt(document.getElementById('fFollowers').value)||0,
+    views:            parseInt(document.getElementById('fViews').value)||0,
+    retention3s:      parseFloat(document.getElementById('fRetention3s').value)||0,
+    skipRate:         parseFloat(document.getElementById('fSkipRate').value)||0,
+    likes:            parseInt(document.getElementById('fLikes').value)||0,
+    comments:         parseInt(document.getElementById('fComments').value)||0,
+    shares:           parseInt(document.getElementById('fShares').value)||0,
     length:           document.getElementById('fLength').value.trim(),
     avgWtSec:         document.getElementById('fAvgWtSec').value.trim(),
-    avgWtPct:         parseFloat(document.getElementById('fAvgWtPct').value)     || 0,
-    followsMultiplier:parseFloat(document.getElementById('fFollowsX').value)     || 0,
-    viewsMultiplier:  parseFloat(document.getElementById('fViewsX').value)       || 0,
-    likesMultiplier:  parseFloat(document.getElementById('fLikesX').value)       || 0,
-    sharesMultiplier: parseFloat(document.getElementById('fSharesX').value)      || 0,
+    avgWtPct:         parseFloat(document.getElementById('fAvgWtPct').value)||0,
+    followsMultiplier:parseFloat(document.getElementById('fFollowsX').value)||0,
+    viewsMultiplier:  parseFloat(document.getElementById('fViewsX').value)||0,
+    likesMultiplier:  parseFloat(document.getElementById('fLikesX').value)||0,
+    sharesMultiplier: parseFloat(document.getElementById('fSharesX').value)||0,
     notes:            document.getElementById('fNotes').value.trim(),
   };
-
-  if (id) {
-    const idx = hooks.findIndex(h => h.id === parseInt(id));
-    if (idx >= 0) hooks[idx] = hook;
-  } else {
-    hooks.push(hook);
-  }
+  if (id) { const idx=hooks.findIndex(h=>h.id===parseInt(id)); if(idx>=0) hooks[idx]=hook; }
+  else hooks.push(hook);
   saveData(); updateStats(); applyFilters(); closeModal();
 }
-function editHook(id) { const h = hooks.find(x => x.id === id); if (h) openModal(h); }
 
-/* ── DELETE ── */
+/* ══════════════════════════════════════════════
+   COPY
+══════════════════════════════════════════════ */
+function copyHook(id, btn) {
+  const h = hooks.find(x => x.id===id);
+  if (!h?.text) return;
+  navigator.clipboard.writeText(h.text).then(() => {
+    btn.classList.add('copied'); const orig=btn.innerHTML; btn.innerHTML=ICONS.check;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML=orig; }, 1800);
+  }).catch(() => prompt('Copy hook:', h.text));
+}
+
+/* ══════════════════════════════════════════════
+   DELETE
+══════════════════════════════════════════════ */
 function requestDelete(id) {
-  isBulkDelete = false;
-  deleteTargetId = id;
-  const h = hooks.find(x => x.id === id);
-  const name = h ? (h.reelName || h.text || 'this entry') : 'this entry';
-  document.getElementById('confirmTitle').textContent = 'Delete Reel?';
-  document.getElementById('confirmMsg').textContent = `"${name}" will be permanently removed from your library.`;
+  isBulkDelete = false; deleteTargetId = id;
+  const h = hooks.find(x=>x.id===id);
+  const name = h?(h.reelName||h.text||'this entry'):'this entry';
+  document.getElementById('confirmTitle').textContent   = 'Delete Reel?';
+  document.getElementById('confirmMsg').textContent     = `"${name}" will be permanently removed.`;
   document.getElementById('confirmWarning').style.display = 'none';
   document.getElementById('confirmDeleteBtn').textContent = 'Delete';
   document.getElementById('confirmOverlay').classList.add('open');
 }
-
 function requestBulkDelete() {
-  const count = selectedIds.size;
-  if (!count) return;
-  isBulkDelete = true;
-  deleteTargetId = null;
-  document.getElementById('confirmTitle').textContent = `Delete ${count} Reel${count !== 1 ? 's' : ''}?`;
-  document.getElementById('confirmMsg').textContent =
-    `You are about to permanently delete ${count} reel${count !== 1 ? 's' : ''} from your library.`;
+  const count = selectedIds.size; if (!count) return;
+  isBulkDelete = true; deleteTargetId = null;
+  document.getElementById('confirmTitle').textContent   = `Delete ${count} Reel${count!==1?'s':''}?`;
+  document.getElementById('confirmMsg').textContent     = `You are about to permanently delete ${count} reel${count!==1?'s':''} from your library.`;
   const warn = document.getElementById('confirmWarning');
   warn.textContent = '⚠ This cannot be undone. All selected entries will be removed.';
   warn.style.display = 'block';
   document.getElementById('confirmDeleteBtn').textContent = `Delete ${count}`;
   document.getElementById('confirmOverlay').classList.add('open');
 }
-
-function closeConfirm() {
-  deleteTargetId = null;
-  isBulkDelete = false;
-  document.getElementById('confirmOverlay').classList.remove('open');
-}
-
+function closeConfirm() { deleteTargetId=null; isBulkDelete=false; document.getElementById('confirmOverlay').classList.remove('open'); }
 function confirmDelete() {
-  if (isBulkDelete) {
-    hooks = hooks.filter(h => !selectedIds.has(h.id));
-    selectedIds.clear();
-    exitSelectMode();
-  } else if (deleteTargetId !== null) {
-    hooks = hooks.filter(h => h.id !== deleteTargetId);
-  }
-  saveData(); updateStats(); applyFilters();
-  closeConfirm();
+  if (isBulkDelete) { hooks=hooks.filter(h=>!selectedIds.has(h.id)); selectedIds.clear(); exitSelectMode(); }
+  else if (deleteTargetId!==null) hooks=hooks.filter(h=>h.id!==deleteTargetId);
+  saveData(); updateStats(); applyFilters(); closeConfirm();
 }
 
-/* ── SELECT MODE ── */
-function toggleSelectMode() {
-  if (selectMode) { exitSelectMode(); } else { enterSelectMode(); }
-}
-
+/* ══════════════════════════════════════════════
+   SELECT MODE
+══════════════════════════════════════════════ */
+function toggleSelectMode() { selectMode ? exitSelectMode() : enterSelectMode(); }
 function enterSelectMode() {
-  selectMode = true;
-  selectedIds.clear();
+  selectMode=true; selectedIds.clear();
   document.getElementById('btnSelectMode').classList.add('active');
   document.getElementById('bulkBar').classList.add('open');
-  document.body.style.paddingBottom = '60px';
-  updateBulkBar();
-  applyFilters();
+  document.body.style.paddingBottom='60px';
+  updateBulkBar(); applyFilters();
 }
-
 function exitSelectMode() {
-  selectMode = false;
-  selectedIds.clear();
+  selectMode=false; selectedIds.clear();
   document.getElementById('btnSelectMode').classList.remove('active');
   document.getElementById('bulkBar').classList.remove('open');
-  document.body.style.paddingBottom = '';
+  document.body.style.paddingBottom='';
   applyFilters();
 }
-
 function toggleSelect(id) {
-  if (selectedIds.has(id)) { selectedIds.delete(id); } else { selectedIds.add(id); }
+  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
   updateBulkBar();
-  // Update just the affected card visuals without full re-render
-  const card = document.getElementById('card-' + id);
-  const listItem = document.getElementById('listitem-' + id);
   const sel = selectedIds.has(id);
-  [card, listItem].forEach(el => {
-    if (!el) return;
+  ['card-','listitem-'].forEach(pfx => {
+    const el = document.getElementById(pfx+id); if(!el) return;
     el.classList.toggle('selected', sel);
-    const cb = el.querySelector('.card-checkbox');
-    if (cb) cb.checked = sel;
+    const cb = el.querySelector('.card-checkbox'); if(cb) cb.checked=sel;
   });
 }
-
-function selectAll() {
-  getFiltered().forEach(h => selectedIds.add(h.id));
-  updateBulkBar();
-  applyFilters();
-}
-
-function deselectAll() {
-  selectedIds.clear();
-  updateBulkBar();
-  applyFilters();
-}
-
+function selectAll()   { getSorted(getFiltered()).forEach(h=>selectedIds.add(h.id)); updateBulkBar(); applyFilters(); }
+function deselectAll() { selectedIds.clear(); updateBulkBar(); applyFilters(); }
 function updateBulkBar() {
   const count = selectedIds.size;
   document.getElementById('bulkSelectedCount').textContent = count;
   const btn = document.getElementById('btnBulkDelete');
-  btn.disabled = count === 0;
-  btn.textContent = count > 0 ? `🗑 Delete ${count} Selected` : '🗑 Delete Selected';
+  btn.disabled = count===0;
+  btn.textContent = count>0 ? `🗑 Delete ${count} Selected` : '🗑 Delete Selected';
 }
 
-/* ── CSV IMPORT ── */
+/* ══════════════════════════════════════════════
+   CSV IMPORT
+══════════════════════════════════════════════ */
 function parseCSV(text) {
-  const rows = []; let row = []; let field = ''; let inQ = false; let i = 0;
-  while (i < text.length) {
-    const ch = text[i];
-    if (inQ) {
-      if (ch === '"' && text[i+1] === '"') { field += '"'; i += 2; }
-      else if (ch === '"') { inQ = false; i++; }
-      else { field += ch; i++; }
-    } else {
-      if      (ch === '"') { inQ = true; i++; }
-      else if (ch === ',') { row.push(field); field = ''; i++; }
-      else if (ch === '\n' || ch === '\r') {
-        row.push(field); field = '';
-        if (row.some(c => c !== '')) rows.push(row);
-        row = []; i += (ch === '\r' && text[i+1] === '\n') ? 2 : 1;
-      } else { field += ch; i++; }
+  const rows=[]; let row=[],field='',inQ=false,i=0;
+  while(i<text.length){
+    const ch=text[i];
+    if(inQ){if(ch==='"'&&text[i+1]==='"'){field+='"';i+=2;}else if(ch==='"'){inQ=false;i++;}else{field+=ch;i++;}}
+    else{
+      if(ch==='"'){inQ=true;i++;}
+      else if(ch===','){row.push(field);field='';i++;}
+      else if(ch==='\n'||ch==='\r'){
+        row.push(field);field='';
+        if(row.some(c=>c!==''))rows.push(row);
+        row=[];i+=(ch==='\r'&&text[i+1]==='\n')?2:1;
+      }else{field+=ch;i++;}
     }
   }
-  if (field !== '' || row.length) { row.push(field); if (row.some(c => c !== '')) rows.push(row); }
+  if(field!==''||row.length){row.push(field);if(row.some(c=>c!==''))rows.push(row);}
   return rows;
 }
-
-function parseN(s)   { if (!s) return 0; const n = parseInt(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n) ? 0 : n; }
-function parseF(s)   { if (!s) return 0; const n = parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n) ? 0 : n; }
-function parsePct(s) { if (!s || String(s).includes('#')) return 0; const n = parseFloat(String(s).replace('%','')); return isNaN(n) ? 0 : n; }
-function parseMult(s){ if (!s) return 0; return parseF(String(s).replace('x','')); }
+const parseN   = s => { if(!s)return 0; const n=parseInt(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
+const parsePF  = s => { if(!s)return 0; const n=parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
+const parsePct = s => { if(!s||String(s).includes('#'))return 0; const n=parseFloat(String(s).replace('%','')); return isNaN(n)?0:n; };
+const parseMx  = s => { if(!s)return 0; return parsePF(String(s).replace('x','')); };
 
 function handleCSVFile(input) {
-  const file = input.files[0];
-  if (!file) return;
-  input.value = '';
-  const reader = new FileReader();
-  reader.onload = e => {
-    const rows = parseCSV(e.target.result);
-    if (rows.length < 2) { alert('No data rows found in CSV.'); return; }
-
-    const header = rows[0].map(h => h.trim());
-    const col = {};
-    header.forEach((h, i) => { col[h] = i; });
-
-    const now = Date.now();
-    pendingImportData = [];
-    let hookNeededCount = 0;
-
-    const catsToAdd = new Set();
-
-    rows.slice(1).forEach((cols, idx) => {
-      const reelName = (cols[col['Reel']] || '').trim();
-      if (!reelName) return;
-
-      const rawCat = (cols[col['Category']] || '').trim();
-      if (rawCat) catsToAdd.add(rawCat);
-
-      const hookText = (cols[col['Hook']] || '').trim();
-      const hookNeeded = !hookText;
-      if (hookNeeded) hookNeededCount++;
-
+  const file=input.files[0]; if(!file){return;} input.value='';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const rows=parseCSV(e.target.result);
+    if(rows.length<2){alert('No data rows found.');return;}
+    const header=rows[0].map(h=>h.trim()), col={};
+    header.forEach((h,i)=>col[h]=i);
+    const now=Date.now(); pendingImportData=[]; let hnCount=0;
+    const catsToAdd=new Set();
+    rows.slice(1).forEach((cols,idx)=>{
+      const reelName=(cols[col['Reel']]||'').trim(); if(!reelName)return;
+      const rawCat=(cols[col['Category']]||'').trim(); if(rawCat)catsToAdd.add(rawCat);
+      const hookText=(cols[col['Hook']]||'').trim(); const hookNeeded=!hookText;
+      if(hookNeeded)hnCount++;
       pendingImportData.push({
-        id:               now + idx,
-        reelName,
-        instagramUrl:     '',
-        text:             hookText,
-        hookNeeded,
-        type:             '',
-        category:         rawCat,
-        date:             cols[col['Date']] || '',
-        followsMultiplier:parseMult(cols[col['Follows (?x)']]),
-        followers:        parseN(cols[col['Follows']]),
-        views:            parseN(cols[col['Views']]),
-        likes:            parseN(cols[col['Likes']]),
-        comments:         parseN(cols[col['Comments']]),
-        shares:           parseN(cols[col['Shares']]),
-        avgWtPct:         parsePct(cols[col['AVG WT%']]),
-        avgWtSec:         cols[col['AVG WT Sec']] || '',
-        length:           cols[col['Length']] || '',
-        retention3s:      parsePct(cols[col['3 Sec RTR']]),
-        skipRate:         parsePct(cols[col['Skip']]),
-        viewsMultiplier:  parseMult(cols[col['Views (?x)']]),
-        likesMultiplier:  parseMult(cols[col['Likes (?x)']]),
-        sharesMultiplier: parseMult(cols[col['Shares (?x)']]),
-        score:            0,
-        notes:            '',
+        id:now+idx, reelName, instagramUrl:'', text:hookText, hookNeeded,
+        type:'', category:rawCat, date:cols[col['Date']]||'',
+        followsMultiplier:parseMx(cols[col['Follows (?x)']]),
+        followers:parseN(cols[col['Follows']]),
+        views:parseN(cols[col['Views']]),
+        likes:parseN(cols[col['Likes']]),
+        comments:parseN(cols[col['Comments']]),
+        shares:parseN(cols[col['Shares']]),
+        avgWtPct:parsePct(cols[col['AVG WT%']]),
+        avgWtSec:cols[col['AVG WT Sec']]||'',
+        length:cols[col['Length']]||'',
+        retention3s:parsePct(cols[col['3 Sec RTR']]),
+        skipRate:parsePct(cols[col['Skip']]),
+        viewsMultiplier:parseMx(cols[col['Views (?x)']]),
+        likesMultiplier:parseMx(cols[col['Likes (?x)']]),
+        sharesMultiplier:parseMx(cols[col['Shares (?x)']]),
+        score:0, notes:'',
       });
     });
-
-    // Auto-add new categories
-    catsToAdd.forEach(c => { if (!hookCategories.includes(c)) { hookCategories.push(c); } });
+    catsToAdd.forEach(c=>{if(!hookCategories.includes(c))hookCategories.push(c);});
     saveCats(); populateFilterSelects();
-
-    // Show import modal
-    document.getElementById('importCount').textContent = pendingImportData.length;
-    document.getElementById('importSub').textContent =
-      `reels found in CSV · ${hookNeededCount} need hooks`;
-    const warn = document.getElementById('importWarning');
-    if (hookNeededCount > 0) {
-      warn.style.display = 'flex';
-      document.getElementById('importWarningText').textContent =
-        `${hookNeededCount} reel${hookNeededCount !== 1 ? 's' : ''} will be flagged as "Hook Needed" — no hook text found`;
-    } else {
-      warn.style.display = 'none';
-    }
-    document.querySelector('input[name="importMode"][value="append"]').checked = true;
+    document.getElementById('importCount').textContent=pendingImportData.length;
+    document.getElementById('importSub').textContent=`reels found · ${hnCount} need hooks`;
+    const warn=document.getElementById('importWarning');
+    if(hnCount>0){warn.style.display='flex';document.getElementById('importWarningText').textContent=`${hnCount} reel${hnCount!==1?'s':''} will be flagged as Hook Needed`;}
+    else warn.style.display='none';
+    document.querySelector('input[name="importMode"][value="append"]').checked=true;
     document.getElementById('importOverlay').classList.add('open');
   };
   reader.readAsText(file);
 }
-
-function closeImport() {
-  document.getElementById('importOverlay').classList.remove('open');
-  pendingImportData = [];
-}
-function handleImportOverlayClick(e) { if (e.target === document.getElementById('importOverlay')) closeImport(); }
-
-function confirmImport() {
-  const mode = document.querySelector('input[name="importMode"]:checked').value;
-  if (mode === 'replace') {
-    hooks = pendingImportData;
-  } else {
-    hooks = hooks.concat(pendingImportData);
-  }
-  saveData(); updateStats(); applyFilters(); closeImport();
+function closeImport(){document.getElementById('importOverlay').classList.remove('open');pendingImportData=[];}
+function handleImportOverlayClick(e){if(e.target===document.getElementById('importOverlay'))closeImport();}
+function confirmImport(){
+  const mode=document.querySelector('input[name="importMode"]:checked').value;
+  hooks=mode==='replace'?pendingImportData:hooks.concat(pendingImportData);
+  saveData();updateStats();applyFilters();closeImport();
+  if(chartsOpen)initLibCharts();
 }
 
-/* ── MANAGE MODAL ── */
-function openManage() { renderManageLists(); document.getElementById('manageOverlay').classList.add('open'); }
-function closeManage() { document.getElementById('manageOverlay').classList.remove('open'); }
-function handleManageOverlayClick(e) { if (e.target === document.getElementById('manageOverlay')) closeManage(); }
+/* ══════════════════════════════════════════════
+   MANAGE LISTS
+══════════════════════════════════════════════ */
+function openManage(){renderManageLists();document.getElementById('manageOverlay').classList.add('open');}
+function closeManage(){document.getElementById('manageOverlay').classList.remove('open');}
+function handleManageOverlayClick(e){if(e.target===document.getElementById('manageOverlay'))closeManage();}
+function renderManageLists(){
+  const dI=`<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
+  document.getElementById('manageTypesList').innerHTML=hookTypes.length
+    ?hookTypes.map((t,i)=>`<div class="manage-item"><span>${escHtml(t)}</span><button class="action-btn delete" onclick="removeType(${i})">${dI}</button></div>`).join('')
+    :'<div class="manage-empty">No types yet</div>';
+  document.getElementById('manageCatsList').innerHTML=hookCategories.length
+    ?hookCategories.map((c,i)=>`<div class="manage-item"><span>${escHtml(c)}</span><button class="action-btn delete" onclick="removeCategory(${i})">${dI}</button></div>`).join('')
+    :'<div class="manage-empty">No categories yet</div>';
+}
+function addType(){const i=document.getElementById('newTypeInput'),v=i.value.trim();if(!v||hookTypes.includes(v)){i.focus();return;}hookTypes.push(v);saveTypes();i.value='';renderManageLists();populateFilterSelects();updateStats();}
+function removeType(i){hookTypes.splice(i,1);saveTypes();renderManageLists();populateFilterSelects();updateStats();}
+function addCategory(){const i=document.getElementById('newCatInput'),v=i.value.trim();if(!v||hookCategories.includes(v)){i.focus();return;}hookCategories.push(v);saveCats();i.value='';renderManageLists();populateFilterSelects();}
+function removeCategory(i){hookCategories.splice(i,1);saveCats();renderManageLists();populateFilterSelects();}
 
-function renderManageLists() {
-  const delBtn = (fn, i) =>
-    `<button class="action-btn delete" onclick="${fn}(${i})" title="Remove">${ICONS.del}</button>`;
-  document.getElementById('manageTypesList').innerHTML = hookTypes.length
-    ? hookTypes.map((t, i) => `<div class="manage-item"><span>${escHtml(t)}</span>${delBtn('removeType', i)}</div>`).join('')
-    : `<div class="manage-empty">No types yet</div>`;
-  document.getElementById('manageCatsList').innerHTML = hookCategories.length
-    ? hookCategories.map((c, i) => `<div class="manage-item"><span>${escHtml(c)}</span>${delBtn('removeCategory', i)}</div>`).join('')
-    : `<div class="manage-empty">No categories yet</div>`;
-}
-
-function addType() {
-  const input = document.getElementById('newTypeInput');
-  const val = input.value.trim();
-  if (!val || hookTypes.includes(val)) { input.focus(); return; }
-  hookTypes.push(val); saveTypes(); input.value = '';
-  renderManageLists(); populateFilterSelects(); updateStats();
-}
-function removeType(i) {
-  hookTypes.splice(i, 1); saveTypes(); renderManageLists(); populateFilterSelects(); updateStats();
-}
-function addCategory() {
-  const input = document.getElementById('newCatInput');
-  const val = input.value.trim();
-  if (!val || hookCategories.includes(val)) { input.focus(); return; }
-  hookCategories.push(val); saveCats(); input.value = '';
-  renderManageLists(); populateFilterSelects();
-}
-function removeCategory(i) {
-  hookCategories.splice(i, 1); saveCats(); renderManageLists(); populateFilterSelects();
-}
-
-/* ── KEYBOARD ── */
+/* ══════════════════════════════════════════════
+   KEYBOARD
+══════════════════════════════════════════════ */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); closeImport(); if (selectMode) exitSelectMode(); }
+  if (e.key==='Escape') {
+    closeModal(); closeConfirm(); closeManage(); closeImport(); closeDetail();
+    if (selectMode) exitSelectMode();
+  }
 });
-document.getElementById('newTypeInput').addEventListener('keydown', e => { if (e.key === 'Enter') addType(); });
-document.getElementById('newCatInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
+document.getElementById('newTypeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addType();});
+document.getElementById('newCatInput').addEventListener('keydown',e=>{if(e.key==='Enter')addCategory();});
 
-/* ── INIT ── */
-loadData(); populateFilterSelects(); updateStats(); applyFilters();
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+loadData();
+populateFilterSelects();
+updateStats();
+applyFilters();
 </script>
 </body>
 </html>
