@@ -301,6 +301,38 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .btn-danger { background: #c0392b; color: #fff; }
 .btn-danger:hover { background: #e74c3c; }
 
+/* ── ADVANCED FILTERS PANEL ── */
+.adv-filters-panel { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px 14px; margin-bottom: 24px; display: none; }
+.adv-filters-panel.open { display: block; }
+.adv-filters-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); }
+.adv-filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.adv-filter-field { display: flex; flex-direction: column; gap: 5px; }
+.adv-filter-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.adv-filter-inputs { display: flex; gap: 6px; align-items: center; }
+.adv-filter-inputs input, .adv-filter-inputs select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 7px 10px; font-family: 'Roboto', sans-serif; font-size: 12px; outline: none; transition: border-color 0.18s; min-width: 0; flex: 1; }
+.adv-filter-inputs input:focus, .adv-filter-inputs select:focus { border-color: var(--orange); }
+.adv-filter-inputs select option { background: #0d1e35; }
+.adv-filter-sep { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
+.adv-filter-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.adv-filter-check input[type=checkbox] { accent-color: var(--orange); width: 15px; height: 15px; cursor: pointer; }
+.adv-filter-check span { font-size: 12px; color: var(--text-muted); }
+.adv-filters-footer { display: flex; gap: 10px; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.adv-active-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+.adv-active-count strong { color: var(--orange); }
+.btn-clear-filters { font-family: 'Roboto', sans-serif; font-size: 12px; color: var(--red); background: none; border: 1px solid rgba(231,76,60,0.3); border-radius: 5px; cursor: pointer; padding: 6px 12px; transition: all 0.15s; }
+.btn-clear-filters:hover { background: rgba(231,76,60,0.1); border-color: var(--red); }
+.filter-count-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--orange); color: #fff; border-radius: 10px; font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; padding: 0 4px; margin-left: 5px; vertical-align: middle; }
+
+/* ── INSTAGRAM BUTTON ── */
+.ig-link { display: inline-flex; align-items: center; gap: 5px; background: rgba(225,48,108,0.1); border: 1px solid rgba(225,48,108,0.3); color: #e1306c; border-radius: 5px; padding: 5px 10px; font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1; }
+.ig-link:hover { background: rgba(225,48,108,0.2); border-color: #e1306c; color: #e1306c; }
+.ig-link svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
+.ig-embed-wrap { margin-bottom: 18px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; align-items: center; }
+.ig-embed-header { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border-dim); }
+.ig-embed-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.ig-embed-frame { width: 100%; display: flex; justify-content: center; padding: 0; }
+.ig-embed-frame iframe { border: none; display: block; max-width: 100%; }
+
 @media (max-width: 900px) {
   .site-header { padding: 0 16px; }
   .main { padding: 88px 16px 60px; }
@@ -403,19 +435,21 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <input type="text" id="searchInput" placeholder="Search reels or hooks..." oninput="applyFilters()">
     <select id="filterCat" onchange="applyFilters()"><option value="">All Categories</option></select>
     <select id="filterType" onchange="applyFilters()"><option value="">All Hook Types</option></select>
-    <select id="sortKey" onchange="applyFilters()">
-      <option value="date">Sort: Recent</option>
-      <option value="score">Sort: Score</option>
-      <option value="follows">Sort: Follows</option>
-      <option value="views">Sort: Views</option>
-      <option value="ret3s">Sort: 3-Sec Ret</option>
-      <option value="skip">Sort: Skip Rate</option>
-      <option value="likes">Sort: Likes</option>
-      <option value="shares">Sort: Shares</option>
-      <option value="name">Sort: Name A–Z</option>
-      <option value="category">Sort: Category</option>
+    <select id="sortKey" onchange="handleSortChange()">
+      <option value="date-desc">Date: Newest First</option>
+      <option value="date-asc">Date: Oldest First</option>
+      <option value="score-desc">Score: High → Low</option>
+      <option value="follows-desc">Follows: High → Low</option>
+      <option value="views-desc">Views: High → Low</option>
+      <option value="ret3s-desc">3-Sec Ret: High → Low</option>
+      <option value="skip-asc">Skip Rate: Low → High</option>
+      <option value="likes-desc">Likes: High → Low</option>
+      <option value="shares-desc">Shares: High → Low</option>
+      <option value="name-asc">Name: A → Z</option>
+      <option value="category-asc">Category: A → Z</option>
     </select>
-    <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Toggle sort direction">↓</button>
+    <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Flip sort direction">↓</button>
+    <button class="filter-pill" id="btnAdvFilters" onclick="toggleAdvFilters()">⚙ Filters<span class="filter-count-badge" id="filterBadge" style="display:none">0</span></button>
     <button class="filter-pill" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
     <button class="filter-pill" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
     <button class="filter-pill" id="btnCharts" onclick="toggleCharts()">📊 Charts</button>
@@ -430,6 +464,83 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
+  <!-- ADVANCED FILTERS PANEL -->
+  <div class="adv-filters-panel" id="advFiltersPanel">
+    <div class="adv-filters-title">Advanced Filters</div>
+    <div class="adv-filters-grid">
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Followers Gained</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advFollowsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advFollowsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Views</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advViewsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advViewsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">3-Sec Retention %</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advRetMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advRetMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Skip Rate %</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advSkipMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advSkipMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Performance Score</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advScoreMin" placeholder="Min" min="0" max="10" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advScoreMax" placeholder="Max" min="0" max="10" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Date Range</div>
+        <div class="adv-filter-inputs">
+          <input type="date" id="advDateFrom" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="date" id="advDateTo" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Outlier Status</div>
+        <div class="adv-filter-inputs">
+          <select id="advOutlier" onchange="readAdvFilters()">
+            <option value="">Any</option>
+            <option value="outlier">⭐ Outlier only (10+ follows)</option>
+            <option value="near-outlier">~ Near Outlier only (6–9)</option>
+            <option value="any-outlier">Any outlier / near-outlier</option>
+            <option value="none">No outlier flag</option>
+          </select>
+        </div>
+      </div>
+      <div class="adv-filter-field" style="justify-content:flex-end;padding-top:8px;">
+        <label class="adv-filter-check">
+          <input type="checkbox" id="advHasIg" onchange="readAdvFilters()">
+          <span>Has Instagram link</span>
+        </label>
+      </div>
+    </div>
+    <div class="adv-filters-footer">
+      <button class="btn btn-secondary" onclick="clearAdvFilters()">✕ Clear All Filters</button>
+      <span class="adv-active-count" id="advActiveCount" style="display:none"><strong id="advActiveNum">0</strong> active filter(s)</span>
+    </div>
+  </div>
+
   <div id="hooksContainer"></div>
 </main>
 
@@ -441,7 +552,11 @@ textarea.form-control { resize: vertical; min-height: 80px; }
         <div class="modal-title" id="detailTitle">Reel Name</div>
         <div class="detail-header-meta" id="detailMeta"></div>
       </div>
-      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:2px;">
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:2px;align-items:center;">
+        <a class="ig-link" id="detailIgBtn" href="#" target="_blank" rel="noopener" style="display:none;" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram
+        </a>
         <button class="btn btn-edit" id="detailEditBtn" onclick="editFromDetail()">Edit</button>
         <button class="modal-close" onclick="closeDetail()">&#x2715;</button>
       </div>
@@ -600,9 +715,15 @@ let filterHookNeededOnly = false;
 let selectMode = false, selectedIds = new Set();
 let pendingImportData = [];
 let sortKey = 'date', sortDir = 'desc';
-let chartsOpen = false;
+let chartsOpen = false, advFiltersOpen = false;
 let libCharts = {}, detailChartInst = null;
 let currentDetailId = null;
+let advFilters = {
+  followsMin:'', followsMax:'', viewsMin:'', viewsMax:'',
+  retMin:'', retMax:'', skipMin:'', skipMax:'',
+  scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'',
+  outlier:'', hasIg: false
+};
 
 const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
 const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
@@ -743,6 +864,7 @@ function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
   const catF   = document.getElementById('filterCat').value;
   const typeF  = document.getElementById('filterType').value;
+  const f = advFilters;
   return hooks.filter(h => {
     if (filterHookNeededOnly && !h.hookNeeded) return false;
     const matchS = !search ||
@@ -750,7 +872,40 @@ function getFiltered() {
       (h.text||'').toLowerCase().includes(search) ||
       (h.notes||'').toLowerCase().includes(search) ||
       (h.category||'').toLowerCase().includes(search);
-    return matchS && (!catF || h.category===catF) && (!typeF || h.type===typeF);
+    if (!matchS) return false;
+    if (catF && h.category !== catF) return false;
+    if (typeF && h.type !== typeF) return false;
+    // Advanced numeric filters
+    const follows = h.followers || 0, views = h.views || 0;
+    const ret = h.retention3s || 0, skip = h.skipRate || 0;
+    const score = computeScore(h);
+    if (f.followsMin !== '' && follows < +f.followsMin) return false;
+    if (f.followsMax !== '' && follows > +f.followsMax) return false;
+    if (f.viewsMin   !== '' && views   < +f.viewsMin)   return false;
+    if (f.viewsMax   !== '' && views   > +f.viewsMax)   return false;
+    if (f.retMin     !== '' && ret     < +f.retMin)     return false;
+    if (f.retMax     !== '' && ret     > +f.retMax)     return false;
+    if (f.skipMin    !== '' && skip    < +f.skipMin)    return false;
+    if (f.skipMax    !== '' && skip    > +f.skipMax)    return false;
+    if (f.scoreMin   !== '' && score   < +f.scoreMin)   return false;
+    if (f.scoreMax   !== '' && score   > +f.scoreMax)   return false;
+    if (f.hasIg && !h.instagramUrl) return false;
+    if (f.outlier) {
+      const o = getOutlier(h);
+      if (f.outlier === 'outlier'      && o !== 'outlier')      return false;
+      if (f.outlier === 'near-outlier' && o !== 'near-outlier') return false;
+      if (f.outlier === 'any-outlier'  && !o)                   return false;
+      if (f.outlier === 'none'         && o)                    return false;
+    }
+    if (f.dateFrom) {
+      const hd = parseDate(h.date), fd = new Date(f.dateFrom + 'T00:00:00');
+      if (!isNaN(fd) && hd < fd) return false;
+    }
+    if (f.dateTo) {
+      const hd = parseDate(h.date), td = new Date(f.dateTo + 'T23:59:59');
+      if (!isNaN(td) && hd > td) return false;
+    }
+    return true;
   });
 }
 
@@ -776,6 +931,19 @@ function getSorted(list) {
   });
 }
 
+function handleSortChange() {
+  const val = document.getElementById('sortKey').value;
+  const parts = val.split('-');
+  const dir = parts[parts.length - 1];
+  if (dir === 'asc' || dir === 'desc') {
+    sortDir = dir;
+    sortKey = parts.slice(0, -1).join('-');
+  } else {
+    sortKey = val;
+  }
+  document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
+  applyFilters();
+}
 function toggleSortDir() {
   sortDir = sortDir === 'desc' ? 'asc' : 'desc';
   document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
@@ -784,6 +952,60 @@ function toggleSortDir() {
 function toggleHookNeeded() {
   filterHookNeededOnly = !filterHookNeededOnly;
   document.getElementById('btnHookNeeded').classList.toggle('active-red', filterHookNeededOnly);
+  applyFilters();
+}
+
+/* ── ADVANCED FILTER PANEL ── */
+function toggleAdvFilters() {
+  advFiltersOpen = !advFiltersOpen;
+  document.getElementById('advFiltersPanel').classList.toggle('open', advFiltersOpen);
+  document.getElementById('btnAdvFilters').classList.toggle('active', advFiltersOpen);
+}
+function countActiveFilters() {
+  const f = advFilters; let n = 0;
+  if (f.followsMin !== '') n++; if (f.followsMax !== '') n++;
+  if (f.viewsMin   !== '') n++; if (f.viewsMax   !== '') n++;
+  if (f.retMin     !== '') n++; if (f.retMax     !== '') n++;
+  if (f.skipMin    !== '') n++; if (f.skipMax    !== '') n++;
+  if (f.scoreMin   !== '') n++; if (f.scoreMax   !== '') n++;
+  if (f.dateFrom)  n++; if (f.dateTo)   n++;
+  if (f.outlier)   n++; if (f.hasIg)   n++;
+  return n;
+}
+function updateFilterBadge() {
+  const n = countActiveFilters();
+  const badge = document.getElementById('filterBadge');
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  badge.textContent = n;
+  const cnt = document.getElementById('advActiveCount');
+  const num = document.getElementById('advActiveNum');
+  if (cnt) { cnt.style.display = n > 0 ? 'inline' : 'none'; if (num) num.textContent = n; }
+}
+function readAdvFilters() {
+  const g = id => document.getElementById(id);
+  advFilters.followsMin = g('advFollowsMin').value;
+  advFilters.followsMax = g('advFollowsMax').value;
+  advFilters.viewsMin   = g('advViewsMin').value;
+  advFilters.viewsMax   = g('advViewsMax').value;
+  advFilters.retMin     = g('advRetMin').value;
+  advFilters.retMax     = g('advRetMax').value;
+  advFilters.skipMin    = g('advSkipMin').value;
+  advFilters.skipMax    = g('advSkipMax').value;
+  advFilters.scoreMin   = g('advScoreMin').value;
+  advFilters.scoreMax   = g('advScoreMax').value;
+  advFilters.dateFrom   = g('advDateFrom').value;
+  advFilters.dateTo     = g('advDateTo').value;
+  advFilters.outlier    = g('advOutlier').value;
+  advFilters.hasIg      = g('advHasIg').checked;
+  updateFilterBadge();
+  applyFilters();
+}
+function clearAdvFilters() {
+  advFilters = { followsMin:'', followsMax:'', viewsMin:'', viewsMax:'', retMin:'', retMax:'', skipMin:'', skipMax:'', scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'', outlier:'', hasIg:false };
+  ['advFollowsMin','advFollowsMax','advViewsMin','advViewsMax','advRetMin','advRetMax','advSkipMin','advSkipMax','advScoreMin','advScoreMax','advDateFrom','advDateTo'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const ov = document.getElementById('advOutlier'); if(ov) ov.value='';
+  const ig = document.getElementById('advHasIg'); if(ig) ig.checked=false;
+  updateFilterBadge();
   applyFilters();
 }
 
@@ -856,7 +1078,10 @@ function renderGrid(filtered) {
         <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length||'—')}</span></div>
       </div>
       <div class="hook-card-footer">
-        ${score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>&nbsp;${si.label}</span>` : '<span></span>'}
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>&nbsp;${si.label}</span>` : ''}
+          ${h.instagramUrl ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
+        </div>
         ${!selectMode ? actionBtns(h.id) : ''}
       </div>
     </div>`;
@@ -882,6 +1107,7 @@ function renderList(filtered) {
       <div class="hook-list-stat"><span class="hook-list-stat-val">${fmt(h.views)}</span><span class="hook-list-stat-lbl">Views</span></div>
       <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span><span class="hook-list-stat-lbl">3-Sec Ret</span></div>
       <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:${si.color};">${fmtScore(score)}</span><span class="hook-list-stat-lbl">Score</span></div>
+      ${h.instagramUrl && !selectMode ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
       ${!selectMode ? actionBtns(h.id) : ''}
     </div>`;
   }).join('')}</div>`;
@@ -931,6 +1157,10 @@ function openDetail(id) {
     catBadgeHtml(h.category) + typeBadgeHtml(h.type) + dateBadgeHtml(h.date) +
     (outlier==='outlier' ? '<span class="outlier-badge outlier-star">⭐ Outlier</span>' :
      outlier==='near-outlier' ? '<span class="outlier-badge outlier-near">~ Near Outlier</span>' : '');
+  // Instagram button in header
+  const igBtn = document.getElementById('detailIgBtn');
+  if (h.instagramUrl) { igBtn.href = h.instagramUrl; igBtn.style.display = 'inline-flex'; }
+  else { igBtn.style.display = 'none'; }
 
   // Retention score breakdown for display
   const ret = h.retention3s||0, follows = h.followers||0, skip = h.skipRate||0;
@@ -1004,6 +1234,24 @@ function openDetail(id) {
     <div class="detail-hook-box">
       ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed — no hook text recorded</span>' : `"${escHtml(h.text)}"` }
     </div>` : ''}
+
+    ${h.instagramUrl ? (() => {
+      // Extract reel embed URL: https://www.instagram.com/reel/ID/ → append embed/
+      const embedUrl = h.instagramUrl.replace(/\/?$/, '/') + 'embed/';
+      return `<div class="detail-section-title">Instagram Reel</div>
+      <div class="ig-embed-wrap">
+        <div class="ig-embed-header">
+          <span class="ig-embed-label">Embedded Preview</span>
+          <a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            Open on Instagram ↗
+          </a>
+        </div>
+        <div class="ig-embed-frame">
+          <iframe src="${escHtml(embedUrl)}" width="400" height="480" frameborder="0" scrolling="no" allowtransparency="true" loading="lazy"></iframe>
+        </div>
+      </div>`;
+    })() : ''}
 
     <div class="detail-section-title">Secondary Data</div>
     <div class="detail-secondary">
