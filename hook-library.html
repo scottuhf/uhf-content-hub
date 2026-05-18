@@ -641,11 +641,22 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <div class="import-result">
         <div class="import-count" id="importCount">0</div>
         <div class="import-sub" id="importSub">reels found in CSV</div>
-        <div class="import-warning" id="importWarning" style="display:none;"><span>⚠</span><span id="importWarningText"></span></div>
+        <div id="importBreakdown" style="display:none;margin-top:12px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--green);" id="importNewCount">0</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">new reels</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--text-dim);" id="importDupCount">0</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">already in library</div>
+          </div>
+        </div>
+        <div class="import-warning" id="importWarning" style="display:none;margin-top:12px;"><span>⚠</span><span id="importWarningText"></span></div>
       </div>
       <div class="import-options">
-        <label class="import-option"><input type="radio" name="importMode" value="append" checked><div><div class="import-option-label">Append to library</div><div class="import-option-desc">Add imported reels to existing entries</div></div></label>
-        <label class="import-option"><input type="radio" name="importMode" value="replace"><div><div class="import-option-label">Replace library</div><div class="import-option-desc">Clear all existing entries and import fresh</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="merge" checked><div><div class="import-option-label">Smart Merge <span style="color:var(--green);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:6px;">Recommended</span></div><div class="import-option-desc">Add only new reels — skip any that already exist in your library (matched by reel name)</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="append"><div><div class="import-option-label">Append All</div><div class="import-option-desc">Add every row from the CSV, even if the reel name already exists</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="replace"><div><div class="import-option-label">Replace Library</div><div class="import-option-desc">Clear all existing entries and import fresh — cannot be undone</div></div></label>
       </div>
     </div>
     <div class="modal-footer">
@@ -1638,12 +1649,19 @@ function handleCSVFile(input) {
     });
     catsToAdd.forEach(c=>{if(!hookCategories.includes(c))hookCategories.push(c);});
     saveCats(); populateFilterSelects();
+    // Compute new vs duplicate by reel name (case-insensitive)
+    const existingNames = new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
+    const newCount = pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim())).length;
+    const dupCount = pendingImportData.length - newCount;
     document.getElementById('importCount').textContent=pendingImportData.length;
-    document.getElementById('importSub').textContent=`reels found · ${hnCount} need hooks`;
+    document.getElementById('importSub').textContent=`reels found in CSV`;
+    document.getElementById('importNewCount').textContent=newCount;
+    document.getElementById('importDupCount').textContent=dupCount;
+    document.getElementById('importBreakdown').style.display='flex';
     const warn=document.getElementById('importWarning');
     if(hnCount>0){warn.style.display='flex';document.getElementById('importWarningText').textContent=`${hnCount} reel${hnCount!==1?'s':''} will be flagged as Hook Needed`;}
     else warn.style.display='none';
-    document.querySelector('input[name="importMode"][value="append"]').checked=true;
+    document.querySelector('input[name="importMode"][value="merge"]').checked=true;
     document.getElementById('importOverlay').classList.add('open');
   };
   reader.readAsText(file);
@@ -1652,7 +1670,15 @@ function closeImport(){document.getElementById('importOverlay').classList.remove
 function handleImportOverlayClick(e){if(e.target===document.getElementById('importOverlay'))closeImport();}
 function confirmImport(){
   const mode=document.querySelector('input[name="importMode"]:checked').value;
-  hooks=mode==='replace'?pendingImportData:hooks.concat(pendingImportData);
+  if(mode==='replace'){
+    hooks=pendingImportData;
+  } else if(mode==='merge'){
+    const existingNames=new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
+    const toAdd=pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim()));
+    hooks=hooks.concat(toAdd);
+  } else {
+    hooks=hooks.concat(pendingImportData);
+  }
   saveData();updateStats();applyFilters();closeImport();
   if(chartsOpen)initLibCharts();
 }
