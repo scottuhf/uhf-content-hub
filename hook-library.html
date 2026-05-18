@@ -284,12 +284,59 @@ textarea.form-control { resize: vertical; min-height: 80px; }
 .import-option-label { font-size: 13px; font-weight: 600; color: #fff; }
 .import-option-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
+/* ── SELECT MODE ── */
+.hook-card { position: relative; }
+.hook-card.select-mode { cursor: pointer; user-select: none; }
+.hook-card.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
+.hook-list-item.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
+.hook-list-item.select-mode { cursor: pointer; user-select: none; }
+.select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: 10px; }
+.list-select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: 8px; }
+.card-checkbox-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
+.card-checkbox {
+  width: 20px; height: 20px; cursor: pointer; accent-color: var(--orange);
+  border-radius: 4px; flex-shrink: 0;
+}
+.list-checkbox-wrap { display: flex; align-items: center; padding-right: 4px; z-index: 10; position: relative; }
+
+/* ── BULK ACTION BAR ── */
+.bulk-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 150;
+  background: rgba(10, 24, 42, 0.98);
+  border-top: 2px solid var(--orange);
+  backdrop-filter: blur(16px);
+  padding: 14px 40px;
+  display: flex; align-items: center; gap: 12px;
+  transform: translateY(100%); transition: transform 0.25s ease;
+}
+.bulk-bar.open { transform: translateY(0); }
+.bulk-count {
+  font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-muted);
+  min-width: 110px;
+}
+.bulk-count strong { color: var(--orange); font-size: 20px; }
+.btn-bulk {
+  font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px;
+  padding: 8px 16px; cursor: pointer; transition: all 0.18s; border: 1px solid var(--border-dim);
+  background: transparent; color: var(--text-muted);
+}
+.btn-bulk:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.btn-bulk-delete {
+  background: rgba(231,76,60,0.12); color: var(--red); border-color: rgba(231,76,60,0.4);
+}
+.btn-bulk-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-bulk-delete:disabled { opacity: 0.4; pointer-events: none; }
+.bulk-spacer { margin-left: auto; }
+.btn-bulk-cancel { color: var(--text-muted); }
+
 /* ── CONFIRM ── */
 .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.15s; }
 .confirm-overlay.open { opacity: 1; visibility: visible; }
-.confirm-box { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 10px; padding: 28px 32px; max-width: 380px; text-align: center; }
+.confirm-box { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 10px; padding: 28px 32px; max-width: 420px; text-align: center; }
 .confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
-.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
+.confirm-warning { font-size: 12px; color: var(--red); background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.25); border-radius: 6px; padding: 8px 12px; margin-bottom: 20px; }
 .confirm-btns { display: flex; gap: 10px; justify-content: center; }
 .btn-danger { background: #c0392b; color: #fff; }
 .btn-danger:hover { background: #e74c3c; }
@@ -378,6 +425,7 @@ textarea.form-control { resize: vertical; min-height: 80px; }
       <option value="">All Hook Types</option>
     </select>
     <button class="filter-hook-needed" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
+    <button class="filter-hook-needed" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
     <span class="results-label" id="resultsCount">0 reels</span>
     <div class="view-toggle">
       <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid view">
@@ -601,14 +649,27 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulkBar">
+  <div class="bulk-count"><strong id="bulkSelectedCount">0</strong> selected</div>
+  <button class="btn-bulk" onclick="selectAll()">Select All</button>
+  <button class="btn-bulk" onclick="deselectAll()">Deselect All</button>
+  <button class="btn-bulk btn-bulk-delete" id="btnBulkDelete" onclick="requestBulkDelete()" disabled>
+    🗑 Delete Selected
+  </button>
+  <div class="bulk-spacer"></div>
+  <button class="btn-bulk btn-bulk-cancel" onclick="toggleSelectMode()">✕ Cancel</button>
+</div>
+
 <!-- CONFIRM DELETE -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <h3>Delete Reel?</h3>
-    <p>This entry will be permanently removed from your library.</p>
+    <h3 id="confirmTitle">Delete Reel?</h3>
+    <p id="confirmMsg">This entry will be permanently removed from your library.</p>
+    <p class="confirm-warning" id="confirmWarning" style="display:none;"></p>
     <div class="confirm-btns">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete</button>
     </div>
   </div>
 </div>
@@ -627,6 +688,9 @@ let deleteTargetId = null;
 let currentView    = 'grid';
 let filterHookNeededOnly = false;
 let pendingImportData = [];
+let selectMode    = false;
+let selectedIds   = new Set();
+let isBulkDelete  = false;
 
 const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
 const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
@@ -757,11 +821,16 @@ function actionBtns(id) {
 function renderGrid(filtered) {
   if (!filtered.length) return emptyStateHtml();
   return `<div class="hooks-grid">${filtered.map(h => {
-    const hookNeededCls = h.hookNeeded ? ' hook-needed' : '';
+    const sel        = selectedIds.has(h.id);
+    const selCls     = selectMode ? ' select-mode' : '';
+    const selectedCls= sel ? ' selected' : '';
+    const needCls    = h.hookNeeded ? ' hook-needed' : '';
     const hookContent = h.hookNeeded
       ? `<span class="hook-needed-badge">⚠ Hook Needed</span>`
       : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '');
-    return `<div class="hook-card${hookNeededCls}">
+    return `<div class="hook-card${needCls}${selCls}${selectedCls}" id="card-${h.id}">
+      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
+      ${selectMode ? `<div class="card-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel ? 'checked' : ''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
       <div class="hook-card-top">
         ${catBadgeHtml(h.category)}
         ${typeBadgeHtml(h.type)}
@@ -770,22 +839,10 @@ function renderGrid(filtered) {
       <div class="reel-name">${reelLinkHtml(h)}</div>
       ${hookContent}
       <div class="hook-card-metrics">
-        <div class="metric-item">
-          <span class="metric-label">Follows</span>
-          <span class="metric-value orange">${fmt(h.followers)}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">Views</span>
-          <span class="metric-value">${fmt(h.views)}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">3-Sec Ret</span>
-          <span class="metric-value blue">${fmtPct(h.retention3s)}</span>
-        </div>
-        <div class="metric-item">
-          <span class="metric-label">Skip Rate</span>
-          <span class="metric-value pink">${fmtPct(h.skipRate)}</span>
-        </div>
+        <div class="metric-item"><span class="metric-label">Follows</span><span class="metric-value orange">${fmt(h.followers)}</span></div>
+        <div class="metric-item"><span class="metric-label">Views</span><span class="metric-value">${fmt(h.views)}</span></div>
+        <div class="metric-item"><span class="metric-label">3-Sec Ret</span><span class="metric-value blue">${fmtPct(h.retention3s)}</span></div>
+        <div class="metric-item"><span class="metric-label">Skip Rate</span><span class="metric-value pink">${fmtPct(h.skipRate)}</span></div>
       </div>
       <div class="hook-card-secondary">
         <div class="sec-item"><span class="sec-label">Likes</span><span class="sec-value">${fmt(h.likes)}</span></div>
@@ -794,13 +851,13 @@ function renderGrid(filtered) {
         <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length || '—')}</span></div>
         ${h.score ? `<div class="sec-item"><span class="sec-label">Score</span><span class="sec-value" style="color:var(--orange);">${fmtScore(h.score)}</span></div>` : ''}
       </div>
-      <div class="hook-card-footer">
+      ${!selectMode ? `<div class="hook-card-footer">
         <div style="display:flex;gap:8px;align-items:center;">
           ${h.followsMultiplier ? `<span class="cat-badge" style="color:var(--orange);">${h.followsMultiplier}x Follows</span>` : ''}
           ${h.viewsMultiplier ? `<span class="cat-badge">${h.viewsMultiplier}x Views</span>` : ''}
         </div>
         ${actionBtns(h.id)}
-      </div>
+      </div>` : ''}
     </div>`;
   }).join('')}</div>`;
 }
@@ -808,33 +865,26 @@ function renderGrid(filtered) {
 function renderList(filtered) {
   if (!filtered.length) return emptyStateHtml();
   return `<div class="hooks-list">${filtered.map(h => {
-    const hookNeededCls = h.hookNeeded ? ' hook-needed' : '';
+    const sel        = selectedIds.has(h.id);
+    const selCls     = selectMode ? ' select-mode' : '';
+    const selectedCls= sel ? ' selected' : '';
+    const needCls    = h.hookNeeded ? ' hook-needed' : '';
     const hookText = h.hookNeeded
       ? `<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>`
       : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0, 80))}${h.text.length > 80 ? '…' : ''}"</div>` : '');
-    return `<div class="hook-list-item${hookNeededCls}">
+    return `<div class="hook-list-item${needCls}${selCls}${selectedCls}" style="position:relative;" id="listitem-${h.id}">
+      ${selectMode ? `<div class="list-select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
+      ${selectMode ? `<div class="list-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel ? 'checked' : ''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
       <div class="hook-list-main">
         <div class="hook-list-reel">${reelLinkHtml(h)}</div>
         ${hookText}
         <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}<span class="date-badge">${escHtml(h.date || '')}</span></div>
       </div>
-      <div class="hook-list-stat">
-        <span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span>
-        <span class="hook-list-stat-lbl">Follows</span>
-      </div>
-      <div class="hook-list-stat">
-        <span class="hook-list-stat-val">${fmt(h.views)}</span>
-        <span class="hook-list-stat-lbl">Views</span>
-      </div>
-      <div class="hook-list-stat">
-        <span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span>
-        <span class="hook-list-stat-lbl">3-Sec Ret</span>
-      </div>
-      <div class="hook-list-stat">
-        <span class="hook-list-stat-val" style="color:var(--pink);">${fmtPct(h.skipRate)}</span>
-        <span class="hook-list-stat-lbl">Skip Rate</span>
-      </div>
-      ${actionBtns(h.id)}
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span><span class="hook-list-stat-lbl">Follows</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val">${fmt(h.views)}</span><span class="hook-list-stat-lbl">Views</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span><span class="hook-list-stat-lbl">3-Sec Ret</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--pink);">${fmtPct(h.skipRate)}</span><span class="hook-list-stat-lbl">Skip Rate</span></div>
+      ${!selectMode ? actionBtns(h.id) : ''}
     </div>`;
   }).join('')}</div>`;
 }
@@ -947,14 +997,108 @@ function saveHook() {
 function editHook(id) { const h = hooks.find(x => x.id === id); if (h) openModal(h); }
 
 /* ── DELETE ── */
-function requestDelete(id) { deleteTargetId = id; document.getElementById('confirmOverlay').classList.add('open'); }
-function closeConfirm() { deleteTargetId = null; document.getElementById('confirmOverlay').classList.remove('open'); }
+function requestDelete(id) {
+  isBulkDelete = false;
+  deleteTargetId = id;
+  const h = hooks.find(x => x.id === id);
+  const name = h ? (h.reelName || h.text || 'this entry') : 'this entry';
+  document.getElementById('confirmTitle').textContent = 'Delete Reel?';
+  document.getElementById('confirmMsg').textContent = `"${name}" will be permanently removed from your library.`;
+  document.getElementById('confirmWarning').style.display = 'none';
+  document.getElementById('confirmDeleteBtn').textContent = 'Delete';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function requestBulkDelete() {
+  const count = selectedIds.size;
+  if (!count) return;
+  isBulkDelete = true;
+  deleteTargetId = null;
+  document.getElementById('confirmTitle').textContent = `Delete ${count} Reel${count !== 1 ? 's' : ''}?`;
+  document.getElementById('confirmMsg').textContent =
+    `You are about to permanently delete ${count} reel${count !== 1 ? 's' : ''} from your library.`;
+  const warn = document.getElementById('confirmWarning');
+  warn.textContent = '⚠ This cannot be undone. All selected entries will be removed.';
+  warn.style.display = 'block';
+  document.getElementById('confirmDeleteBtn').textContent = `Delete ${count}`;
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+
+function closeConfirm() {
+  deleteTargetId = null;
+  isBulkDelete = false;
+  document.getElementById('confirmOverlay').classList.remove('open');
+}
+
 function confirmDelete() {
-  if (deleteTargetId !== null) {
+  if (isBulkDelete) {
+    hooks = hooks.filter(h => !selectedIds.has(h.id));
+    selectedIds.clear();
+    exitSelectMode();
+  } else if (deleteTargetId !== null) {
     hooks = hooks.filter(h => h.id !== deleteTargetId);
-    saveData(); updateStats(); applyFilters();
   }
+  saveData(); updateStats(); applyFilters();
   closeConfirm();
+}
+
+/* ── SELECT MODE ── */
+function toggleSelectMode() {
+  if (selectMode) { exitSelectMode(); } else { enterSelectMode(); }
+}
+
+function enterSelectMode() {
+  selectMode = true;
+  selectedIds.clear();
+  document.getElementById('btnSelectMode').classList.add('active');
+  document.getElementById('bulkBar').classList.add('open');
+  document.body.style.paddingBottom = '60px';
+  updateBulkBar();
+  applyFilters();
+}
+
+function exitSelectMode() {
+  selectMode = false;
+  selectedIds.clear();
+  document.getElementById('btnSelectMode').classList.remove('active');
+  document.getElementById('bulkBar').classList.remove('open');
+  document.body.style.paddingBottom = '';
+  applyFilters();
+}
+
+function toggleSelect(id) {
+  if (selectedIds.has(id)) { selectedIds.delete(id); } else { selectedIds.add(id); }
+  updateBulkBar();
+  // Update just the affected card visuals without full re-render
+  const card = document.getElementById('card-' + id);
+  const listItem = document.getElementById('listitem-' + id);
+  const sel = selectedIds.has(id);
+  [card, listItem].forEach(el => {
+    if (!el) return;
+    el.classList.toggle('selected', sel);
+    const cb = el.querySelector('.card-checkbox');
+    if (cb) cb.checked = sel;
+  });
+}
+
+function selectAll() {
+  getFiltered().forEach(h => selectedIds.add(h.id));
+  updateBulkBar();
+  applyFilters();
+}
+
+function deselectAll() {
+  selectedIds.clear();
+  updateBulkBar();
+  applyFilters();
+}
+
+function updateBulkBar() {
+  const count = selectedIds.size;
+  document.getElementById('bulkSelectedCount').textContent = count;
+  const btn = document.getElementById('btnBulkDelete');
+  btn.disabled = count === 0;
+  btn.textContent = count > 0 ? `🗑 Delete ${count} Selected` : '🗑 Delete Selected';
 }
 
 /* ── CSV IMPORT ── */
@@ -1120,7 +1264,7 @@ function removeCategory(i) {
 
 /* ── KEYBOARD ── */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); closeImport(); }
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); closeImport(); if (selectMode) exitSelectMode(); }
 });
 document.getElementById('newTypeInput').addEventListener('keydown', e => { if (e.key === 'Enter') addType(); });
 document.getElementById('newCatInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
