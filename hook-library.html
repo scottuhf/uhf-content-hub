@@ -14,409 +14,192 @@
   --orange:     #FF6B35;
   --green:      #3ECF6A;
   --purple:     #9B59B6;
+  --red:        #E74C3C;
   --white:      #FFFFFF;
   --bg:         #061525;
   --bg-card:    #0d2a47;
-  --bg-card-cs: #090f1a;
   --border-dim: #1a3a5c;
   --text-muted: #5a8ab0;
   --text-dim:   #2d4a63;
 }
 
-html, body {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Roboto', sans-serif;
-  overflow-x: hidden;
-}
+html, body { min-height: 100vh; background: var(--bg); color: var(--white); font-family: 'Roboto', sans-serif; overflow-x: hidden; }
 
 body::before {
-  content: '';
-  display: block;
-  height: 4px;
+  content: ''; display: block; height: 4px;
   background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 60%, var(--orange) 100%);
-  width: 100%;
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 100;
+  width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
 }
 
 /* ── HEADER ── */
 .site-header {
-  position: fixed;
-  top: 4px; left: 0; right: 0;
-  z-index: 99;
-  background: rgba(6, 21, 37, 0.92);
-  backdrop-filter: blur(12px);
+  position: fixed; top: 4px; left: 0; right: 0; z-index: 99;
+  background: rgba(6,21,37,0.92); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  height: 64px;
-  gap: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px; gap: 24px;
 }
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
-.logo-mark {
-  width: 48px; height: 48px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-  border: 1px solid var(--border-dim);
-}
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-mark { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-dim); }
 .logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
-.logo-top {
-  font-family: 'Oswald', sans-serif;
-  font-size: 17px; font-weight: 700;
-  letter-spacing: 2px;
-  color: #fff;
-  text-transform: uppercase;
-}
-.logo-sub {
-  font-size: 10px; letter-spacing: 3px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-top: 3px;
-}
+.logo-top { font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
+.logo-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 3px; }
 
-.header-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-left: 1px solid var(--border-dim);
-  padding-left: 20px;
-  height: 100%;
-}
+.header-nav { display: flex; align-items: center; gap: 4px; border-left: 1px solid var(--border-dim); padding-left: 20px; height: 100%; }
 .nav-tab {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  transition: all 0.18s ease;
-  white-space: nowrap;
+  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500;
+  letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted);
+  text-decoration: none; padding: 6px 14px; border-radius: 4px; border: 1px solid transparent; transition: all 0.18s ease; white-space: nowrap;
 }
 .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
-.nav-tab.active {
-  color: var(--orange);
-  background: rgba(255,107,53,0.1);
-  border-color: rgba(255,107,53,0.3);
-}
+.nav-tab.active { color: var(--orange); background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); }
 
-.header-right {
-  display: flex; align-items: center; gap: 10px;
+.header-right { display: flex; align-items: center; gap: 8px; }
+.btn-outline {
+  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; background: transparent;
+  color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 6px;
+  padding: 8px 14px; cursor: pointer; transition: all 0.18s; white-space: nowrap;
 }
-.btn-manage {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1px solid var(--border-dim);
-  border-radius: 6px;
-  padding: 8px 14px;
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
-}
-.btn-manage:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+.btn-outline:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+.btn-import { color: var(--blue); border-color: rgba(51,154,233,0.3); }
+.btn-import:hover { color: var(--blue); border-color: var(--blue); background: rgba(51,154,233,0.08); }
 .btn-add {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background: var(--pink);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
+  font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600;
+  letter-spacing: 1.5px; text-transform: uppercase; background: var(--pink); color: #fff;
+  border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.18s; white-space: nowrap;
 }
 .btn-add:hover { background: #c4085f; transform: translateY(-1px); }
 
 /* ── MAIN ── */
-.main {
-  padding: 88px 40px 80px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
+.main { padding: 88px 40px 80px; max-width: 1400px; margin: 0 auto; }
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; padding-top: 20px; flex-wrap: wrap; gap: 16px; }
+.page-title { font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-.page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  padding-top: 20px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-.page-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 36px; font-weight: 700;
-  color: #fff;
-  letter-spacing: 1px;
-}
-.page-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* ── STATS ROW ── */
-.stats-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 18px 20px;
-  border-left: 3px solid var(--orange);
-}
-.stat-card-label {
-  font-size: 10px; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-.stat-card-value {
-  font-family: 'Oswald', sans-serif;
-  font-size: 28px; font-weight: 700;
-  color: var(--orange);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-card-value.pink { color: var(--pink); }
-.stat-card-value.blue { color: var(--blue); }
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; border-left: 3px solid var(--orange); }
+.stat-card-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.stat-card-value { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; color: var(--orange); line-height: 1; margin-bottom: 4px; }
+.stat-card-value.pink  { color: var(--pink); }
+.stat-card-value.blue  { color: var(--blue); }
 .stat-card-value.green { color: var(--green); }
-.stat-card-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.stat-card-sub { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 /* ── FILTER BAR ── */
 .filter-bar {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 14px 20px;
-  margin-bottom: 24px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  align-items: center;
+  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
+  padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;
 }
-.filter-bar input,
-.filter-bar select {
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  color: #fff;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.18s;
+.filter-bar input, .filter-bar select {
+  background: var(--bg); border: 1px solid var(--border-dim); color: #fff;
+  border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif;
+  font-size: 13px; outline: none; transition: border-color 0.18s;
 }
-.filter-bar input:focus,
-.filter-bar select:focus { border-color: var(--orange); }
-.filter-bar input { flex: 1; min-width: 200px; }
-.filter-bar select { min-width: 140px; cursor: pointer; }
+.filter-bar input:focus, .filter-bar select:focus { border-color: var(--orange); }
+.filter-bar input { flex: 1; min-width: 180px; }
+.filter-bar select { min-width: 130px; cursor: pointer; }
 .filter-bar select option { background: #0d1e35; }
-
-.view-toggle {
-  display: flex;
-  gap: 4px;
-  margin-left: auto;
-}
-.view-btn {
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  color: var(--text-muted);
-  border-radius: 5px;
-  width: 34px; height: 34px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
-.view-btn svg { width: 16px; height: 16px; fill: currentColor; }
-.results-label {
-  font-size: 12px;
-  color: var(--text-muted);
+.filter-hook-needed {
+  background: var(--bg); border: 1px solid var(--border-dim);
+  color: var(--text-muted); border-radius: 6px; padding: 8px 12px;
+  font-family: 'Roboto', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.18s;
   white-space: nowrap;
 }
+.filter-hook-needed.active { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
+.view-toggle { display: flex; gap: 4px; margin-left: auto; }
+.view-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+.view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
+.view-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.results-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
 
-/* ── GRID VIEW ── */
-.hooks-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 16px;
-}
+/* ── GRID ── */
+.hooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+
 .hook-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
-  position: relative;
 }
-.hook-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
-  border-color: rgba(255,107,53,0.3);
-}
-.hook-card-top { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.hook-card-body {
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
-  line-height: 1.5;
-  flex: 1;
-}
-.hook-card-meta {
-  display: flex;
-  gap: 16px;
-  font-size: 11px;
-  color: var(--text-muted);
-  flex-wrap: wrap;
-}
-.hook-meta-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-.hook-meta-label {
-  font-size: 9px; letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-.hook-meta-value {
-  font-family: 'Oswald', sans-serif;
-  font-size: 15px; font-weight: 600;
-  color: var(--white);
-}
-.hook-meta-value.orange { color: var(--orange); }
-.hook-meta-value.blue   { color: var(--blue); }
-.hook-meta-value.pink   { color: var(--pink); }
-.hook-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 12px;
-  border-top: 1px solid var(--border-dim);
-}
-.tier-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-.tier-high { color: var(--orange); }
-.tier-mid  { color: var(--blue); }
-.tier-low  { color: var(--text-dim); }
+.hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-color: rgba(255,107,53,0.3); }
+.hook-card.hook-needed { border-left: 3px solid var(--red); }
+.hook-card-top { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 
+.reel-name {
+  font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 2px; line-height: 1.3;
+}
+.reel-name a { color: #fff; text-decoration: none; }
+.reel-name a:hover { color: var(--blue); text-decoration: underline; }
+.ig-icon { display: inline-flex; align-items: center; gap: 3px; margin-left: 4px; color: var(--pink); font-size: 10px; vertical-align: middle; }
+
+.hook-text {
+  font-size: 14px; font-weight: 400; color: rgba(255,255,255,0.75);
+  line-height: 1.5; font-style: italic;
+}
+.hook-needed-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.35);
+  color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 4px;
+}
+
+.hook-card-metrics {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+}
+.metric-item { display: flex; flex-direction: column; gap: 2px; }
+.metric-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.metric-value { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: #fff; line-height: 1; }
+.metric-value.orange { color: var(--orange); }
+.metric-value.blue   { color: var(--blue); }
+.metric-value.pink   { color: var(--pink); }
+.metric-value.green  { color: var(--green); }
+
+.hook-card-secondary {
+  display: flex; gap: 14px; padding-top: 8px; border-top: 1px solid var(--border-dim);
+}
+.sec-item { display: flex; flex-direction: column; gap: 2px; }
+.sec-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+.sec-value { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+
+.hook-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px solid var(--border-dim); }
 .hook-actions { display: flex; gap: 6px; }
 
 /* ── LIST VIEW ── */
-.hooks-list { display: flex; flex-direction: column; gap: 10px; }
+.hooks-list { display: flex; flex-direction: column; gap: 8px; }
 .hook-list-item {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 8px;
-  padding: 14px 18px;
-  display: grid;
-  grid-template-columns: 1fr auto auto auto auto auto auto;
-  align-items: center;
-  gap: 16px;
-  transition: background 0.12s, border-color 0.2s;
-  cursor: default;
+  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 8px;
+  padding: 12px 18px; display: grid; grid-template-columns: 1fr auto auto auto auto auto;
+  align-items: center; gap: 16px; transition: border-color 0.2s;
 }
 .hook-list-item:hover { border-color: rgba(255,107,53,0.3); }
-.hook-list-text {
-  font-size: 14px;
-  color: #fff;
-  font-weight: 500;
-}
-.hook-list-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 1px;
-}
-.hook-list-stat-val {
-  font-family: 'Oswald', sans-serif;
-  font-size: 14px; font-weight: 600;
-  color: #fff;
-}
-.hook-list-stat-lbl {
-  font-size: 9px; letter-spacing: 1px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
+.hook-list-item.hook-needed { border-left: 3px solid var(--red); }
+.hook-list-main {}
+.hook-list-reel { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 2px; }
+.hook-list-reel a { color: #fff; text-decoration: none; }
+.hook-list-reel a:hover { color: var(--blue); }
+.hook-list-hook { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+.hook-list-badges { display: flex; gap: 5px; margin-top: 4px; }
+.hook-list-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.hook-list-stat-val { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
+.hook-list-stat-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
 
 /* ── BADGES ── */
-.type-badge {
-  display: inline-block;
-  font-size: 9px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 3px;
-  white-space: nowrap;
-}
+.type-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
 .type-c0 { background: rgba(51,154,233,0.15);  color: var(--blue); }
 .type-c1 { background: rgba(237,10,115,0.15);  color: var(--pink); }
 .type-c2 { background: rgba(255,107,53,0.15);  color: var(--orange); }
 .type-c3 { background: rgba(62,207,106,0.12);  color: var(--green); }
 .type-c4 { background: rgba(155,89,182,0.15);  color: var(--purple); }
-
-.cat-badge {
-  display: inline-block;
-  font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 3px;
-  background: rgba(255,255,255,0.06);
-  color: var(--text-muted);
-  white-space: nowrap;
-}
+.cat-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted); white-space: nowrap; }
+.date-badge { font-size: 10px; color: var(--text-dim); }
 
 /* ── ACTION BUTTONS ── */
 .action-btn {
-  background: none;
-  border: 1px solid var(--border-dim);
-  color: var(--text-muted);
-  border-radius: 5px;
-  width: 30px; height: 30px;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s;
+  background: none; border: 1px solid var(--border-dim); color: var(--text-muted);
+  border-radius: 5px; width: 30px; height: 30px;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;
 }
 .action-btn:hover { border-color: #fff; color: #fff; }
 .action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
@@ -425,104 +208,52 @@ body::before {
 .action-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
 /* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 80px 20px;
-  color: var(--text-muted);
-}
+.empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
 .empty-state svg { width: 48px; height: 48px; fill: var(--text-dim); margin-bottom: 16px; }
 .empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: var(--text-dim); }
 
 /* ── MODAL ── */
 .modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s;
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+  backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: all 0.2s;
 }
 .modal-overlay.open { opacity: 1; visibility: visible; }
 .modal {
-  background: #0d1e35;
-  border: 1px solid var(--border-dim);
-  border-radius: 12px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
-  transform: translateY(16px);
-  transition: transform 0.2s;
+  background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 12px;
+  width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto;
+  transform: translateY(16px); transition: transform 0.2s;
 }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.modal-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px; font-weight: 700;
-  color: #fff;
-}
-.modal-close {
-  background: none; border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  padding: 4px;
-  transition: color 0.15s;
-}
+.modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; }
+.modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #fff; }
+.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 4px; transition: color 0.15s; }
 .modal-close:hover { color: #fff; }
-.modal-body { padding: 20px 24px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.form-group:last-child { margin-bottom: 0; }
-.form-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
+.modal-body { padding: 18px 24px; }
+.modal-footer { padding: 14px 24px 18px; border-top: 1px solid var(--border-dim); display: flex; gap: 10px; justify-content: flex-end; }
+
+.form-section-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-dim); margin: 16px 0 10px; padding-bottom: 6px;
+  border-bottom: 1px solid var(--border-dim);
 }
+.form-section-label:first-child { margin-top: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
+.form-row.three { grid-template-columns: 1fr 1fr 1fr; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
 .form-control {
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  color: #fff;
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.18s;
-  width: 100%;
+  background: var(--bg); border: 1px solid var(--border-dim); color: #fff;
+  border-radius: 6px; padding: 9px 12px; font-family: 'Roboto', sans-serif;
+  font-size: 13px; outline: none; transition: border-color 0.18s; width: 100%;
 }
 .form-control:focus { border-color: var(--orange); }
 .form-control option { background: #0d1e35; }
-textarea.form-control { resize: vertical; min-height: 90px; }
-.modal-footer {
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--border-dim);
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-.btn {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 22px;
-  cursor: pointer;
-  transition: all 0.18s;
-}
+textarea.form-control { resize: vertical; min-height: 80px; }
+.form-full { margin-bottom: 12px; }
+
+.btn { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 6px; padding: 10px 22px; cursor: pointer; transition: all 0.18s; }
 .btn-primary { background: var(--pink); color: #fff; }
 .btn-primary:hover { background: #c4085f; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
@@ -530,89 +261,33 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 
 /* ── MANAGE MODAL ── */
 .manage-modal { max-width: 640px; }
-.manage-cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 28px;
-}
-.manage-section-title {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 10px;
-}
-.manage-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  max-height: 260px;
-  overflow-y: auto;
-  margin-bottom: 10px;
-  padding-right: 2px;
-}
-.manage-item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  border-radius: 5px;
-  padding: 7px 10px;
-  font-size: 13px;
-  color: #fff;
-}
-.manage-add-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-.manage-add-row .form-control {
-  flex: 1;
-  padding: 8px 10px;
-  font-size: 13px;
-}
-.btn-add-item {
-  font-family: 'Oswald', sans-serif;
-  font-size: 11px; font-weight: 600;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  background: var(--orange);
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  padding: 8px 12px;
-  cursor: pointer;
-  transition: background 0.15s;
-  white-space: nowrap;
-  flex-shrink: 0;
-}
+.manage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.manage-section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.manage-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
+.manage-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 5px; padding: 7px 10px; font-size: 13px; color: #fff; }
+.manage-add-row { display: flex; gap: 8px; margin-top: 4px; }
+.manage-add-row .form-control { flex: 1; padding: 8px 10px; font-size: 13px; }
+.btn-add-item { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--orange); color: #fff; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
 .btn-add-item:hover { background: #e05a25; }
-.manage-empty {
-  font-size: 12px;
-  color: var(--text-dim);
-  padding: 8px 0;
-  font-style: italic;
-}
+.manage-empty { font-size: 12px; color: var(--text-dim); padding: 8px 0; font-style: italic; }
+
+/* ── IMPORT MODAL ── */
+.import-modal { max-width: 500px; }
+.import-result { text-align: center; padding: 20px 0; }
+.import-count { font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700; color: var(--blue); line-height: 1; }
+.import-sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+.import-warning { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 12px 16px; margin-top: 16px; font-size: 13px; color: var(--red); display: flex; align-items: center; gap: 8px; }
+.import-options { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.import-option { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
+.import-option:hover { border-color: var(--orange); }
+.import-option input[type=radio] { margin-top: 2px; accent-color: var(--orange); }
+.import-option-label { font-size: 13px; font-weight: 600; color: #fff; }
+.import-option-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
 /* ── CONFIRM ── */
-.confirm-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.8);
-  z-index: 300;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.15s;
-}
+.confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.15s; }
 .confirm-overlay.open { opacity: 1; visibility: visible; }
-.confirm-box {
-  background: #0d1e35;
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 28px 32px;
-  max-width: 380px;
-  text-align: center;
-}
+.confirm-box { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 10px; padding: 28px 32px; max-width: 380px; text-align: center; }
 .confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
 .confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
 .confirm-btns { display: flex; gap: 10px; justify-content: center; }
@@ -620,15 +295,16 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 .btn-danger:hover { background: #e74c3c; }
 
 @media (max-width: 900px) {
-  .site-header { padding: 0 20px; }
-  .main { padding: 88px 20px 60px; }
+  .site-header { padding: 0 16px; }
+  .main { padding: 88px 16px 60px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
   .hooks-grid { grid-template-columns: 1fr; }
-  .header-nav { gap: 2px; padding-left: 12px; }
-  .nav-tab { padding: 5px 8px; font-size: 10px; }
+  .header-nav { gap: 2px; padding-left: 10px; }
+  .nav-tab { padding: 5px 7px; font-size: 10px; }
   .hook-list-item { grid-template-columns: 1fr; }
   .manage-cols { grid-template-columns: 1fr; }
-  .btn-manage { display: none; }
+  .btn-outline { display: none; }
+  .hook-card-metrics { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -654,59 +330,55 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     <a href="content-database.html" class="nav-tab">Database</a>
   </nav>
   <div class="header-right">
-    <button class="btn-manage" onclick="openManage()">Manage Lists</button>
+    <button class="btn-outline btn-import" onclick="document.getElementById('csvFileInput').click()">↑ Import CSV</button>
+    <button class="btn-outline" onclick="openManage()">Manage Lists</button>
     <button class="btn-add" onclick="openModal()">+ Add Hook</button>
   </div>
 </header>
+
+<input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
 
 <main class="main">
   <div class="page-header">
     <div>
       <div class="page-title">Hook Library</div>
-      <div class="page-sub">Your high-performing opening lines — searchable, filterable, copyable</div>
+      <div class="page-sub">Reel analytics + hooks — import from your Analytics Sheet CSV</div>
     </div>
   </div>
 
-  <!-- STATS ROW -->
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-card-label">Total Hooks</div>
+      <div class="stat-card-label">Total Reels</div>
       <div class="stat-card-value" id="statTotal">—</div>
       <div class="stat-card-sub">in library</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Hook Types</div>
-      <div class="stat-card-value pink" id="statTypes">—</div>
-      <div class="stat-card-sub">distinct types</div>
+    <div class="stat-card" style="border-left-color:var(--red);">
+      <div class="stat-card-label">Hooks Needed</div>
+      <div class="stat-card-value pink" id="statHooksNeeded">—</div>
+      <div class="stat-card-sub">missing hook text</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" style="border-left-color:var(--blue);">
       <div class="stat-card-label">Avg 3-Sec Retention</div>
       <div class="stat-card-value blue" id="statAvgRet">—</div>
-      <div class="stat-card-sub">across logged hooks</div>
+      <div class="stat-card-sub">across logged reels</div>
     </div>
-    <div class="stat-card">
+    <div class="stat-card" style="border-left-color:var(--green);">
       <div class="stat-card-label">Avg Skip Rate</div>
       <div class="stat-card-value green" id="statAvgSkip">—</div>
-      <div class="stat-card-sub">across logged hooks</div>
+      <div class="stat-card-sub">across logged reels</div>
     </div>
   </div>
 
-  <!-- FILTER BAR -->
   <div class="filter-bar">
-    <input type="text" id="searchInput" placeholder="Search hooks..." oninput="applyFilters()">
-    <select id="filterType" onchange="applyFilters()">
-      <option value="">All Types</option>
-    </select>
+    <input type="text" id="searchInput" placeholder="Search reels or hooks..." oninput="applyFilters()">
     <select id="filterCat" onchange="applyFilters()">
       <option value="">All Categories</option>
     </select>
-    <select id="filterTier" onchange="applyFilters()">
-      <option value="">All Tiers</option>
-      <option value="high">🔥 High (8.5+)</option>
-      <option value="mid">⚡ Mid (7.0–8.4)</option>
-      <option value="low">💤 Low (below 7.0)</option>
+    <select id="filterType" onchange="applyFilters()">
+      <option value="">All Hook Types</option>
     </select>
-    <span class="results-label" id="resultsCount">0 hooks</span>
+    <button class="filter-hook-needed" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
+    <span class="results-label" id="resultsCount">0 reels</span>
     <div class="view-toggle">
       <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid view">
         <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
@@ -717,77 +389,187 @@ textarea.form-control { resize: vertical; min-height: 90px; }
     </div>
   </div>
 
-  <!-- HOOKS CONTAINER -->
   <div id="hooksContainer"></div>
 </main>
 
-<!-- ADD / EDIT HOOK MODAL -->
+<!-- ADD / EDIT MODAL -->
 <div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
   <div class="modal" id="modalBox">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Add Hook</div>
+      <div class="modal-title" id="modalTitle">Add Reel</div>
       <button class="modal-close" onclick="closeModal()">&#x2715;</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="editId">
-      <div class="form-group">
-        <label class="form-label">Hook Text</label>
-        <textarea id="fText" class="form-control" placeholder="Your opening hook line..." style="min-height:100px;font-size:15px;"></textarea>
+
+      <div class="form-section-label">Reel Info</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Reel Name</label>
+          <input type="text" id="fReelName" class="form-control" placeholder="e.g. Bad, Good, Best Landing Spots">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Instagram URL</label>
+          <input type="url" id="fInstagramUrl" class="form-control" placeholder="https://www.instagram.com/reel/...">
+        </div>
       </div>
       <div class="form-row">
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Type</label>
-          <select id="fType" class="form-control"></select>
-        </div>
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Content Category</label>
+        <div class="form-group">
+          <label class="form-label">Category</label>
           <select id="fCat" class="form-control"></select>
         </div>
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <input type="text" id="fDate" class="form-control" placeholder="4/28/2026">
+        </div>
       </div>
-      <div class="form-row" style="margin-top:14px;">
-        <div class="form-group" style="margin-bottom:0;">
+
+      <div class="form-section-label">Hook</div>
+      <div class="form-full form-group">
+        <label class="form-label">Hook Text <span style="color:var(--text-dim);font-size:9px;">(leave blank to flag as Hook Needed)</span></label>
+        <textarea id="fText" class="form-control" placeholder="Your opening hook line... leave empty to flag as Hook Needed" style="min-height:80px;font-size:14px;"></textarea>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Hook Type</label>
+          <select id="fType" class="form-control"></select>
+        </div>
+        <div class="form-group">
           <label class="form-label">Performance Score (1–10)</label>
-          <input type="number" id="fScore" class="form-control" min="1" max="10" step="0.1" placeholder="8.5">
-        </div>
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Followers</label>
-          <input type="number" id="fFollowers" class="form-control" min="0" placeholder="e.g. 12500">
+          <input type="number" id="fScore" class="form-control" min="1" max="10" step="0.1" placeholder="e.g. 8.5">
         </div>
       </div>
-      <div class="form-row" style="margin-top:14px;">
-        <div class="form-group" style="margin-bottom:0;">
+
+      <div class="form-section-label">Key Metrics</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Followers Gained</label>
+          <input type="number" id="fFollowers" class="form-control" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Views</label>
+          <input type="number" id="fViews" class="form-control" min="0" placeholder="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
           <label class="form-label">3-Sec Retention %</label>
-          <input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 45.0">
+          <input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 55.0">
         </div>
-        <div class="form-group" style="margin-bottom:0;">
+        <div class="form-group">
           <label class="form-label">Skip Rate %</label>
-          <input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 12.5">
+          <input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 57.0">
         </div>
       </div>
-      <div class="form-row" style="margin-top:14px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Times Used</label>
-          <input type="number" id="fUses" class="form-control" min="0" placeholder="0">
+
+      <div class="form-section-label">Additional Metrics</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Likes</label>
+          <input type="number" id="fLikes" class="form-control" min="0" placeholder="0">
         </div>
-        <div class="form-group" style="margin-bottom:0;">
-          <label class="form-label">Avg Views When Used</label>
-          <input type="number" id="fAvgViews" class="form-control" min="0" placeholder="0">
+        <div class="form-group">
+          <label class="form-label">Comments</label>
+          <input type="number" id="fComments" class="form-control" min="0" placeholder="0">
         </div>
       </div>
-      <div class="form-group" style="margin-top:14px;">
-        <label class="form-label">Notes / Context</label>
-        <textarea id="fNotes" class="form-control" placeholder="When does this hook work best? Any context..."></textarea>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Shares</label>
+          <input type="number" id="fShares" class="form-control" min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Length (m:ss)</label>
+          <input type="text" id="fLength" class="form-control" placeholder="e.g. 1:26">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Avg Watch Time (m:ss)</label>
+          <input type="text" id="fAvgWtSec" class="form-control" placeholder="e.g. 0:22">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Avg WT %</label>
+          <input type="number" id="fAvgWtPct" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 18.4">
+        </div>
+      </div>
+
+      <div class="form-section-label">Multipliers <span style="font-weight:400;color:var(--text-dim);">(least important)</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Follows (?x)</label>
+          <input type="number" id="fFollowsX" class="form-control" min="0" step="0.1" placeholder="0.0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Views (?x)</label>
+          <input type="number" id="fViewsX" class="form-control" min="0" step="0.1" placeholder="1.0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Likes (?x)</label>
+          <input type="number" id="fLikesX" class="form-control" min="0" step="0.1" placeholder="1.0">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Shares (?x)</label>
+          <input type="number" id="fSharesX" class="form-control" min="0" step="0.1" placeholder="1.0">
+        </div>
+      </div>
+
+      <div class="form-section-label">Notes</div>
+      <div class="form-full form-group">
+        <textarea id="fNotes" class="form-control" placeholder="Any context, observations, or notes..."></textarea>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveHook()">Save Hook</button>
+      <button class="btn btn-primary" onclick="saveHook()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- IMPORT RESULT MODAL -->
+<div class="modal-overlay" id="importOverlay" onclick="handleImportOverlayClick(event)" style="z-index:210;">
+  <div class="modal import-modal" id="importBox">
+    <div class="modal-header">
+      <div class="modal-title">Import CSV</div>
+      <button class="modal-close" onclick="closeImport()">&#x2715;</button>
+    </div>
+    <div class="modal-body">
+      <div class="import-result">
+        <div class="import-count" id="importCount">0</div>
+        <div class="import-sub" id="importSub">reels found in CSV</div>
+        <div class="import-warning" id="importWarning" style="display:none;">
+          <span>⚠</span>
+          <span id="importWarningText"></span>
+        </div>
+      </div>
+      <div class="import-options">
+        <label class="import-option">
+          <input type="radio" name="importMode" value="append" checked>
+          <div>
+            <div class="import-option-label">Append to library</div>
+            <div class="import-option-desc">Add imported reels to existing entries</div>
+          </div>
+        </label>
+        <label class="import-option">
+          <input type="radio" name="importMode" value="replace">
+          <div>
+            <div class="import-option-label">Replace library</div>
+            <div class="import-option-desc">Clear all existing entries and import fresh</div>
+          </div>
+        </label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeImport()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmImport()">Import</button>
     </div>
   </div>
 </div>
 
 <!-- MANAGE LISTS MODAL -->
-<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:250;">
+<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:220;">
   <div class="modal manage-modal" id="manageBox">
     <div class="modal-header">
       <div class="modal-title">Manage Lists</div>
@@ -819,11 +601,11 @@ textarea.form-control { resize: vertical; min-height: 90px; }
   </div>
 </div>
 
-<!-- CONFIRM DIALOG -->
+<!-- CONFIRM DELETE -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <h3>Delete Hook?</h3>
-    <p>This hook will be permanently removed from your library.</p>
+    <h3>Delete Reel?</h3>
+    <p>This entry will be permanently removed from your library.</p>
     <div class="confirm-btns">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
       <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
@@ -832,210 +614,217 @@ textarea.form-control { resize: vertical; min-height: 90px; }
 </div>
 
 <script>
+/* ── STORAGE KEYS ── */
 const STORAGE_KEY = 'uhf_hook_library';
 const TYPES_KEY   = 'uhf_hook_types';
 const CATS_KEY    = 'uhf_hook_categories';
 
+/* ── STATE ── */
 let hooks          = [];
 let hookTypes      = [];
 let hookCategories = [];
 let deleteTargetId = null;
 let currentView    = 'grid';
+let filterHookNeededOnly = false;
+let pendingImportData = [];
 
 const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
-const DEFAULT_CATS  = ['Waiver Wire', 'Trade Advice', 'Sleeper', 'Rankings', 'Buy/Sell', 'Start/Sit', 'DFS', 'Injury', 'Player Analysis'];
+const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
 const TYPE_COLOR_COUNT = 5;
-
-function getTypeClass(type) {
-  const idx = hookTypes.indexOf(type);
-  return 'type-c' + (Math.max(idx, 0) % TYPE_COLOR_COUNT);
-}
 
 /* ── STORAGE ── */
 function loadData() {
   const sh = localStorage.getItem(STORAGE_KEY);
   hooks = sh ? JSON.parse(sh) : [];
-
   const st = localStorage.getItem(TYPES_KEY);
   hookTypes = st ? JSON.parse(st) : [...DEFAULT_TYPES];
-
   const sc = localStorage.getItem(CATS_KEY);
   hookCategories = sc ? JSON.parse(sc) : [...DEFAULT_CATS];
 }
-
 function saveData()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks)); }
 function saveTypes() { localStorage.setItem(TYPES_KEY,   JSON.stringify(hookTypes)); }
 function saveCats()  { localStorage.setItem(CATS_KEY,    JSON.stringify(hookCategories)); }
 
-/* ── TIER ── */
-function tier(score) {
-  if (!score) return 'low';
-  if (score >= 8.5) return 'high';
-  if (score >= 7.0) return 'mid';
-  return 'low';
+/* ── HELPERS ── */
+function escHtml(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
-function tierLabel(score) {
-  const t = tier(score);
-  if (t === 'high') return { icon: '🔥', label: 'High', cls: 'tier-high' };
-  if (t === 'mid')  return { icon: '⚡', label: 'Mid',  cls: 'tier-mid' };
-  return { icon: '💤', label: 'Low', cls: 'tier-low' };
-}
-
-/* ── FORMAT ── */
 function fmt(n) {
-  if (!n) return '—';
+  if (!n && n !== 0) return '—';
+  n = Number(n);
   if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
   if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
-  return n.toString();
+  return n.toLocaleString();
 }
 function fmtPct(n) {
-  if (n === undefined || n === null || n === '') return '—';
+  if (n === undefined || n === null || n === '' || n === 0) return '—';
   return Number(n).toFixed(1) + '%';
 }
-function fmtScore(n) {
-  if (!n) return '—';
-  return Number(n).toFixed(1);
-}
-
-function escHtml(str) {
-  return String(str)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+function fmtScore(n) { return (!n) ? '—' : Number(n).toFixed(1); }
+function getTypeClass(type) {
+  const idx = hookTypes.indexOf(type);
+  return 'type-c' + (Math.max(idx, 0) % TYPE_COLOR_COUNT);
 }
 
 /* ── STATS ── */
 function updateStats() {
   document.getElementById('statTotal').textContent = hooks.length || '—';
-  document.getElementById('statTypes').textContent = hookTypes.length || '—';
-
+  const needed = hooks.filter(h => h.hookNeeded).length;
+  document.getElementById('statHooksNeeded').textContent = needed || '—';
   const withRet = hooks.filter(h => h.retention3s);
-  const avgRet = withRet.length > 0
-    ? (withRet.reduce((a, h) => a + h.retention3s, 0) / withRet.length).toFixed(1) + '%'
-    : '—';
-  document.getElementById('statAvgRet').textContent = avgRet;
-
+  document.getElementById('statAvgRet').textContent = withRet.length
+    ? (withRet.reduce((a, h) => a + h.retention3s, 0) / withRet.length).toFixed(1) + '%' : '—';
   const withSkip = hooks.filter(h => h.skipRate);
-  const avgSkip = withSkip.length > 0
-    ? (withSkip.reduce((a, h) => a + h.skipRate, 0) / withSkip.length).toFixed(1) + '%'
-    : '—';
-  document.getElementById('statAvgSkip').textContent = avgSkip;
+  document.getElementById('statAvgSkip').textContent = withSkip.length
+    ? (withSkip.reduce((a, h) => a + h.skipRate, 0) / withSkip.length).toFixed(1) + '%' : '—';
 }
 
-/* ── POPULATE SELECTS ── */
+/* ── SELECTS ── */
 function populateFilterSelects() {
-  const typeEl = document.getElementById('filterType');
   const catEl  = document.getElementById('filterCat');
-  const prevType = typeEl.value;
+  const typeEl = document.getElementById('filterType');
   const prevCat  = catEl.value;
-
-  typeEl.innerHTML = '<option value="">All Types</option>' +
-    hookTypes.map(t => `<option${prevType === t ? ' selected' : ''}>${escHtml(t)}</option>`).join('');
-  catEl.innerHTML = '<option value="">All Categories</option>' +
+  const prevType = typeEl.value;
+  catEl.innerHTML  = '<option value="">All Categories</option>' +
     hookCategories.map(c => `<option${prevCat === c ? ' selected' : ''}>${escHtml(c)}</option>`).join('');
+  typeEl.innerHTML = '<option value="">All Hook Types</option>' +
+    hookTypes.map(t => `<option${prevType === t ? ' selected' : ''}>${escHtml(t)}</option>`).join('');
 }
-
 function populateModalSelects(hook) {
-  document.getElementById('fType').innerHTML =
+  document.getElementById('fType').innerHTML = '<option value="">— None —</option>' +
     hookTypes.map(t => `<option>${escHtml(t)}</option>`).join('');
   document.getElementById('fCat').innerHTML =
     hookCategories.map(c => `<option>${escHtml(c)}</option>`).join('');
-
   if (hook) {
-    document.getElementById('fType').value = hook.type;
-    document.getElementById('fCat').value  = hook.category;
+    document.getElementById('fType').value = hook.type || '';
+    document.getElementById('fCat').value  = hook.category || '';
   }
 }
 
 /* ── FILTER ── */
 function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const typeF  = document.getElementById('filterType').value;
   const catF   = document.getElementById('filterCat').value;
-  const tierF  = document.getElementById('filterTier').value;
-
+  const typeF  = document.getElementById('filterType').value;
   return hooks.filter(h => {
+    if (filterHookNeededOnly && !h.hookNeeded) return false;
     const matchSearch = !search ||
-      h.text.toLowerCase().includes(search) ||
+      (h.reelName || '').toLowerCase().includes(search) ||
+      (h.text || '').toLowerCase().includes(search) ||
       (h.notes || '').toLowerCase().includes(search);
-    const matchType = !typeF || h.type === typeF;
     const matchCat  = !catF  || h.category === catF;
-    const matchTier = !tierF || tier(h.score) === tierF;
-    return matchSearch && matchType && matchCat && matchTier;
+    const matchType = !typeF || h.type === typeF;
+    return matchSearch && matchCat && matchType;
   });
 }
 
-/* ── BADGE ── */
-function typeBadgeHtml(type) {
-  return `<span class="type-badge ${getTypeClass(type)}">${escHtml(type)}</span>`;
+function toggleHookNeeded() {
+  filterHookNeededOnly = !filterHookNeededOnly;
+  document.getElementById('btnHookNeeded').classList.toggle('active', filterHookNeededOnly);
+  applyFilters();
 }
 
-/* ── RENDER GRID ── */
+/* ── RENDER ── */
+function typeBadgeHtml(type) {
+  if (!type) return '';
+  return `<span class="type-badge ${getTypeClass(type)}">${escHtml(type)}</span>`;
+}
+function catBadgeHtml(cat) {
+  if (!cat) return '';
+  return `<span class="cat-badge">${escHtml(cat)}</span>`;
+}
+function reelLinkHtml(h) {
+  const name = escHtml(h.reelName || h.text || 'Untitled');
+  if (h.instagramUrl) {
+    return `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">${name}<span class="ig-icon">↗</span></a>`;
+  }
+  return name;
+}
+const ICONS = {
+  copy: `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
+  edit: `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
+  del:  `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`,
+  check:`<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
+};
+function actionBtns(id) {
+  return `<div class="hook-actions">
+    <button class="action-btn copy" onclick="copyHook(${id},this)" title="Copy hook">${ICONS.copy}</button>
+    <button class="action-btn" onclick="editHook(${id})" title="Edit">${ICONS.edit}</button>
+    <button class="action-btn delete" onclick="requestDelete(${id})" title="Delete">${ICONS.del}</button>
+  </div>`;
+}
+
 function renderGrid(filtered) {
-  if (filtered.length === 0) return emptyStateHtml();
+  if (!filtered.length) return emptyStateHtml();
   return `<div class="hooks-grid">${filtered.map(h => {
-    const tl = tierLabel(h.score);
-    return `<div class="hook-card">
+    const hookNeededCls = h.hookNeeded ? ' hook-needed' : '';
+    const hookContent = h.hookNeeded
+      ? `<span class="hook-needed-badge">⚠ Hook Needed</span>`
+      : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '');
+    return `<div class="hook-card${hookNeededCls}">
       <div class="hook-card-top">
+        ${catBadgeHtml(h.category)}
         ${typeBadgeHtml(h.type)}
-        <span class="cat-badge">${escHtml(h.category)}</span>
+        <span class="date-badge">${escHtml(h.date || '')}</span>
       </div>
-      <div class="hook-card-body">"${escHtml(h.text)}"</div>
-      <div class="hook-card-meta">
-        <div class="hook-meta-item">
-          <span class="hook-meta-label">Score</span>
-          <span class="hook-meta-value orange">${fmtScore(h.score)}</span>
+      <div class="reel-name">${reelLinkHtml(h)}</div>
+      ${hookContent}
+      <div class="hook-card-metrics">
+        <div class="metric-item">
+          <span class="metric-label">Follows</span>
+          <span class="metric-value orange">${fmt(h.followers)}</span>
         </div>
-        <div class="hook-meta-item">
-          <span class="hook-meta-label">Followers</span>
-          <span class="hook-meta-value">${fmt(h.followers)}</span>
+        <div class="metric-item">
+          <span class="metric-label">Views</span>
+          <span class="metric-value">${fmt(h.views)}</span>
         </div>
-        <div class="hook-meta-item">
-          <span class="hook-meta-label">3-Sec Ret</span>
-          <span class="hook-meta-value blue">${fmtPct(h.retention3s)}</span>
+        <div class="metric-item">
+          <span class="metric-label">3-Sec Ret</span>
+          <span class="metric-value blue">${fmtPct(h.retention3s)}</span>
         </div>
-        <div class="hook-meta-item">
-          <span class="hook-meta-label">Skip Rate</span>
-          <span class="hook-meta-value pink">${fmtPct(h.skipRate)}</span>
+        <div class="metric-item">
+          <span class="metric-label">Skip Rate</span>
+          <span class="metric-value pink">${fmtPct(h.skipRate)}</span>
         </div>
+      </div>
+      <div class="hook-card-secondary">
+        <div class="sec-item"><span class="sec-label">Likes</span><span class="sec-value">${fmt(h.likes)}</span></div>
+        <div class="sec-item"><span class="sec-label">Shares</span><span class="sec-value">${fmt(h.shares)}</span></div>
+        <div class="sec-item"><span class="sec-label">Comments</span><span class="sec-value">${fmt(h.comments)}</span></div>
+        <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length || '—')}</span></div>
+        ${h.score ? `<div class="sec-item"><span class="sec-label">Score</span><span class="sec-value" style="color:var(--orange);">${fmtScore(h.score)}</span></div>` : ''}
       </div>
       <div class="hook-card-footer">
-        <span class="tier-badge ${tl.cls}">${tl.icon} ${tl.label} Performer</span>
-        <div class="hook-actions">
-          <button class="action-btn copy" onclick="copyHook(${h.id}, this)" title="Copy hook">
-            <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-          </button>
-          <button class="action-btn" onclick="editHook(${h.id})" title="Edit">
-            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-          </button>
-          <button class="action-btn delete" onclick="requestDelete(${h.id})" title="Delete">
-            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-          </button>
+        <div style="display:flex;gap:8px;align-items:center;">
+          ${h.followsMultiplier ? `<span class="cat-badge" style="color:var(--orange);">${h.followsMultiplier}x Follows</span>` : ''}
+          ${h.viewsMultiplier ? `<span class="cat-badge">${h.viewsMultiplier}x Views</span>` : ''}
         </div>
+        ${actionBtns(h.id)}
       </div>
     </div>`;
   }).join('')}</div>`;
 }
 
-/* ── RENDER LIST ── */
 function renderList(filtered) {
-  if (filtered.length === 0) return emptyStateHtml();
+  if (!filtered.length) return emptyStateHtml();
   return `<div class="hooks-list">${filtered.map(h => {
-    const tl = tierLabel(h.score);
-    return `<div class="hook-list-item">
-      <div>
-        <div class="hook-list-text">"${escHtml(h.text)}"</div>
-        <div style="display:flex;gap:6px;margin-top:6px;">
-          ${typeBadgeHtml(h.type)}
-          <span class="cat-badge">${escHtml(h.category)}</span>
-        </div>
+    const hookNeededCls = h.hookNeeded ? ' hook-needed' : '';
+    const hookText = h.hookNeeded
+      ? `<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>`
+      : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0, 80))}${h.text.length > 80 ? '…' : ''}"</div>` : '');
+    return `<div class="hook-list-item${hookNeededCls}">
+      <div class="hook-list-main">
+        <div class="hook-list-reel">${reelLinkHtml(h)}</div>
+        ${hookText}
+        <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}<span class="date-badge">${escHtml(h.date || '')}</span></div>
       </div>
       <div class="hook-list-stat">
-        <span class="hook-list-stat-val" style="color:var(--orange);">${fmtScore(h.score)}</span>
-        <span class="hook-list-stat-lbl">Score</span>
+        <span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span>
+        <span class="hook-list-stat-lbl">Follows</span>
       </div>
       <div class="hook-list-stat">
-        <span class="hook-list-stat-val">${fmt(h.followers)}</span>
-        <span class="hook-list-stat-lbl">Followers</span>
+        <span class="hook-list-stat-val">${fmt(h.views)}</span>
+        <span class="hook-list-stat-lbl">Views</span>
       </div>
       <div class="hook-list-stat">
         <span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span>
@@ -1045,18 +834,7 @@ function renderList(filtered) {
         <span class="hook-list-stat-val" style="color:var(--pink);">${fmtPct(h.skipRate)}</span>
         <span class="hook-list-stat-lbl">Skip Rate</span>
       </div>
-      <span class="tier-badge ${tl.cls}">${tl.icon}</span>
-      <div class="hook-actions">
-        <button class="action-btn copy" onclick="copyHook(${h.id}, this)" title="Copy">
-          <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
-        </button>
-        <button class="action-btn" onclick="editHook(${h.id})" title="Edit">
-          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-        </button>
-        <button class="action-btn delete" onclick="requestDelete(${h.id})" title="Delete">
-          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </div>
+      ${actionBtns(h.id)}
     </div>`;
   }).join('')}</div>`;
 }
@@ -1064,80 +842,98 @@ function renderList(filtered) {
 function emptyStateHtml() {
   return `<div class="empty-state">
     <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-    <h3>No hooks found</h3>
-    <p>Try adjusting your search or filters, or add your first hook.</p>
+    <h3>No reels found</h3>
+    <p>Import a CSV from your Analytics Sheet, or add a reel manually.</p>
   </div>`;
 }
 
 function applyFilters() {
   const filtered = getFiltered();
-  document.getElementById('resultsCount').textContent =
-    `${filtered.length} hook${filtered.length !== 1 ? 's' : ''}`;
+  document.getElementById('resultsCount').textContent = `${filtered.length} reel${filtered.length !== 1 ? 's' : ''}`;
   document.getElementById('hooksContainer').innerHTML =
     currentView === 'grid' ? renderGrid(filtered) : renderList(filtered);
 }
-
-function setView(view) {
-  currentView = view;
-  document.getElementById('btnGrid').classList.toggle('active', view === 'grid');
-  document.getElementById('btnList').classList.toggle('active', view === 'list');
+function setView(v) {
+  currentView = v;
+  document.getElementById('btnGrid').classList.toggle('active', v === 'grid');
+  document.getElementById('btnList').classList.toggle('active', v === 'list');
   applyFilters();
 }
 
 /* ── COPY ── */
 function copyHook(id, btn) {
-  const hook = hooks.find(h => h.id === id);
-  if (!hook) return;
-  navigator.clipboard.writeText(hook.text).then(() => {
+  const h = hooks.find(x => x.id === id);
+  if (!h || !h.text) return;
+  navigator.clipboard.writeText(h.text).then(() => {
     btn.classList.add('copied');
     const orig = btn.innerHTML;
-    btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`;
+    btn.innerHTML = ICONS.check;
     setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML = orig; }, 1800);
-  }).catch(() => { prompt('Copy this hook:', hook.text); });
+  }).catch(() => prompt('Copy hook:', h.text));
 }
 
 /* ── HOOK MODAL ── */
 function openModal(hook) {
   populateModalSelects(hook);
-  document.getElementById('editId').value       = hook ? hook.id : '';
-  document.getElementById('modalTitle').textContent = hook ? 'Edit Hook' : 'Add Hook';
-  document.getElementById('fText').value        = hook ? hook.text : '';
-  document.getElementById('fScore').value       = hook ? (hook.score || '') : '';
-  document.getElementById('fFollowers').value   = hook ? (hook.followers || '') : '';
-  document.getElementById('fRetention3s').value = hook ? (hook.retention3s !== undefined ? hook.retention3s : '') : '';
-  document.getElementById('fSkipRate').value    = hook ? (hook.skipRate !== undefined ? hook.skipRate : '') : '';
-  document.getElementById('fUses').value        = hook ? (hook.uses || '') : '';
-  document.getElementById('fAvgViews').value    = hook ? (hook.avgViews || '') : '';
-  document.getElementById('fNotes').value       = hook ? (hook.notes || '') : '';
+  document.getElementById('editId').value         = hook ? hook.id : '';
+  document.getElementById('modalTitle').textContent = hook ? 'Edit Reel' : 'Add Reel';
+  document.getElementById('fReelName').value      = hook ? (hook.reelName || '') : '';
+  document.getElementById('fInstagramUrl').value  = hook ? (hook.instagramUrl || '') : '';
+  document.getElementById('fDate').value          = hook ? (hook.date || '') : '';
+  document.getElementById('fText').value          = hook ? (hook.text || '') : '';
+  document.getElementById('fScore').value         = hook ? (hook.score || '') : '';
+  document.getElementById('fFollowers').value     = hook ? (hook.followers || '') : '';
+  document.getElementById('fViews').value         = hook ? (hook.views || '') : '';
+  document.getElementById('fRetention3s').value   = hook ? (hook.retention3s || '') : '';
+  document.getElementById('fSkipRate').value      = hook ? (hook.skipRate || '') : '';
+  document.getElementById('fLikes').value         = hook ? (hook.likes || '') : '';
+  document.getElementById('fComments').value      = hook ? (hook.comments || '') : '';
+  document.getElementById('fShares').value        = hook ? (hook.shares || '') : '';
+  document.getElementById('fLength').value        = hook ? (hook.length || '') : '';
+  document.getElementById('fAvgWtSec').value      = hook ? (hook.avgWtSec || '') : '';
+  document.getElementById('fAvgWtPct').value      = hook ? (hook.avgWtPct || '') : '';
+  document.getElementById('fFollowsX').value      = hook ? (hook.followsMultiplier || '') : '';
+  document.getElementById('fViewsX').value        = hook ? (hook.viewsMultiplier || '') : '';
+  document.getElementById('fLikesX').value        = hook ? (hook.likesMultiplier || '') : '';
+  document.getElementById('fSharesX').value       = hook ? (hook.sharesMultiplier || '') : '';
+  document.getElementById('fNotes').value         = hook ? (hook.notes || '') : '';
   document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('fText').focus(), 120);
+  setTimeout(() => document.getElementById('fReelName').focus(), 120);
 }
-
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target === document.getElementById('modalOverlay')) closeModal(); }
 
 function saveHook() {
-  const id   = document.getElementById('editId').value;
-  const text = document.getElementById('fText').value.trim();
-  if (!text) { alert('Hook text is required.'); return; }
+  const id       = document.getElementById('editId').value;
+  const reelName = document.getElementById('fReelName').value.trim();
+  const text     = document.getElementById('fText').value.trim();
+  if (!reelName && !text) { alert('Enter a reel name or hook text.'); return; }
 
   const hook = {
-    id:          id ? parseInt(id) : Date.now(),
+    id:               id ? parseInt(id) : Date.now(),
+    reelName,
+    instagramUrl:     document.getElementById('fInstagramUrl').value.trim(),
     text,
-    type:        document.getElementById('fType').value,
-    category:    document.getElementById('fCat').value,
-    score:       parseFloat(document.getElementById('fScore').value)       || 0,
-    followers:   parseInt(document.getElementById('fFollowers').value)     || 0,
-    retention3s: parseFloat(document.getElementById('fRetention3s').value) || 0,
-    skipRate:    parseFloat(document.getElementById('fSkipRate').value)    || 0,
-    uses:        parseInt(document.getElementById('fUses').value)          || 0,
-    avgViews:    parseInt(document.getElementById('fAvgViews').value)      || 0,
-    notes:       document.getElementById('fNotes').value.trim(),
+    hookNeeded:       !text,
+    type:             document.getElementById('fType').value,
+    category:         document.getElementById('fCat').value,
+    date:             document.getElementById('fDate').value.trim(),
+    score:            parseFloat(document.getElementById('fScore').value)        || 0,
+    followers:        parseInt(document.getElementById('fFollowers').value)      || 0,
+    views:            parseInt(document.getElementById('fViews').value)          || 0,
+    retention3s:      parseFloat(document.getElementById('fRetention3s').value)  || 0,
+    skipRate:         parseFloat(document.getElementById('fSkipRate').value)     || 0,
+    likes:            parseInt(document.getElementById('fLikes').value)          || 0,
+    comments:         parseInt(document.getElementById('fComments').value)       || 0,
+    shares:           parseInt(document.getElementById('fShares').value)         || 0,
+    length:           document.getElementById('fLength').value.trim(),
+    avgWtSec:         document.getElementById('fAvgWtSec').value.trim(),
+    avgWtPct:         parseFloat(document.getElementById('fAvgWtPct').value)     || 0,
+    followsMultiplier:parseFloat(document.getElementById('fFollowsX').value)     || 0,
+    viewsMultiplier:  parseFloat(document.getElementById('fViewsX').value)       || 0,
+    likesMultiplier:  parseFloat(document.getElementById('fLikesX').value)       || 0,
+    sharesMultiplier: parseFloat(document.getElementById('fSharesX').value)      || 0,
+    notes:            document.getElementById('fNotes').value.trim(),
   };
 
   if (id) {
@@ -1146,126 +942,191 @@ function saveHook() {
   } else {
     hooks.push(hook);
   }
-  saveData();
-  updateStats();
-  applyFilters();
-  closeModal();
+  saveData(); updateStats(); applyFilters(); closeModal();
 }
-
-function editHook(id) {
-  const hook = hooks.find(h => h.id === id);
-  if (hook) openModal(hook);
-}
+function editHook(id) { const h = hooks.find(x => x.id === id); if (h) openModal(h); }
 
 /* ── DELETE ── */
-function requestDelete(id) {
-  deleteTargetId = id;
-  document.getElementById('confirmOverlay').classList.add('open');
-}
-function closeConfirm() {
-  deleteTargetId = null;
-  document.getElementById('confirmOverlay').classList.remove('open');
-}
+function requestDelete(id) { deleteTargetId = id; document.getElementById('confirmOverlay').classList.add('open'); }
+function closeConfirm() { deleteTargetId = null; document.getElementById('confirmOverlay').classList.remove('open'); }
 function confirmDelete() {
   if (deleteTargetId !== null) {
     hooks = hooks.filter(h => h.id !== deleteTargetId);
-    saveData();
-    updateStats();
-    applyFilters();
+    saveData(); updateStats(); applyFilters();
   }
   closeConfirm();
 }
 
+/* ── CSV IMPORT ── */
+function parseCSV(text) {
+  const rows = []; let row = []; let field = ''; let inQ = false; let i = 0;
+  while (i < text.length) {
+    const ch = text[i];
+    if (inQ) {
+      if (ch === '"' && text[i+1] === '"') { field += '"'; i += 2; }
+      else if (ch === '"') { inQ = false; i++; }
+      else { field += ch; i++; }
+    } else {
+      if      (ch === '"') { inQ = true; i++; }
+      else if (ch === ',') { row.push(field); field = ''; i++; }
+      else if (ch === '\n' || ch === '\r') {
+        row.push(field); field = '';
+        if (row.some(c => c !== '')) rows.push(row);
+        row = []; i += (ch === '\r' && text[i+1] === '\n') ? 2 : 1;
+      } else { field += ch; i++; }
+    }
+  }
+  if (field !== '' || row.length) { row.push(field); if (row.some(c => c !== '')) rows.push(row); }
+  return rows;
+}
+
+function parseN(s)   { if (!s) return 0; const n = parseInt(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n) ? 0 : n; }
+function parseF(s)   { if (!s) return 0; const n = parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n) ? 0 : n; }
+function parsePct(s) { if (!s || String(s).includes('#')) return 0; const n = parseFloat(String(s).replace('%','')); return isNaN(n) ? 0 : n; }
+function parseMult(s){ if (!s) return 0; return parseF(String(s).replace('x','')); }
+
+function handleCSVFile(input) {
+  const file = input.files[0];
+  if (!file) return;
+  input.value = '';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const rows = parseCSV(e.target.result);
+    if (rows.length < 2) { alert('No data rows found in CSV.'); return; }
+
+    const header = rows[0].map(h => h.trim());
+    const col = {};
+    header.forEach((h, i) => { col[h] = i; });
+
+    const now = Date.now();
+    pendingImportData = [];
+    let hookNeededCount = 0;
+
+    const catsToAdd = new Set();
+
+    rows.slice(1).forEach((cols, idx) => {
+      const reelName = (cols[col['Reel']] || '').trim();
+      if (!reelName) return;
+
+      const rawCat = (cols[col['Category']] || '').trim();
+      if (rawCat) catsToAdd.add(rawCat);
+
+      const hookText = (cols[col['Hook']] || '').trim();
+      const hookNeeded = !hookText;
+      if (hookNeeded) hookNeededCount++;
+
+      pendingImportData.push({
+        id:               now + idx,
+        reelName,
+        instagramUrl:     '',
+        text:             hookText,
+        hookNeeded,
+        type:             '',
+        category:         rawCat,
+        date:             cols[col['Date']] || '',
+        followsMultiplier:parseMult(cols[col['Follows (?x)']]),
+        followers:        parseN(cols[col['Follows']]),
+        views:            parseN(cols[col['Views']]),
+        likes:            parseN(cols[col['Likes']]),
+        comments:         parseN(cols[col['Comments']]),
+        shares:           parseN(cols[col['Shares']]),
+        avgWtPct:         parsePct(cols[col['AVG WT%']]),
+        avgWtSec:         cols[col['AVG WT Sec']] || '',
+        length:           cols[col['Length']] || '',
+        retention3s:      parsePct(cols[col['3 Sec RTR']]),
+        skipRate:         parsePct(cols[col['Skip']]),
+        viewsMultiplier:  parseMult(cols[col['Views (?x)']]),
+        likesMultiplier:  parseMult(cols[col['Likes (?x)']]),
+        sharesMultiplier: parseMult(cols[col['Shares (?x)']]),
+        score:            0,
+        notes:            '',
+      });
+    });
+
+    // Auto-add new categories
+    catsToAdd.forEach(c => { if (!hookCategories.includes(c)) { hookCategories.push(c); } });
+    saveCats(); populateFilterSelects();
+
+    // Show import modal
+    document.getElementById('importCount').textContent = pendingImportData.length;
+    document.getElementById('importSub').textContent =
+      `reels found in CSV · ${hookNeededCount} need hooks`;
+    const warn = document.getElementById('importWarning');
+    if (hookNeededCount > 0) {
+      warn.style.display = 'flex';
+      document.getElementById('importWarningText').textContent =
+        `${hookNeededCount} reel${hookNeededCount !== 1 ? 's' : ''} will be flagged as "Hook Needed" — no hook text found`;
+    } else {
+      warn.style.display = 'none';
+    }
+    document.querySelector('input[name="importMode"][value="append"]').checked = true;
+    document.getElementById('importOverlay').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+
+function closeImport() {
+  document.getElementById('importOverlay').classList.remove('open');
+  pendingImportData = [];
+}
+function handleImportOverlayClick(e) { if (e.target === document.getElementById('importOverlay')) closeImport(); }
+
+function confirmImport() {
+  const mode = document.querySelector('input[name="importMode"]:checked').value;
+  if (mode === 'replace') {
+    hooks = pendingImportData;
+  } else {
+    hooks = hooks.concat(pendingImportData);
+  }
+  saveData(); updateStats(); applyFilters(); closeImport();
+}
+
 /* ── MANAGE MODAL ── */
-function openManage() {
-  renderManageLists();
-  document.getElementById('manageOverlay').classList.add('open');
-}
-function closeManage() {
-  document.getElementById('manageOverlay').classList.remove('open');
-}
-function handleManageOverlayClick(e) {
-  if (e.target === document.getElementById('manageOverlay')) closeManage();
-}
+function openManage() { renderManageLists(); document.getElementById('manageOverlay').classList.add('open'); }
+function closeManage() { document.getElementById('manageOverlay').classList.remove('open'); }
+function handleManageOverlayClick(e) { if (e.target === document.getElementById('manageOverlay')) closeManage(); }
 
 function renderManageLists() {
-  const deleteIcon = `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
-
-  document.getElementById('manageTypesList').innerHTML = hookTypes.length > 0
-    ? hookTypes.map((t, i) =>
-        `<div class="manage-item">
-          <span>${escHtml(t)}</span>
-          <button class="action-btn delete" onclick="removeType(${i})" title="Remove">${deleteIcon}</button>
-        </div>`
-      ).join('')
-    : `<div class="manage-empty">No types yet — add one below</div>`;
-
-  document.getElementById('manageCatsList').innerHTML = hookCategories.length > 0
-    ? hookCategories.map((c, i) =>
-        `<div class="manage-item">
-          <span>${escHtml(c)}</span>
-          <button class="action-btn delete" onclick="removeCategory(${i})" title="Remove">${deleteIcon}</button>
-        </div>`
-      ).join('')
-    : `<div class="manage-empty">No categories yet — add one below</div>`;
+  const delBtn = (fn, i) =>
+    `<button class="action-btn delete" onclick="${fn}(${i})" title="Remove">${ICONS.del}</button>`;
+  document.getElementById('manageTypesList').innerHTML = hookTypes.length
+    ? hookTypes.map((t, i) => `<div class="manage-item"><span>${escHtml(t)}</span>${delBtn('removeType', i)}</div>`).join('')
+    : `<div class="manage-empty">No types yet</div>`;
+  document.getElementById('manageCatsList').innerHTML = hookCategories.length
+    ? hookCategories.map((c, i) => `<div class="manage-item"><span>${escHtml(c)}</span>${delBtn('removeCategory', i)}</div>`).join('')
+    : `<div class="manage-empty">No categories yet</div>`;
 }
 
 function addType() {
   const input = document.getElementById('newTypeInput');
-  const val   = input.value.trim();
-  if (!val) { input.focus(); return; }
-  if (hookTypes.includes(val)) { input.select(); return; }
-  hookTypes.push(val);
-  saveTypes();
-  input.value = '';
-  renderManageLists();
-  populateFilterSelects();
-  updateStats();
+  const val = input.value.trim();
+  if (!val || hookTypes.includes(val)) { input.focus(); return; }
+  hookTypes.push(val); saveTypes(); input.value = '';
+  renderManageLists(); populateFilterSelects(); updateStats();
 }
-
-function removeType(idx) {
-  hookTypes.splice(idx, 1);
-  saveTypes();
-  renderManageLists();
-  populateFilterSelects();
-  updateStats();
+function removeType(i) {
+  hookTypes.splice(i, 1); saveTypes(); renderManageLists(); populateFilterSelects(); updateStats();
 }
-
 function addCategory() {
   const input = document.getElementById('newCatInput');
-  const val   = input.value.trim();
-  if (!val) { input.focus(); return; }
-  if (hookCategories.includes(val)) { input.select(); return; }
-  hookCategories.push(val);
-  saveCats();
-  input.value = '';
-  renderManageLists();
-  populateFilterSelects();
+  const val = input.value.trim();
+  if (!val || hookCategories.includes(val)) { input.focus(); return; }
+  hookCategories.push(val); saveCats(); input.value = '';
+  renderManageLists(); populateFilterSelects();
 }
-
-function removeCategory(idx) {
-  hookCategories.splice(idx, 1);
-  saveCats();
-  renderManageLists();
-  populateFilterSelects();
+function removeCategory(i) {
+  hookCategories.splice(i, 1); saveCats(); renderManageLists(); populateFilterSelects();
 }
 
 /* ── KEYBOARD ── */
 document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); }
+  if (e.key === 'Escape') { closeModal(); closeConfirm(); closeManage(); closeImport(); }
 });
-document.getElementById('newTypeInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addType();
-});
-document.getElementById('newCatInput').addEventListener('keydown', e => {
-  if (e.key === 'Enter') addCategory();
-});
+document.getElementById('newTypeInput').addEventListener('keydown', e => { if (e.key === 'Enter') addType(); });
+document.getElementById('newCatInput').addEventListener('keydown', e => { if (e.key === 'Enter') addCategory(); });
 
 /* ── INIT ── */
-loadData();
-populateFilterSelects();
-updateStats();
-applyFilters();
+loadData(); populateFilterSelects(); updateStats(); applyFilters();
 </script>
 </body>
 </html>
