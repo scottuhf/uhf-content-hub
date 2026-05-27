@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hook Library — Upper Hand Fantasy</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/hook-archetypes.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -16,6 +16,7 @@
   --green:      #3ECF6A;
   --purple:     #9B59B6;
   --red:        #E74C3C;
+  --gold:       #FFD700;
   --white:      #FFFFFF;
   --bg:         #061525;
   --bg-card:    #0d2a47;
@@ -32,14 +33,8 @@ body::before {
   width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
 }
 
-/* ── HEADER ── */
-.site-header {
-  position: fixed; top: 4px; left: 0; right: 0; z-index: 99;
-  background: rgba(6,21,37,0.95); backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border-dim);
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0 40px; height: 64px; gap: 24px;
-}
+/* HEADER */
+.site-header { position: fixed; top: 4px; left: 0; right: 0; z-index: 99; background: rgba(6,21,37,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; justify-content: space-between; padding: 0 40px; height: 64px; gap: 24px; }
 .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .logo-mark { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-dim); }
 .logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -53,18 +48,18 @@ body::before {
 .header-right { display: flex; align-items: center; gap: 8px; }
 .btn-outline { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 14px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .btn-outline:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
-.btn-import { color: var(--blue); border-color: rgba(51,154,233,0.3); }
-.btn-import:hover { color: var(--blue); border-color: var(--blue); background: rgba(51,154,233,0.08); }
+.btn-outline.btn-reclass { color: var(--blue); border-color: rgba(51,154,233,0.3); }
+.btn-outline.btn-reclass:hover { color: var(--blue); border-color: var(--blue); background: rgba(51,154,233,0.08); }
 .btn-add { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: var(--pink); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .btn-add:hover { background: #c4085f; transform: translateY(-1px); }
 
-/* ── MAIN ── */
-.main { padding: 88px 40px 80px; max-width: 1400px; margin: 0 auto; }
+/* MAIN */
+.main { padding: 88px 40px 80px; max-width: 1480px; margin: 0 auto; }
 .page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; padding-top: 20px; flex-wrap: wrap; gap: 16px; }
 .page-title { font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700; color: #fff; letter-spacing: 1px; }
 .page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-/* ── STATS ── */
+/* STATS */
 .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
 .stat-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; border-left: 3px solid var(--orange); }
 .stat-card-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
@@ -72,27 +67,19 @@ body::before {
 .stat-card-value.pink  { color: var(--pink); }
 .stat-card-value.blue  { color: var(--blue); }
 .stat-card-value.green { color: var(--green); }
+.stat-card-value.gold  { color: var(--gold); }
 .stat-card-sub { font-size: 11px; color: var(--text-muted); }
 
-/* ── CHARTS PANEL ── */
-.charts-panel { margin-bottom: 24px; display: none; }
-.charts-panel.open { display: block; }
-.charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-.chart-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; }
-.chart-card-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
-
-/* ── FILTER BAR ── */
-.filter-bar { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+/* FILTER BAR */
+.filter-bar { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 20px; margin-bottom: 20px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .filter-bar input, .filter-bar select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; }
 .filter-bar input:focus, .filter-bar select:focus { border-color: var(--orange); }
 .filter-bar input { flex: 1; min-width: 160px; }
-.filter-bar select { min-width: 120px; cursor: pointer; }
+.filter-bar select { min-width: 150px; cursor: pointer; }
 .filter-bar select option { background: #0d1e35; }
 .filter-pill { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .filter-pill:hover { color: #fff; }
 .filter-pill.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.08); }
-.filter-pill.active-red { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
-.filter-pill.active-blue { border-color: var(--blue); color: var(--blue); background: rgba(51,154,233,0.08); }
 .sort-dir-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 14px; transition: all 0.18s; line-height: 1; }
 .sort-dir-btn:hover { color: #fff; border-color: var(--orange); }
 .view-toggle { display: flex; gap: 4px; }
@@ -100,153 +87,197 @@ body::before {
 .view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
 .view-btn svg { width: 16px; height: 16px; fill: currentColor; }
 .results-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
+.filter-count-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--orange); color: #fff; border-radius: 10px; font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; padding: 0 4px; margin-left: 5px; vertical-align: middle; }
 
-/* ── GRID ── */
-.hooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+/* ADV FILTERS */
+.adv-filters-panel { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px 14px; margin-bottom: 20px; display: none; }
+.adv-filters-panel.open { display: block; }
+.adv-filters-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); }
+.adv-filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.adv-filter-field { display: flex; flex-direction: column; gap: 5px; }
+.adv-filter-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.adv-filter-inputs { display: flex; gap: 6px; align-items: center; }
+.adv-filter-inputs input, .adv-filter-inputs select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 7px 10px; font-family: 'Roboto', sans-serif; font-size: 12px; outline: none; flex: 1; min-width: 0; }
+.adv-filter-inputs input:focus, .adv-filter-inputs select:focus { border-color: var(--orange); }
+.adv-filter-sep { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
+.adv-filters-footer { display: flex; gap: 10px; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.adv-active-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+.adv-active-count strong { color: var(--orange); }
 
-/* ── CARDS ── */
-.hook-card {
-  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
-  padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
-  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
-  position: relative; cursor: pointer;
-}
-.hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); border-color: rgba(255,107,53,0.4); }
-.hook-card.hook-needed { border-left: 3px solid var(--red); }
-.hook-card.select-mode { cursor: pointer; user-select: none; }
-.hook-card.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
-.hook-card-top { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.reel-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
-.reel-name a { color: #fff; text-decoration: none; }
-.reel-name a:hover { color: var(--blue); }
-.hook-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; font-style: italic; }
-.hook-needed-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.35); color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
-.hook-card-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
-.metric-item { display: flex; flex-direction: column; gap: 2px; }
-.metric-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
-.metric-value { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: #fff; line-height: 1; }
-.metric-value.orange { color: var(--orange); }
-.metric-value.blue   { color: var(--blue); }
-.metric-value.pink   { color: var(--pink); }
-.metric-value.green  { color: var(--green); }
-.hook-card-secondary { display: flex; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
-.sec-item { display: flex; flex-direction: column; gap: 1px; }
-.sec-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
-.sec-value { font-size: 12px; font-weight: 500; color: var(--text-muted); }
-.hook-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-dim); }
-.hook-actions { display: flex; gap: 5px; }
+/* LAYOUT */
+.library-layout { display: grid; grid-template-columns: 1fr 280px; gap: 20px; align-items: flex-start; }
+@media (max-width: 1100px) { .library-layout { grid-template-columns: 1fr; } }
 
-/* ── LIST VIEW ── */
-.hooks-list { display: flex; flex-direction: column; gap: 8px; }
-.hook-list-item { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 18px; display: grid; grid-template-columns: 1fr auto auto auto auto auto; align-items: center; gap: 14px; transition: border-color 0.18s, background 0.15s; cursor: pointer; position: relative; }
-.hook-list-item:hover { border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.04); }
-.hook-list-item.hook-needed { border-left: 3px solid var(--red); }
-.hook-list-item.select-mode { user-select: none; }
-.hook-list-item.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
-.hook-list-reel { font-size: 14px; font-weight: 600; color: #fff; }
-.hook-list-reel a { color: #fff; text-decoration: none; }
-.hook-list-hook { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
-.hook-list-badges { display: flex; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
-.hook-list-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
-.hook-list-stat-val { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
-.hook-list-stat-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+/* ARCHETYPE GRID */
+.archetypes-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
+.archetypes-list { display: flex; flex-direction: column; gap: 8px; }
 
-/* ── SELECT MODE ── */
-.select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: inherit; }
-.card-checkbox-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
-.card-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--orange); }
-.list-checkbox-wrap { display: flex; align-items: center; z-index: 10; position: relative; }
-
-/* ── BULK BAR ── */
-.bulk-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: rgba(10,24,42,0.98); border-top: 2px solid var(--orange); backdrop-filter: blur(16px); padding: 14px 40px; display: flex; align-items: center; gap: 12px; transform: translateY(100%); transition: transform 0.25s ease; }
-.bulk-bar.open { transform: translateY(0); }
-.bulk-count { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-muted); min-width: 110px; }
-.bulk-count strong { color: var(--orange); font-size: 20px; }
-.btn-bulk { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px; padding: 8px 16px; cursor: pointer; transition: all 0.18s; border: 1px solid var(--border-dim); background: transparent; color: var(--text-muted); }
-.btn-bulk:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
-.btn-bulk-delete { background: rgba(231,76,60,0.12); color: var(--red); border-color: rgba(231,76,60,0.4); }
-.btn-bulk-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
-.btn-bulk-delete:disabled { opacity: 0.4; pointer-events: none; }
-.bulk-spacer { margin-left: auto; }
-
-/* ── BADGES ── */
-.type-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
-.type-c0 { background: rgba(51,154,233,0.15);  color: var(--blue); }
-.type-c1 { background: rgba(237,10,115,0.15);  color: var(--pink); }
-.type-c2 { background: rgba(255,107,53,0.15);  color: var(--orange); }
-.type-c3 { background: rgba(62,207,106,0.12);  color: var(--green); }
-.type-c4 { background: rgba(155,89,182,0.15);  color: var(--purple); }
-.cat-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted); white-space: nowrap; }
-.date-badge { font-size: 10px; color: var(--text-dim); }
-.outlier-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
-.outlier-star { background: rgba(255,215,0,0.15); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
-.outlier-near { background: rgba(255,107,53,0.12); color: var(--orange); border: 1px solid rgba(255,107,53,0.25); }
-
-/* ── SCORE BADGE ── */
-.score-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
-.score-num { font-size: 18px; font-weight: 700; }
-
-/* ── ACTION BUTTONS ── */
-.action-btn { background: none; border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+.archetype-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; position: relative; cursor: pointer; transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s; border-left-width: 3px; }
+.archetype-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); }
+.archetype-card.custom { border-style: dashed; }
+.archetype-card.disabled { opacity: 0.4; }
+.archetype-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
+.archetype-card-title-wrap { flex: 1; min-width: 0; }
+.archetype-card-icon { font-size: 14px; margin-right: 6px; opacity: 0.85; }
+.archetype-card-name { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; color: #fff; letter-spacing: 0.5px; line-height: 1.2; margin-bottom: 4px; }
+.archetype-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.4; }
+.archetype-grade { display: flex; flex-direction: column; align-items: center; gap: 2px; min-width: 50px; flex-shrink: 0; }
+.archetype-grade-letter { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; line-height: 1; }
+.archetype-grade-num { font-size: 10px; color: var(--text-muted); letter-spacing: 0.5px; }
+.archetype-card-meta { display: flex; gap: 14px; align-items: center; padding-top: 10px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.archetype-meta-item { display: flex; flex-direction: column; gap: 1px; }
+.archetype-meta-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.archetype-meta-val { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
+.archetype-meta-val.orange { color: var(--orange); }
+.archetype-meta-val.blue { color: var(--blue); }
+.archetype-match-count { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+.archetype-actions { display: flex; gap: 5px; margin-left: auto; }
+.action-btn { background: none; border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 28px; height: 28px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
 .action-btn:hover { border-color: #fff; color: #fff; }
-.action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
-.action-btn.copy:hover { border-color: var(--green); color: var(--green); }
-.action-btn.copy.copied { border-color: var(--green); color: var(--green); }
-.action-btn svg { width: 13px; height: 13px; fill: currentColor; }
+.action-btn.delete:hover { border-color: var(--red); color: var(--red); }
+.action-btn svg { width: 12px; height: 12px; fill: currentColor; }
 
-/* ── EMPTY STATE ── */
-.empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
+/* SUB-SECTION MIX BAR (on archetype card) */
+.subsection-mix { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--border-dim); margin-top: 6px; }
+.subsection-mix-seg { height: 100%; transition: opacity 0.15s; }
+.subsection-mix-seg:hover { opacity: 0.75; }
+.subsection-mix-legend { display: flex; gap: 10px; margin-top: 6px; flex-wrap: wrap; font-size: 9px; color: var(--text-muted); }
+.subsection-mix-legend-item { display: inline-flex; align-items: center; gap: 4px; }
+.subsection-mix-legend-dot { width: 8px; height: 8px; border-radius: 2px; }
+
+/* SIDEBAR */
+.sidebar { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 84px; }
+.sidebar-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 16px 18px; }
+.sidebar-card-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: center; gap: 6px; }
+.sidebar-row { padding: 10px 6px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: flex-start; gap: 10px; cursor: pointer; transition: background 0.15s; border-radius: 5px; margin: 0 -6px; }
+.sidebar-row:last-child { border-bottom: none; }
+.sidebar-row:hover { background: rgba(255,255,255,0.04); }
+.sidebar-row-rank { font-family: 'Oswald', sans-serif; font-size: 18px; font-weight: 700; color: var(--gold); width: 22px; flex-shrink: 0; line-height: 1.1; }
+.sidebar-row-rank.rank-2 { color: var(--text-muted); }
+.sidebar-row-rank.rank-3 { color: var(--orange); }
+.sidebar-row-body { flex: 1; min-width: 0; }
+.sidebar-row-name { font-size: 12px; color: #fff; font-weight: 500; line-height: 1.4; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+.sidebar-row-meta { font-size: 10px; color: var(--text-muted); margin-top: 3px; display: flex; gap: 8px; flex-wrap: wrap; }
+.sidebar-row-meta .grade { font-family: 'Oswald', sans-serif; font-weight: 700; }
+.sidebar-empty { font-size: 12px; color: var(--text-dim); text-align: center; padding: 14px 0; font-style: italic; }
+
+/* UNGROUPED TRAY */
+.ungrouped-tray { margin-top: 28px; background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; }
+.ungrouped-header { padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
+.ungrouped-header-title { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+.ungrouped-count-badge { background: rgba(237,10,115,0.15); color: var(--pink); border-radius: 12px; padding: 2px 10px; font-size: 11px; font-weight: 700; }
+.ungrouped-chevron { font-size: 14px; color: var(--text-dim); transition: transform 0.2s; }
+.ungrouped-tray.open .ungrouped-chevron { transform: rotate(180deg); }
+.ungrouped-body { display: none; padding: 0 20px 16px; }
+.ungrouped-tray.open .ungrouped-body { display: block; }
+.ungrouped-list { display: flex; flex-direction: column; gap: 6px; }
+.ungrouped-item { display: grid; grid-template-columns: 1fr auto auto auto; gap: 12px; align-items: center; padding: 10px 12px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 6px; }
+.ungrouped-text { font-size: 13px; color: rgba(255,255,255,0.85); font-style: italic; line-height: 1.4; }
+.ungrouped-text-reel { font-size: 10px; color: var(--text-dim); margin-top: 3px; font-style: normal; letter-spacing: 0.5px; }
+.ungrouped-text-nearmiss { font-size: 9px; color: var(--text-dim); margin-top: 2px; font-style: normal; }
+.ungrouped-score { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 700; min-width: 30px; text-align: center; }
+.btn-small { font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; border-radius: 5px; padding: 6px 10px; cursor: pointer; transition: all 0.15s; border: 1px solid var(--border-dim); background: transparent; color: var(--text-muted); white-space: nowrap; }
+.btn-small:hover { color: #fff; border-color: #fff; }
+.btn-small-primary { background: rgba(255,107,53,0.12); color: var(--orange); border-color: rgba(255,107,53,0.4); }
+.btn-small-primary:hover { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+/* EMPTY */
+.empty-state { text-align: center; padding: 60px 20px; color: var(--text-muted); background: var(--bg-card); border: 1px dashed var(--border-dim); border-radius: 10px; }
 .empty-state svg { width: 48px; height: 48px; fill: var(--text-dim); margin-bottom: 16px; }
 .empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
-.empty-state p { font-size: 13px; color: var(--text-dim); }
+.empty-state p { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
 
-/* ── MODAL BASE ── */
+/* MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: all 0.2s; }
 .modal-overlay.open { opacity: 1; visibility: visible; }
 .modal { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 12px; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.2s; }
 .modal-overlay.open .modal { transform: translateY(0); }
 .modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
 .modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
-.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 4px; transition: color 0.15s; flex-shrink: 0; }
+.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 4px; flex-shrink: 0; }
 .modal-close:hover { color: #fff; }
 .modal-body { padding: 18px 24px; }
 .modal-footer { padding: 14px 24px 18px; border-top: 1px solid var(--border-dim); display: flex; gap: 10px; justify-content: flex-end; }
 
-/* ── DETAIL MODAL ── */
-.detail-modal { max-width: 740px; }
-.detail-header-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
-.detail-score-row { display: flex; align-items: center; gap: 20px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; }
-.detail-score-main { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 70px; }
-.detail-score-num { font-family: 'Oswald', sans-serif; font-size: 40px; font-weight: 700; line-height: 1; }
-.detail-score-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
-.detail-score-gauge-wrap { flex: 1; }
-.detail-score-gauge-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
-.detail-score-gauge { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
-.detail-score-gauge-fill { height: 100%; border-radius: 5px; transition: width 0.6s ease; }
-.detail-score-breakdown { font-size: 11px; color: var(--text-dim); display: flex; gap: 16px; flex-wrap: wrap; }
-.detail-score-breakdown span { color: var(--text-muted); }
-.detail-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
-.detail-metric { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; }
-.detail-metric-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
-.detail-metric-val { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; color: #fff; }
-.detail-section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
-.detail-bars { margin-bottom: 18px; }
-.detail-bar-row { margin-bottom: 12px; }
-.detail-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
-.detail-bar-name { font-size: 11px; color: var(--text-muted); }
-.detail-bar-val { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; }
-.detail-bar-track { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: visible; position: relative; }
-.detail-bar-fill { height: 100%; border-radius: 5px; position: relative; transition: width 0.5s ease; }
-.detail-bar-bench { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px; }
-.detail-hook-box { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); font-style: italic; }
-.detail-chart-wrap { margin-bottom: 18px; }
-.detail-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
-.detail-sec { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 10px; }
-.detail-sec-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
-.detail-sec-val { font-size: 13px; font-weight: 500; color: var(--text-muted); }
-.detail-notes { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+.archetype-detail-modal { max-width: 960px; }
+.ad-modal-header { display: flex; gap: 16px; align-items: flex-start; }
+.ad-modal-title-wrap { flex: 1; min-width: 0; }
+.ad-modal-name { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: #fff; line-height: 1.2; }
+.ad-modal-desc { font-size: 13px; color: var(--text-muted); margin-top: 4px; line-height: 1.5; }
 
-/* ── EDIT / ADD FORM ── */
+/* GRADE CARD */
+.grade-card { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; margin-bottom: 18px; }
+.grade-overall { display: flex; align-items: center; gap: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border-dim); margin-bottom: 16px; }
+.grade-letter-big { font-family: 'Oswald', sans-serif; font-size: 64px; font-weight: 700; line-height: 1; min-width: 90px; text-align: center; }
+.grade-overall-body { flex: 1; min-width: 0; }
+.grade-overall-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+.grade-overall-num { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 6px; }
+.grade-overall-sub { font-size: 11px; color: var(--text-dim); }
+.grade-subgrades { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.subgrade { background: rgba(255,255,255,0.03); border-radius: 8px; padding: 12px 14px; }
+.subgrade-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px; }
+.subgrade-label { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); }
+.subgrade-letter { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 700; }
+.subgrade-bar { height: 6px; background: var(--border-dim); border-radius: 3px; overflow: hidden; margin-bottom: 5px; }
+.subgrade-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+.subgrade-meta { font-size: 10px; color: var(--text-dim); }
+@media (max-width: 700px) {
+  .grade-subgrades { grid-template-columns: 1fr; }
+  .grade-overall { flex-direction: column; align-items: flex-start; gap: 10px; }
+}
+
+/* SUB-SECTION TABS */
+.subsection-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--border-dim); }
+.subsection-tab { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 7px 14px; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; transition: all 0.15s; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.subsection-tab:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.subsection-tab.active { color: #fff; background: rgba(255,107,53,0.1); border-color: var(--orange); }
+.subsection-tab-name { font-size: 11px; }
+.subsection-tab-count { font-size: 10px; color: var(--text-dim); }
+.subsection-tab-grade { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 700; padding: 1px 6px; border-radius: 3px; background: rgba(255,255,255,0.04); }
+
+/* SUB-SECTION GRADE PANEL */
+.subsection-panel { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; display: flex; gap: 16px; align-items: center; }
+.subsection-panel-letter { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; min-width: 50px; text-align: center; }
+.subsection-panel-body { flex: 1; }
+.subsection-panel-name { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 700; color: #fff; letter-spacing: 0.5px; }
+.subsection-panel-meta { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+.subsection-panel-actions { display: flex; gap: 8px; }
+.btn-toggle-patterns { font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: transparent; color: var(--blue); border: 1px solid rgba(51,154,233,0.3); border-radius: 5px; padding: 6px 12px; cursor: pointer; transition: all 0.15s; }
+.btn-toggle-patterns:hover { background: rgba(51,154,233,0.1); border-color: var(--blue); }
+.btn-toggle-patterns.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* LITERAL SUB-PATTERNS */
+.literal-patterns { background: rgba(51,154,233,0.05); border: 1px solid rgba(51,154,233,0.2); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; }
+.literal-patterns-title { font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--blue); margin-bottom: 10px; }
+.literal-pattern-item { padding: 8px 10px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 6px; margin-bottom: 6px; font-size: 13px; color: rgba(255,255,255,0.9); }
+.literal-pattern-item:last-child { margin-bottom: 0; }
+.literal-pattern-template .slot { background: rgba(155,89,182,0.18); border: 1px dashed rgba(155,89,182,0.5); color: var(--purple); padding: 1px 6px; border-radius: 3px; font-family: 'Oswald', sans-serif; font-weight: 700; font-size: 11px; }
+.literal-pattern-count { font-size: 10px; color: var(--text-muted); margin-top: 3px; }
+
+/* MATCHED REELS */
+.matched-section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin: 18px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.matched-sort { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; padding: 4px 8px; font-size: 11px; cursor: pointer; }
+.matched-reels-list { display: flex; flex-direction: column; gap: 8px; }
+.matched-reel { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 14px; }
+.matched-reel.pinned { border-left: 3px solid var(--gold); }
+.matched-reel-name { font-size: 13px; font-weight: 600; color: #fff; }
+.matched-reel-name a { color: #fff; text-decoration: none; }
+.matched-reel-name a:hover { color: var(--blue); }
+.matched-reel-hook { font-size: 11px; color: var(--text-muted); font-style: italic; margin-top: 3px; line-height: 1.4; }
+.matched-reel-tags { display: flex; gap: 4px; margin-top: 5px; flex-wrap: wrap; align-items: center; }
+.archetype-chip { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; padding: 2px 7px; border-radius: 3px; border: 1px solid; }
+.archetype-chip.primary { font-weight: 700; }
+.density-dot { display: inline-flex; gap: 2px; margin-left: 4px; }
+.density-dot span { width: 5px; height: 5px; border-radius: 50%; background: rgba(255,255,255,0.15); }
+.density-dot span.on { background: var(--orange); }
+.matched-reel-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.matched-reel-stat-val { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; color: #fff; }
+.matched-reel-stat-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+.pin-btn { background: none; border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 4px; padding: 4px 8px; font-size: 10px; cursor: pointer; transition: all 0.15s; }
+.pin-btn:hover { color: var(--gold); border-color: var(--gold); }
+.pin-btn.pinned { color: var(--gold); border-color: var(--gold); background: rgba(255,215,0,0.1); }
+
+/* FORM */
 .form-section-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
 .form-section-label:first-child { margin-top: 0; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
@@ -255,101 +286,46 @@ body::before {
 .form-control { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 9px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; width: 100%; }
 .form-control:focus { border-color: var(--orange); }
 .form-control option { background: #0d1e35; }
-textarea.form-control { resize: vertical; min-height: 80px; }
+textarea.form-control { resize: vertical; min-height: 60px; }
+.form-help { font-size: 11px; color: var(--text-dim); line-height: 1.5; margin-top: 5px; }
+.form-help code { background: var(--bg); color: var(--purple); padding: 1px 5px; border-radius: 3px; font-family: 'Oswald', sans-serif; font-size: 12px; }
 .form-full { margin-bottom: 12px; }
+.signal-group-row { display: grid; grid-template-columns: 70px 1fr; gap: 10px; align-items: start; margin-bottom: 8px; }
+.signal-group-weight { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; color: var(--text-muted); padding-top: 11px; }
 .btn { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 6px; padding: 10px 22px; cursor: pointer; transition: all 0.18s; }
 .btn-primary { background: var(--pink); color: #fff; }
 .btn-primary:hover { background: #c4085f; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
 .btn-secondary:hover { color: #fff; border-color: #fff; }
-.btn-edit { background: rgba(51,154,233,0.12); color: var(--blue); border: 1px solid rgba(51,154,233,0.3); }
-.btn-edit:hover { background: var(--blue); color: #fff; }
+.btn-danger { background: #c0392b; color: #fff; }
+.btn-danger:hover { background: #e74c3c; }
 
-/* ── MANAGE MODAL ── */
-.manage-modal { max-width: 640px; }
-.manage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.manage-section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
-.manage-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
-.manage-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 5px; padding: 7px 10px; font-size: 13px; color: #fff; }
-.manage-add-row { display: flex; gap: 8px; }
-.manage-add-row .form-control { flex: 1; padding: 8px 10px; font-size: 13px; }
-.btn-add-item { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--orange); color: #fff; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
-.btn-add-item:hover { background: #e05a25; }
-.manage-empty { font-size: 12px; color: var(--text-dim); padding: 8px 0; font-style: italic; }
-
-/* ── IMPORT MODAL ── */
-.import-modal { max-width: 500px; }
-.import-result { text-align: center; padding: 20px 0; }
-.import-count { font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700; color: var(--blue); line-height: 1; }
-.import-sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
-.import-warning { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 12px 16px; margin-top: 16px; font-size: 13px; color: var(--red); display: flex; align-items: center; gap: 8px; }
-.import-options { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
-.import-option { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
-.import-option:hover { border-color: var(--orange); }
-.import-option input[type=radio] { margin-top: 2px; accent-color: var(--orange); }
-.import-option-label { font-size: 13px; font-weight: 600; color: #fff; }
-.import-option-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
-
-/* ── CONFIRM ── */
+/* CONFIRM */
 .confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.15s; }
 .confirm-overlay.open { opacity: 1; visibility: visible; }
 .confirm-box { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 10px; padding: 28px 32px; max-width: 420px; text-align: center; }
 .confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
 .confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
-.confirm-warning { font-size: 12px; color: var(--red); background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.25); border-radius: 6px; padding: 8px 12px; margin-bottom: 20px; }
-.confirm-btns { display: flex; gap: 10px; justify-content: center; }
-.btn-danger { background: #c0392b; color: #fff; }
-.btn-danger:hover { background: #e74c3c; }
+.confirm-btns { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
 
-/* ── ADVANCED FILTERS PANEL ── */
-.adv-filters-panel { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px 14px; margin-bottom: 24px; display: none; }
-.adv-filters-panel.open { display: block; }
-.adv-filters-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); }
-.adv-filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
-.adv-filter-field { display: flex; flex-direction: column; gap: 5px; }
-.adv-filter-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
-.adv-filter-inputs { display: flex; gap: 6px; align-items: center; }
-.adv-filter-inputs input, .adv-filter-inputs select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 7px 10px; font-family: 'Roboto', sans-serif; font-size: 12px; outline: none; transition: border-color 0.18s; min-width: 0; flex: 1; }
-.adv-filter-inputs input:focus, .adv-filter-inputs select:focus { border-color: var(--orange); }
-.adv-filter-inputs select option { background: #0d1e35; }
-.adv-filter-sep { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
-.adv-filter-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
-.adv-filter-check input[type=checkbox] { accent-color: var(--orange); width: 15px; height: 15px; cursor: pointer; }
-.adv-filter-check span { font-size: 12px; color: var(--text-muted); }
-.adv-filters-footer { display: flex; gap: 10px; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
-.adv-active-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
-.adv-active-count strong { color: var(--orange); }
-.btn-clear-filters { font-family: 'Roboto', sans-serif; font-size: 12px; color: var(--red); background: none; border: 1px solid rgba(231,76,60,0.3); border-radius: 5px; cursor: pointer; padding: 6px 12px; transition: all 0.15s; }
-.btn-clear-filters:hover { background: rgba(231,76,60,0.1); border-color: var(--red); }
-.filter-count-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--orange); color: #fff; border-radius: 10px; font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; padding: 0 4px; margin-left: 5px; vertical-align: middle; }
-
-/* ── INSTAGRAM BUTTON ── */
-.ig-link { display: inline-flex; align-items: center; gap: 5px; background: rgba(225,48,108,0.1); border: 1px solid rgba(225,48,108,0.3); color: #e1306c; border-radius: 5px; padding: 5px 10px; font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1; }
-.ig-link:hover { background: rgba(225,48,108,0.2); border-color: #e1306c; color: #e1306c; }
-.ig-link svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
-.ig-card-link { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1px solid rgba(225,48,108,0.25); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-decoration: none; transition: all 0.18s; cursor: pointer; }
-.ig-card-link:hover { border-color: #e1306c; background: rgba(225,48,108,0.06); }
-.ig-card-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(225,48,108,0.12); border: 1px solid rgba(225,48,108,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.ig-card-icon svg { width: 20px; height: 20px; fill: #e1306c; }
-.ig-card-text { flex: 1; min-width: 0; }
-.ig-card-label { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; color: #e1306c; letter-spacing: 0.5px; margin-bottom: 3px; }
-.ig-card-url { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ig-card-arrow { font-size: 20px; color: rgba(225,48,108,0.5); flex-shrink: 0; }
+/* TOAST */
+.toast-stack { position: fixed; bottom: 24px; right: 24px; z-index: 400; display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
+.toast { background: #0d1e35; border: 1px solid var(--border-dim); border-left: 4px solid var(--green); border-radius: 10px; padding: 14px 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.5); display: flex; gap: 12px; align-items: flex-start; opacity: 0; transform: translateX(20px); transition: all 0.25s ease; }
+.toast.open { opacity: 1; transform: translateX(0); }
+.toast-body { flex: 1; min-width: 0; }
+.toast-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.5px; margin-bottom: 4px; }
+.toast-msg { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.toast-close { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; flex-shrink: 0; padding: 2px 4px; }
+.toast-close:hover { color: #fff; }
 
 @media (max-width: 900px) {
   .site-header { padding: 0 16px; }
   .main { padding: 88px 16px 60px; }
   .stats-row { grid-template-columns: repeat(2, 1fr); }
-  .hooks-grid { grid-template-columns: 1fr; }
-  .charts-grid { grid-template-columns: 1fr; }
+  .archetypes-grid { grid-template-columns: 1fr; }
   .header-nav { gap: 2px; padding-left: 10px; }
   .nav-tab { padding: 5px 7px; font-size: 10px; }
-  .hook-list-item { grid-template-columns: 1fr; }
-  .manage-cols { grid-template-columns: 1fr; }
   .btn-outline { display: none; }
-  .hook-card-metrics { grid-template-columns: repeat(2, 1fr); }
-  .detail-metrics-grid { grid-template-columns: repeat(2, 1fr); }
-  .detail-secondary { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -372,91 +348,61 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     <a href="shorts-hub.html" class="nav-tab">Short-Form</a>
     <a href="ideation-framework.html" class="nav-tab">Ideation Framework</a>
     <a href="video-converter.html" class="nav-tab">Video Converter</a>
+    <a href="hook-library.html" class="nav-tab active">Hook Library</a>
     <a href="content-database.html" class="nav-tab">Database</a>
   </nav>
   <div class="header-right">
-    <button class="btn-outline btn-import" onclick="document.getElementById('csvFileInput').click()">↑ Import CSV</button>
-    <button class="btn-outline" onclick="openManage()">Manage Lists</button>
-    <button class="btn-add" onclick="openModal()">+ Add Hook</button>
+    <button class="btn-outline btn-reclass" onclick="reclassifyAll()" title="Re-score every reel against the archetype library">⚡ Re-classify</button>
+    <button class="btn-add" onclick="openNewArchetype()">+ New Archetype</button>
   </div>
 </header>
-
-<input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
 
 <main class="main">
   <div class="page-header">
     <div>
       <div class="page-title">Hook Library</div>
-      <div class="page-sub">Reel analytics + hooks — click any card to explore performance</div>
+      <div class="page-sub">Reels grouped by hook concept — not literal text. Click any archetype to drill into its sub-sections and see which flavor is winning.</div>
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card">
-      <div class="stat-card-label">Total Reels</div>
-      <div class="stat-card-value" id="statTotal">—</div>
-      <div class="stat-card-sub">in library</div>
-    </div>
-    <div class="stat-card" style="border-left-color:var(--red);">
-      <div class="stat-card-label">Hooks Needed</div>
-      <div class="stat-card-value pink" id="statHooksNeeded">—</div>
-      <div class="stat-card-sub">missing hook text</div>
+      <div class="stat-card-label">Active Archetypes</div>
+      <div class="stat-card-value" id="statArchetypes">—</div>
+      <div class="stat-card-sub">concepts with ≥1 reel</div>
     </div>
     <div class="stat-card" style="border-left-color:var(--blue);">
-      <div class="stat-card-label">Avg 3-Sec Retention</div>
-      <div class="stat-card-value blue" id="statAvgRet">—</div>
-      <div class="stat-card-sub" id="statRetBench">across logged reels</div>
+      <div class="stat-card-label">Reels Classified</div>
+      <div class="stat-card-value blue" id="statClassified">—</div>
+      <div class="stat-card-sub" id="statClassifiedSub">of 0 total</div>
     </div>
-    <div class="stat-card" style="border-left-color:#FFD700;">
-      <div class="stat-card-label">Outlier Reels</div>
-      <div class="stat-card-value" style="color:#FFD700;" id="statOutliers">—</div>
-      <div class="stat-card-sub">10+ followers gained</div>
+    <div class="stat-card" style="border-left-color:var(--pink);">
+      <div class="stat-card-label">Ungrouped</div>
+      <div class="stat-card-value pink" id="statUngrouped">—</div>
+      <div class="stat-card-sub">reels with no archetype match</div>
     </div>
-  </div>
-
-  <!-- CHARTS PANEL -->
-  <div class="charts-panel" id="chartsPanel">
-    <div class="charts-grid">
-      <div class="chart-card">
-        <div class="chart-card-title">📈 Followers Over Time</div>
-        <canvas id="chartFollowsTime" height="180"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title">🔍 Views vs Follows (Scatter)</div>
-        <canvas id="chartViewsFollows" height="180"></canvas>
-      </div>
-      <div class="chart-card">
-        <div class="chart-card-title">📊 Avg 3-Sec Retention by Category</div>
-        <canvas id="chartRetCategory" height="180"></canvas>
-      </div>
+    <div class="stat-card" style="border-left-color:var(--gold);">
+      <div class="stat-card-label">Avg Archetype Grade</div>
+      <div class="stat-card-value gold" id="statAvgGrade">—</div>
+      <div class="stat-card-sub" id="statAvgGradeSub">across all concepts</div>
     </div>
   </div>
 
-  <!-- FILTER BAR -->
   <div class="filter-bar">
-    <input type="text" id="searchInput" placeholder="Search reels or hooks..." oninput="applyFilters()">
-    <select id="filterCat" onchange="applyFilters()"><option value="">All Categories</option></select>
-    <select id="filterType" onchange="applyFilters()"><option value="">All Hook Types</option></select>
+    <input type="text" id="searchInput" placeholder="Search archetypes by name or description..." oninput="applyFilters()">
     <select id="sortKey" onchange="handleSortChange()">
-      <option value="date-desc">Date: Newest First</option>
-      <option value="date-asc">Date: Oldest First</option>
-      <option value="score-desc">Score: High → Low</option>
-      <option value="follows-desc">Follows: High → Low</option>
-      <option value="views-desc">Views: High → Low</option>
-      <option value="ret3s-desc">3-Sec Ret: High → Low</option>
-      <option value="skip-asc">Skip Rate: Low → High</option>
-      <option value="likes-desc">Likes: High → Low</option>
-      <option value="shares-desc">Shares: High → Low</option>
+      <option value="grade-desc">Grade: High → Low</option>
+      <option value="matches-desc">Total Reels: High → Low</option>
+      <option value="lastused-desc">Last Used: Recent First</option>
+      <option value="lastused-asc">Last Used: Stale First</option>
+      <option value="avgfollows-desc">Avg Followers: High → Low</option>
+      <option value="avgviews-desc">Avg Views: High → Low</option>
+      <option value="density-desc">Avg Hook Density: High → Low</option>
       <option value="name-asc">Name: A → Z</option>
-      <option value="category-asc">Category: A → Z</option>
     </select>
     <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Flip sort direction">↓</button>
     <button class="filter-pill" id="btnAdvFilters" onclick="toggleAdvFilters()">⚙ Filters<span class="filter-count-badge" id="filterBadge" style="display:none">0</span></button>
-    <button class="filter-pill" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
-    <button class="filter-pill" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
-    <button class="filter-pill" id="btnCharts" onclick="toggleCharts()">📊 Charts</button>
-    <span class="results-label" id="resultsCount">0 reels</span>
+    <span class="results-label" id="resultsCount">0 archetypes</span>
     <div class="view-toggle">
       <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid">
         <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
@@ -467,76 +413,16 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
-  <!-- ADVANCED FILTERS PANEL -->
   <div class="adv-filters-panel" id="advFiltersPanel">
-    <div class="adv-filters-title">Advanced Filters</div>
+    <div class="adv-filters-title">Advanced Filters (applied to archetype aggregates)</div>
     <div class="adv-filters-grid">
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Followers Gained</div>
-        <div class="adv-filter-inputs">
-          <input type="number" id="advFollowsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="number" id="advFollowsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Views</div>
-        <div class="adv-filter-inputs">
-          <input type="number" id="advViewsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="number" id="advViewsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">3-Sec Retention %</div>
-        <div class="adv-filter-inputs">
-          <input type="number" id="advRetMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="number" id="advRetMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Skip Rate %</div>
-        <div class="adv-filter-inputs">
-          <input type="number" id="advSkipMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="number" id="advSkipMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Performance Score</div>
-        <div class="adv-filter-inputs">
-          <input type="number" id="advScoreMin" placeholder="Min" min="0" max="10" step="0.1" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="number" id="advScoreMax" placeholder="Max" min="0" max="10" step="0.1" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Date Range</div>
-        <div class="adv-filter-inputs">
-          <input type="date" id="advDateFrom" oninput="readAdvFilters()">
-          <span class="adv-filter-sep">–</span>
-          <input type="date" id="advDateTo" oninput="readAdvFilters()">
-        </div>
-      </div>
-      <div class="adv-filter-field">
-        <div class="adv-filter-label">Outlier Status</div>
-        <div class="adv-filter-inputs">
-          <select id="advOutlier" onchange="readAdvFilters()">
-            <option value="">Any</option>
-            <option value="outlier">⭐ Outlier only (10+ follows)</option>
-            <option value="near-outlier">~ Near Outlier only (6–9)</option>
-            <option value="any-outlier">Any outlier / near-outlier</option>
-            <option value="none">No outlier flag</option>
-          </select>
-        </div>
-      </div>
-      <div class="adv-filter-field" style="justify-content:flex-end;padding-top:8px;">
-        <label class="adv-filter-check">
-          <input type="checkbox" id="advHasIg" onchange="readAdvFilters()">
-          <span>Has Instagram link</span>
-        </label>
-      </div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Min Reels</div><div class="adv-filter-inputs"><input type="number" id="advMinMatches" placeholder="e.g. 3" min="0" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Avg Followers</div><div class="adv-filter-inputs"><input type="number" id="advFollowsMin" placeholder="Min" min="0" oninput="readAdvFilters()"><span class="adv-filter-sep">–</span><input type="number" id="advFollowsMax" placeholder="Max" min="0" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Avg Views</div><div class="adv-filter-inputs"><input type="number" id="advViewsMin" placeholder="Min" min="0" oninput="readAdvFilters()"><span class="adv-filter-sep">–</span><input type="number" id="advViewsMax" placeholder="Max" min="0" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Avg 3-Sec Ret %</div><div class="adv-filter-inputs"><input type="number" id="advRetMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()"><span class="adv-filter-sep">–</span><input type="number" id="advRetMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Avg Score (0–10)</div><div class="adv-filter-inputs"><input type="number" id="advScoreMin" placeholder="Min" min="0" max="10" step="0.1" oninput="readAdvFilters()"><span class="adv-filter-sep">–</span><input type="number" id="advScoreMax" placeholder="Max" min="0" max="10" step="0.1" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Last Used</div><div class="adv-filter-inputs"><input type="date" id="advDateFrom" oninput="readAdvFilters()"><span class="adv-filter-sep">–</span><input type="date" id="advDateTo" oninput="readAdvFilters()"></div></div>
+      <div class="adv-filter-field"><div class="adv-filter-label">Source</div><div class="adv-filter-inputs"><select id="advSource" onchange="readAdvFilters()"><option value="">Any</option><option value="builtin">Built-in only</option><option value="custom">Custom only</option></select></div></div>
     </div>
     <div class="adv-filters-footer">
       <button class="btn btn-secondary" onclick="clearAdvFilters()">✕ Clear All Filters</button>
@@ -544,23 +430,44 @@ textarea.form-control { resize: vertical; min-height: 80px; }
     </div>
   </div>
 
-  <div id="hooksContainer"></div>
+  <div class="library-layout">
+    <div><div id="archetypesContainer"></div></div>
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">🏆 Top Performers</div>
+        <div id="topPerformers"></div>
+      </div>
+      <div class="sidebar-card">
+        <div class="sidebar-card-title">⚠ Gap Finder <small style="font-weight:400;color:var(--text-dim);font-size:9px;letter-spacing:1px;margin-left:auto;">unused 21d+</small></div>
+        <div id="gapFinder"></div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="ungrouped-tray" id="ungroupedTray">
+    <div class="ungrouped-header" onclick="toggleUngrouped()">
+      <div class="ungrouped-header-title">
+        Ungrouped Reels
+        <span class="ungrouped-count-badge" id="ungroupedCount">0</span>
+      </div>
+      <span class="ungrouped-chevron">▾</span>
+    </div>
+    <div class="ungrouped-body">
+      <div class="ungrouped-list" id="ungroupedList"></div>
+    </div>
+  </div>
 </main>
 
-<!-- DETAIL MODAL -->
+<!-- ARCHETYPE DETAIL MODAL -->
 <div class="modal-overlay" id="detailOverlay" onclick="handleDetailOverlayClick(event)">
-  <div class="modal detail-modal">
-    <div class="modal-header">
-      <div style="flex:1;min-width:0;">
-        <div class="modal-title" id="detailTitle">Reel Name</div>
-        <div class="detail-header-meta" id="detailMeta"></div>
+  <div class="modal archetype-detail-modal">
+    <div class="modal-header ad-modal-header">
+      <div class="ad-modal-title-wrap">
+        <div class="ad-modal-name" id="detailName"></div>
+        <div class="ad-modal-desc" id="detailDesc"></div>
       </div>
-      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:2px;align-items:center;">
-        <a class="ig-link" id="detailIgBtn" href="#" target="_blank" rel="noopener" style="display:none;" onclick="event.stopPropagation()">
-          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-          Instagram
-        </a>
-        <button class="btn btn-edit" id="detailEditBtn" onclick="editFromDetail()">Edit</button>
+      <div style="display:flex;gap:8px;flex-shrink:0;align-items:center;">
+        <button class="btn btn-secondary" id="detailEditBtn" onclick="editFromDetail()" style="padding:7px 14px;display:none;">Edit</button>
         <button class="modal-close" onclick="closeDetail()">&#x2715;</button>
       </div>
     </div>
@@ -568,137 +475,48 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   </div>
 </div>
 
-<!-- ADD / EDIT MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)" style="z-index:210;">
-  <div class="modal" id="modalBox">
+<!-- NEW / EDIT ARCHETYPE MODAL -->
+<div class="modal-overlay" id="editOverlay" onclick="handleEditOverlayClick(event)" style="z-index:210;">
+  <div class="modal" style="max-width:680px;">
     <div class="modal-header">
-      <div class="modal-title" id="modalTitle">Add Reel</div>
-      <button class="modal-close" onclick="closeModal()">&#x2715;</button>
+      <div class="modal-title" id="editModalTitle">New Archetype</div>
+      <button class="modal-close" onclick="closeEdit()">&#x2715;</button>
     </div>
     <div class="modal-body">
       <input type="hidden" id="editId">
-      <div class="form-section-label">Reel Info</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Reel Name</label><input type="text" id="fReelName" class="form-control" placeholder="e.g. Bad, Good, Best..."></div>
-        <div class="form-group"><label class="form-label">Instagram URL</label><input type="url" id="fInstagramUrl" class="form-control" placeholder="https://www.instagram.com/reel/..."></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Category</label><select id="fCat" class="form-control"></select></div>
-        <div class="form-group"><label class="form-label">Date</label><input type="text" id="fDate" class="form-control" placeholder="4/28/2026"></div>
-      </div>
-      <div class="form-section-label">Hook</div>
+      <div class="form-section-label">Basics</div>
       <div class="form-full form-group">
-        <label class="form-label">Hook Text <span style="color:var(--text-dim);font-size:9px;">(blank = Hook Needed flag)</span></label>
-        <textarea id="fText" class="form-control" style="min-height:80px;font-size:14px;" placeholder="Opening hook line..."></textarea>
+        <label class="form-label">Name</label>
+        <input type="text" id="editName" class="form-control" placeholder="e.g. The Locker Room Tea">
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Hook Type</label><select id="fType" class="form-control"></select></div>
-        <div class="form-group"><label class="form-label" title="Auto-computed from data; set manually to override">Score Override (1–10)</label><input type="number" id="fScore" class="form-control" min="0" max="10" step="0.1" placeholder="Auto-computed"></div>
+      <div class="form-full form-group">
+        <label class="form-label">Description</label>
+        <textarea id="editDescription" class="form-control" style="min-height:50px;" placeholder="One-line summary of the hook concept"></textarea>
       </div>
-      <div class="form-section-label">Key Metrics</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Followers Gained</label><input type="number" id="fFollowers" class="form-control" min="0" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">Views</label><input type="number" id="fViews" class="form-control" min="0" placeholder="0"></div>
+      <div class="form-section-label">Signal Keywords <span style="font-weight:400;color:var(--text-dim);">(comma-separated, case-insensitive substring match)</span></div>
+      <div class="signal-group-row">
+        <div class="signal-group-weight">w3 (strong)</div>
+        <input type="text" id="editSig3" class="form-control" placeholder="e.g. dropped a bomb, just admitted, came clean">
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">3-Sec Retention %</label><input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 55.0"></div>
-        <div class="form-group"><label class="form-label">Skip Rate %</label><input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 57.0"></div>
+      <div class="signal-group-row">
+        <div class="signal-group-weight">w2 (medium)</div>
+        <input type="text" id="editSig2" class="form-control" placeholder="e.g. coach, insider, source">
       </div>
-      <div class="form-section-label">Additional Metrics</div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Likes</label><input type="number" id="fLikes" class="form-control" min="0" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">Comments</label><input type="number" id="fComments" class="form-control" min="0" placeholder="0"></div>
+      <div class="signal-group-row">
+        <div class="signal-group-weight">w1 (weak)</div>
+        <input type="text" id="editSig1" class="form-control" placeholder="e.g. listen up, you need to hear">
       </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Shares</label><input type="number" id="fShares" class="form-control" min="0" placeholder="0"></div>
-        <div class="form-group"><label class="form-label">Length (m:ss)</label><input type="text" id="fLength" class="form-control" placeholder="e.g. 1:26"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Avg Watch Time (m:ss)</label><input type="text" id="fAvgWtSec" class="form-control" placeholder="e.g. 0:22"></div>
-        <div class="form-group"><label class="form-label">Avg WT %</label><input type="number" id="fAvgWtPct" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 18.4"></div>
-      </div>
-      <div class="form-section-label">Multipliers <span style="font-weight:400;color:var(--text-dim);">(least important)</span></div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Follows (?x)</label><input type="number" id="fFollowsX" class="form-control" min="0" step="0.1" placeholder="0.0"></div>
-        <div class="form-group"><label class="form-label">Views (?x)</label><input type="number" id="fViewsX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Likes (?x)</label><input type="number" id="fLikesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
-        <div class="form-group"><label class="form-label">Shares (?x)</label><input type="number" id="fSharesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
-      </div>
-      <div class="form-section-label">Notes</div>
-      <div class="form-full form-group"><textarea id="fNotes" class="form-control" placeholder="Any context or observations..."></textarea></div>
+      <div class="form-help">Scoring: any keyword in a group fires that group's weight. Reel belongs to archetype when total ≥ 3.</div>
+      <div class="form-section-label">Sub-sections <span style="font-weight:400;color:var(--text-dim);">(optional flavors within this archetype)</span></div>
+      <div id="editSubSectionsContainer"></div>
+      <button class="btn btn-secondary" style="padding:7px 14px;font-size:11px;margin-top:6px;" onclick="addSubSectionRow()">+ Add Sub-section</button>
+      <div id="editMatchPreview" style="margin-top:16px;font-size:12px;color:var(--text-muted);"></div>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveHook()">Save</button>
+      <button class="btn btn-secondary" onclick="closeEdit()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveArchetype()">Save Archetype</button>
     </div>
   </div>
-</div>
-
-<!-- IMPORT MODAL -->
-<div class="modal-overlay" id="importOverlay" onclick="handleImportOverlayClick(event)" style="z-index:220;">
-  <div class="modal import-modal">
-    <div class="modal-header"><div class="modal-title">Import CSV</div><button class="modal-close" onclick="closeImport()">&#x2715;</button></div>
-    <div class="modal-body">
-      <div class="import-result">
-        <div class="import-count" id="importCount">0</div>
-        <div class="import-sub" id="importSub">reels found in CSV</div>
-        <div id="importBreakdown" style="display:none;margin-top:12px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
-          <div style="text-align:center;">
-            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--green);" id="importNewCount">0</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">new reels</div>
-          </div>
-          <div style="text-align:center;">
-            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--text-dim);" id="importDupCount">0</div>
-            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">already in library</div>
-          </div>
-        </div>
-        <div class="import-warning" id="importWarning" style="display:none;margin-top:12px;"><span>⚠</span><span id="importWarningText"></span></div>
-      </div>
-      <div class="import-options">
-        <label class="import-option"><input type="radio" name="importMode" value="merge" checked><div><div class="import-option-label">Smart Merge <span style="color:var(--green);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:6px;">Recommended</span></div><div class="import-option-desc">Add only new reels — skip any that already exist in your library (matched by reel name)</div></div></label>
-        <label class="import-option"><input type="radio" name="importMode" value="append"><div><div class="import-option-label">Append All</div><div class="import-option-desc">Add every row from the CSV, even if the reel name already exists</div></div></label>
-        <label class="import-option"><input type="radio" name="importMode" value="replace"><div><div class="import-option-label">Replace Library</div><div class="import-option-desc">Clear all existing entries and import fresh — cannot be undone</div></div></label>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeImport()">Cancel</button>
-      <button class="btn btn-primary" onclick="confirmImport()">Import</button>
-    </div>
-  </div>
-</div>
-
-<!-- MANAGE LISTS MODAL -->
-<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:230;">
-  <div class="modal manage-modal">
-    <div class="modal-header"><div class="modal-title">Manage Lists</div><button class="modal-close" onclick="closeManage()">&#x2715;</button></div>
-    <div class="modal-body">
-      <div class="manage-cols">
-        <div>
-          <div class="manage-section-title">Hook Types</div>
-          <div class="manage-list" id="manageTypesList"></div>
-          <div class="manage-add-row"><input type="text" id="newTypeInput" class="form-control" placeholder="New type..."><button class="btn-add-item" onclick="addType()">+ Add</button></div>
-        </div>
-        <div>
-          <div class="manage-section-title">Content Categories</div>
-          <div class="manage-list" id="manageCatsList"></div>
-          <div class="manage-add-row"><input type="text" id="newCatInput" class="form-control" placeholder="New category..."><button class="btn-add-item" onclick="addCategory()">+ Add</button></div>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeManage()">Done</button></div>
-  </div>
-</div>
-
-<!-- BULK ACTION BAR -->
-<div class="bulk-bar" id="bulkBar">
-  <div class="bulk-count"><strong id="bulkSelectedCount">0</strong> selected</div>
-  <button class="btn-bulk" onclick="selectAll()">Select All</button>
-  <button class="btn-bulk" onclick="deselectAll()">Deselect All</button>
-  <button class="btn-bulk btn-bulk-delete" id="btnBulkDelete" onclick="requestBulkDelete()" disabled>🗑 Delete Selected</button>
-  <div class="bulk-spacer"></div>
-  <button class="btn-bulk" onclick="toggleSelectMode()">✕ Cancel</button>
 </div>
 
 <!-- CONFIRM -->
@@ -706,118 +524,47 @@ textarea.form-control { resize: vertical; min-height: 80px; }
   <div class="confirm-box">
     <h3 id="confirmTitle">Delete?</h3>
     <p id="confirmMsg"></p>
-    <p class="confirm-warning" id="confirmWarning" style="display:none;"></p>
     <div class="confirm-btns">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete</button>
+      <button class="btn btn-danger" id="confirmActionBtn" onclick="confirmAction()">Confirm</button>
     </div>
   </div>
 </div>
 
+<div class="toast-stack" id="toastStack"></div>
+
 <script>
-/* ══════════════════════════════════════════════
-   STORAGE & STATE
-══════════════════════════════════════════════ */
-const STORAGE_KEY = 'uhf_hook_library';
-const TYPES_KEY   = 'uhf_hook_types';
-const CATS_KEY    = 'uhf_hook_categories';
+/* ══════════════════════════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════════════════════════ */
+const HOOKS_KEY = 'uhf_hook_library';
+const STATE_KEY = 'uhf_hook_archetype_state';
+const OLD_SKELETONS_KEY = 'uhf_hook_skeletons'; // cleaned up on first load
 
-let hooks = [], hookTypes = [], hookCategories = [];
-let deleteTargetId = null, isBulkDelete = false;
-let currentView = 'grid';
-let filterHookNeededOnly = false;
-let selectMode = false, selectedIds = new Set();
-let pendingImportData = [];
-let sortKey = 'date', sortDir = 'desc';
-let chartsOpen = false, advFiltersOpen = false;
-let libCharts = {}, detailChartInst = null;
-let currentDetailId = null;
-let advFilters = {
-  followsMin:'', followsMax:'', viewsMin:'', viewsMax:'',
-  retMin:'', retMax:'', skipMin:'', skipMax:'',
-  scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'',
-  outlier:'', hasIg: false
+let hooks = [];
+let state = {
+  customArchetypes: [],       // user-defined
+  disabledBuiltins: [],        // ids of built-in archetypes user has disabled
+  pinnedReels: {},             // { archetypeId: [reelIds] }
+  excludedReels: {},           // { archetypeId: [reelIds] }
 };
+let archetypes = [];           // built-ins + custom (filtered for disabled), final working set
+let classifications = new Map(); // reelId → { primary, secondaries, archetypes: [...], density, nearMiss }
+let derived = [];              // [{ archetype, reels: [{ reel, score, subSectionId }], stats }]
+let sortKey = 'grade', sortDir = 'desc';
+let currentView = 'grid';
+let advFiltersOpen = false;
+let advFilters = { minMatches:'', followsMin:'', followsMax:'', viewsMin:'', viewsMax:'', retMin:'', retMax:'', scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'', source:'' };
+let currentDetailId = null;
+let currentSubSectionId = 'all'; // 'all' | 'general' | <subId>
+let showingPatterns = false;
+let pendingAction = null; // { kind: 'delete', archetypeId } or null
 
-const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
-const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
-const TYPE_COLOR_COUNT = 5;
+const { ARCHETYPES, scoreAgainst, classifyAll, clusterLiteralPatterns, deriveLiteralTemplate } = window.HookArchetypes;
 
-Chart.defaults.color = '#5a8ab0';
-Chart.defaults.borderColor = '#1a3a5c';
-
-/* ── STORAGE ── */
-function loadData() {
-  hooks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  hookTypes = JSON.parse(localStorage.getItem(TYPES_KEY) || 'null') || [...DEFAULT_TYPES];
-  hookCategories = JSON.parse(localStorage.getItem(CATS_KEY) || 'null') || [...DEFAULT_CATS];
-}
-function saveData()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks)); }
-function saveTypes() { localStorage.setItem(TYPES_KEY,   JSON.stringify(hookTypes)); }
-function saveCats()  { localStorage.setItem(CATS_KEY,    JSON.stringify(hookCategories)); }
-
-/* ══════════════════════════════════════════════
-   SCORING ENGINE
-══════════════════════════════════════════════ */
-function computeScore(h) {
-  const ret     = h.retention3s || 0;
-  const follows = h.followers   || 0;
-  const skip    = h.skipRate    || 0;
-
-  // If no real data, fall back to manual score
-  if (!ret && !follows) return h.score || 0;
-
-  // Retention component (0–5)
-  let retScore = 0;
-  if      (ret >= 60) retScore = 5;
-  else if (ret >= 55) retScore = 4;
-  else if (ret >= 50) retScore = 3;
-  else if (ret >= 45) retScore = 2;
-  else if (ret >= 40) retScore = 1;
-  else if (ret >   0) retScore = 0.5;
-
-  // Follows component (0–5)
-  let followScore = 0;
-  if      (follows >= 20) followScore = 5;
-  else if (follows >= 10) followScore = 3.5;
-  else if (follows >=  5) followScore = 2;
-  else if (follows >=  1) followScore = 1;
-
-  // Skip rate adjustment (minor)
-  let skipAdj = 0;
-  if (skip > 65 && skip > 0)    skipAdj = -0.5;
-  else if (skip > 0 && skip < 50) skipAdj =  0.5;
-
-  const raw = retScore + followScore + skipAdj;
-  return Math.round(Math.min(10, Math.max(0, raw)) * 10) / 10;
-}
-
-function getOutlier(h) {
-  const f = h.followers || 0;
-  if (f >= 10) return 'outlier';
-  if (f >= 6)  return 'near-outlier';
-  return null;
-}
-
-function scoreInfo(score) {
-  if (score >= 8)  return { label: 'Great',    color: 'var(--green)' };
-  if (score >= 6)  return { label: 'Solid',    color: 'var(--blue)' };
-  if (score >= 4)  return { label: 'Mid',      color: 'var(--orange)' };
-  if (score >= 2)  return { label: 'Bad',      color: 'var(--text-muted)' };
-  return                   { label: 'Terrible', color: 'var(--red)' };
-}
-
-function retInfo(ret) {
-  if (!ret) return { color: 'var(--text-dim)', label: '—' };
-  if (ret >= 60) return { color: 'var(--green)',  label: 'Great' };
-  if (ret >= 50) return { color: 'var(--blue)',   label: 'Solid' };
-  if (ret >= 45) return { color: 'var(--orange)', label: 'Below Avg' };
-  return              { color: 'var(--red)',    label: 'Weak' };
-}
-
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════
    HELPERS
-══════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════════ */
 function escHtml(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
@@ -828,96 +575,218 @@ function fmt(n) {
   return n.toLocaleString();
 }
 function fmtPct(n) { return (!n && n !== 0) ? '—' : Number(n).toFixed(1)+'%'; }
-function fmtScore(n) { return (!n) ? '—' : Number(n).toFixed(1); }
-function getTypeClass(type) {
-  return 'type-c' + (Math.max(hookTypes.indexOf(type), 0) % TYPE_COLOR_COUNT);
-}
 function parseDate(s) {
   if (!s) return new Date(0);
   const p = s.split('/');
   return p.length === 3 ? new Date(+p[2], +p[0]-1, +p[1]) : new Date(s);
 }
-function libAvg(key) {
-  const vals = hooks.map(h => h[key] || 0).filter(v => v > 0);
-  return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+function daysSince(date) {
+  if (!date) return Infinity;
+  const ms = Date.now() - parseDate(date).getTime();
+  return Math.floor(ms / 86400000);
+}
+function uid() { return Date.now() * 1000 + Math.floor(Math.random()*1000); }
+
+function computeScore(h) {
+  const ret = h.retention3s || 0, follows = h.followers || 0, skip = h.skipRate || 0;
+  if (!ret && !follows) return h.score || 0;
+  let retScore = 0;
+  if (ret >= 60) retScore = 5;
+  else if (ret >= 55) retScore = 4;
+  else if (ret >= 50) retScore = 3;
+  else if (ret >= 45) retScore = 2;
+  else if (ret >= 40) retScore = 1;
+  else if (ret > 0)   retScore = 0.5;
+  let followScore = 0;
+  if (follows >= 20) followScore = 5;
+  else if (follows >= 10) followScore = 3.5;
+  else if (follows >= 5)  followScore = 2;
+  else if (follows >= 1)  followScore = 1;
+  let skipAdj = 0;
+  if (skip > 65 && skip > 0)      skipAdj = -0.5;
+  else if (skip > 0 && skip < 50) skipAdj = 0.5;
+  return Math.round(Math.min(10, Math.max(0, retScore + followScore + skipAdj)) * 10) / 10;
 }
 
-/* ── STATS ── */
+function scoreToLetter(s) {
+  if (s == null || isNaN(s)) return '—';
+  if (s >= 9.33) return 'A+';
+  if (s >= 8.67) return 'A';
+  if (s >= 8.00) return 'A-';
+  if (s >= 7.33) return 'B+';
+  if (s >= 6.67) return 'B';
+  if (s >= 6.00) return 'B-';
+  if (s >= 5.33) return 'C+';
+  if (s >= 4.67) return 'C';
+  if (s >= 4.00) return 'C-';
+  if (s >= 3.33) return 'D+';
+  if (s >= 2.67) return 'D';
+  if (s >= 2.00) return 'D-';
+  return 'F';
+}
+function gradeColor(letter) {
+  const l = (letter||' ')[0];
+  if (l === 'A') return 'var(--green)';
+  if (l === 'B') return 'var(--blue)';
+  if (l === 'C') return 'var(--orange)';
+  if (l === 'D') return 'var(--pink)';
+  if (l === 'F') return 'var(--red)';
+  return 'var(--text-muted)';
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   STORAGE
+══════════════════════════════════════════════════════════════════ */
+function loadAll() {
+  hooks = JSON.parse(localStorage.getItem(HOOKS_KEY) || '[]');
+  try { state = Object.assign(state, JSON.parse(localStorage.getItem(STATE_KEY) || '{}')); } catch(e) {}
+  if (!state.customArchetypes) state.customArchetypes = [];
+  if (!state.disabledBuiltins) state.disabledBuiltins = [];
+  if (!state.pinnedReels) state.pinnedReels = {};
+  if (!state.excludedReels) state.excludedReels = {};
+  // One-time cleanup: clear old skeletons key
+  if (localStorage.getItem(OLD_SKELETONS_KEY)) {
+    localStorage.removeItem(OLD_SKELETONS_KEY);
+  }
+}
+function saveState() { localStorage.setItem(STATE_KEY, JSON.stringify(state)); }
+
+function buildArchetypeWorkingSet() {
+  const disabled = new Set(state.disabledBuiltins);
+  const builtins = ARCHETYPES.filter(a => !disabled.has(a.id)).map(a => ({ ...a, _builtin: true }));
+  const customs = (state.customArchetypes || []).map(a => ({ ...a, _builtin: false }));
+  archetypes = [...builtins, ...customs];
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   CLASSIFY
+══════════════════════════════════════════════════════════════════ */
+function classifyAllReels() {
+  classifications = classifyAll(hooks, archetypes);
+}
+
+function buildDerived() {
+  // Build derived view: for each archetype, list of { reel, score (vs this archetype), subSectionId }
+  const byArch = new Map();
+  archetypes.forEach(a => byArch.set(a.id, []));
+
+  // From classifications
+  for (const reel of hooks) {
+    if (!reel.text) continue;
+    const c = classifications.get(reel.id);
+    if (!c) continue;
+    for (const entry of c.archetypes) {
+      // Skip if excluded from this archetype
+      const excl = state.excludedReels[entry.archetypeId] || [];
+      if (excl.includes(reel.id)) continue;
+      const arr = byArch.get(entry.archetypeId);
+      if (arr) arr.push({ reel, score: entry.score, subSectionId: entry.subSectionId });
+    }
+  }
+  // Add pinned reels (force inclusion)
+  for (const archetypeId of Object.keys(state.pinnedReels)) {
+    const arr = byArch.get(archetypeId);
+    if (!arr) continue;
+    const existingIds = new Set(arr.map(x => x.reel.id));
+    for (const rid of state.pinnedReels[archetypeId]) {
+      if (existingIds.has(rid)) continue;
+      const reel = hooks.find(r => r.id === rid);
+      if (!reel) continue;
+      // Score sub-sections for assignment
+      const a = archetypes.find(a => a.id === archetypeId);
+      let bestSub = 'general', bestScore = 0;
+      if (a && a.subSections && reel.text) {
+        for (const sub of a.subSections) {
+          const s = scoreAgainst(reel.text, sub);
+          if (s > bestScore) { bestScore = s; bestSub = sub.id; }
+        }
+        if (bestScore < 2) bestSub = 'general';
+      }
+      arr.push({ reel, score: 0, subSectionId: bestSub, pinned: true });
+    }
+  }
+
+  derived = archetypes.map(a => {
+    const members = byArch.get(a.id) || [];
+    return { archetype: a, members, stats: aggregateStats(members.map(m => m.reel)) };
+  });
+}
+
+function aggregateStats(reels) {
+  if (!reels.length) return { count: 0, avgScore: 0, avgFollowers: 0, avgViews: 0, avgRet: 0, avgEng: 0, lastUsed: '', hookPower: 0, followerPull: 0, engagement: 0, avgDensity: 0 };
+  const sum = (k) => reels.reduce((a,h) => a + (h[k]||0), 0);
+  const avgFollowers = sum('followers') / reels.length;
+  const avgViews = sum('views') / reels.length;
+  const avgRet = sum('retention3s') / reels.length;
+  const scores = reels.map(computeScore).filter(s => s > 0);
+  const avgScore = scores.length ? scores.reduce((a,b)=>a+b,0) / scores.length : 0;
+  const engs = reels.map(h => h.views ? ((h.likes||0)+(h.shares||0)+(h.comments||0))/h.views*100 : 0).filter(e => e > 0);
+  const avgEng = engs.length ? engs.reduce((a,b)=>a+b,0) / engs.length : 0;
+  let lastDate = '';
+  reels.forEach(h => { if (h.date && (!lastDate || parseDate(h.date) > parseDate(lastDate))) lastDate = h.date; });
+  // Avg density (only counting reels that are classified)
+  const densities = reels.map(r => { const c = classifications.get(r.id); return c ? c.density : 0; }).filter(d => d > 0);
+  const avgDensity = densities.length ? densities.reduce((a,b)=>a+b,0) / densities.length : 0;
+  return {
+    count: reels.length, avgScore, avgFollowers, avgViews, avgRet, avgEng, lastUsed: lastDate,
+    hookPower:    Math.min(10, avgRet / 6),
+    followerPull: Math.min(10, avgFollowers / 3),
+    engagement:   Math.min(10, avgEng / 1.5),
+    avgDensity,
+  };
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   STATS HEADER
+══════════════════════════════════════════════════════════════════ */
 function updateStats() {
-  document.getElementById('statTotal').textContent = hooks.length || '—';
-  const needed = hooks.filter(h => h.hookNeeded).length;
-  document.getElementById('statHooksNeeded').textContent = needed || '—';
-  const withRet = hooks.filter(h => h.retention3s);
-  document.getElementById('statAvgRet').textContent = withRet.length
-    ? (withRet.reduce((a,h) => a+h.retention3s, 0)/withRet.length).toFixed(1)+'%' : '—';
-  const outliers = hooks.filter(h => (h.followers||0) >= 10).length;
-  document.getElementById('statOutliers').textContent = outliers || '—';
+  const active = derived.filter(d => d.stats.count > 0);
+  document.getElementById('statArchetypes').textContent = active.length || '—';
+  const classified = new Set();
+  derived.forEach(d => d.members.forEach(m => classified.add(m.reel.id)));
+  document.getElementById('statClassified').textContent = classified.size || '—';
+  document.getElementById('statClassifiedSub').textContent = `of ${hooks.length} total`;
+  const ungrouped = hooks.filter(h => h.text && !classified.has(h.id));
+  document.getElementById('statUngrouped').textContent = ungrouped.length || '—';
+  const withScore = active.filter(d => d.stats.avgScore > 0);
+  const avg = withScore.length ? withScore.reduce((a,d) => a + d.stats.avgScore, 0) / withScore.length : 0;
+  const letter = avg ? scoreToLetter(avg) : '—';
+  const el = document.getElementById('statAvgGrade');
+  el.textContent = letter;
+  el.style.color = avg ? gradeColor(letter) : 'var(--gold)';
+  document.getElementById('statAvgGradeSub').textContent = avg ? `(${avg.toFixed(1)} / 10)` : 'across all concepts';
 }
 
-/* ── SELECTS ── */
-function populateFilterSelects() {
-  const catEl = document.getElementById('filterCat'), prevCat = catEl.value;
-  const typEl = document.getElementById('filterType'), prevTyp = typEl.value;
-  catEl.innerHTML  = '<option value="">All Categories</option>' +
-    hookCategories.map(c => `<option${prevCat===c?' selected':''}>${escHtml(c)}</option>`).join('');
-  typEl.innerHTML  = '<option value="">All Hook Types</option>' +
-    hookTypes.map(t => `<option${prevTyp===t?' selected':''}>${escHtml(t)}</option>`).join('');
-}
-function populateModalSelects(hook) {
-  document.getElementById('fType').innerHTML = '<option value="">— None —</option>' +
-    hookTypes.map(t => `<option>${escHtml(t)}</option>`).join('');
-  document.getElementById('fCat').innerHTML  =
-    hookCategories.map(c => `<option>${escHtml(c)}</option>`).join('');
-  if (hook) { document.getElementById('fType').value = hook.type||''; document.getElementById('fCat').value = hook.category||''; }
-}
-
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════
    FILTER + SORT
-══════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════════ */
 function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const catF   = document.getElementById('filterCat').value;
-  const typeF  = document.getElementById('filterType').value;
   const f = advFilters;
-  return hooks.filter(h => {
-    if (filterHookNeededOnly && !h.hookNeeded) return false;
-    const matchS = !search ||
-      (h.reelName||'').toLowerCase().includes(search) ||
-      (h.text||'').toLowerCase().includes(search) ||
-      (h.notes||'').toLowerCase().includes(search) ||
-      (h.category||'').toLowerCase().includes(search);
-    if (!matchS) return false;
-    if (catF && h.category !== catF) return false;
-    if (typeF && h.type !== typeF) return false;
-    // Advanced numeric filters
-    const follows = h.followers || 0, views = h.views || 0;
-    const ret = h.retention3s || 0, skip = h.skipRate || 0;
-    const score = computeScore(h);
-    if (f.followsMin !== '' && follows < +f.followsMin) return false;
-    if (f.followsMax !== '' && follows > +f.followsMax) return false;
-    if (f.viewsMin   !== '' && views   < +f.viewsMin)   return false;
-    if (f.viewsMax   !== '' && views   > +f.viewsMax)   return false;
-    if (f.retMin     !== '' && ret     < +f.retMin)     return false;
-    if (f.retMax     !== '' && ret     > +f.retMax)     return false;
-    if (f.skipMin    !== '' && skip    < +f.skipMin)    return false;
-    if (f.skipMax    !== '' && skip    > +f.skipMax)    return false;
-    if (f.scoreMin   !== '' && score   < +f.scoreMin)   return false;
-    if (f.scoreMax   !== '' && score   > +f.scoreMax)   return false;
-    if (f.hasIg && !h.instagramUrl) return false;
-    if (f.outlier) {
-      const o = getOutlier(h);
-      if (f.outlier === 'outlier'      && o !== 'outlier')      return false;
-      if (f.outlier === 'near-outlier' && o !== 'near-outlier') return false;
-      if (f.outlier === 'any-outlier'  && !o)                   return false;
-      if (f.outlier === 'none'         && o)                    return false;
+  return derived.filter(d => {
+    const a = d.archetype, st = d.stats;
+    if (search) {
+      const hay = ((a.name||'') + ' ' + (a.description||'')).toLowerCase();
+      if (!hay.includes(search)) return false;
     }
-    if (f.dateFrom) {
-      const hd = parseDate(h.date), fd = new Date(f.dateFrom + 'T00:00:00');
-      if (!isNaN(fd) && hd < fd) return false;
+    if (f.minMatches !== '' && st.count < +f.minMatches) return false;
+    if (f.followsMin !== '' && st.avgFollowers < +f.followsMin) return false;
+    if (f.followsMax !== '' && st.avgFollowers > +f.followsMax) return false;
+    if (f.viewsMin   !== '' && st.avgViews     < +f.viewsMin)   return false;
+    if (f.viewsMax   !== '' && st.avgViews     > +f.viewsMax)   return false;
+    if (f.retMin     !== '' && st.avgRet       < +f.retMin)     return false;
+    if (f.retMax     !== '' && st.avgRet       > +f.retMax)     return false;
+    if (f.scoreMin   !== '' && st.avgScore     < +f.scoreMin)   return false;
+    if (f.scoreMax   !== '' && st.avgScore     > +f.scoreMax)   return false;
+    if (f.source === 'builtin' && !a._builtin) return false;
+    if (f.source === 'custom'  && a._builtin)  return false;
+    if (f.dateFrom && st.lastUsed) {
+      const ld = parseDate(st.lastUsed), fd = new Date(f.dateFrom + 'T00:00:00');
+      if (!isNaN(fd) && ld < fd) return false;
     }
-    if (f.dateTo) {
-      const hd = parseDate(h.date), td = new Date(f.dateTo + 'T23:59:59');
-      if (!isNaN(td) && hd > td) return false;
+    if (f.dateTo && st.lastUsed) {
+      const ld = parseDate(st.lastUsed), td = new Date(f.dateTo + 'T23:59:59');
+      if (!isNaN(td) && ld > td) return false;
     }
     return true;
   });
@@ -927,16 +796,13 @@ function getSorted(list) {
   return [...list].sort((a, b) => {
     let va, vb;
     switch (sortKey) {
-      case 'date':     va = parseDate(a.date); vb = parseDate(b.date); break;
-      case 'score':    va = computeScore(a);   vb = computeScore(b);   break;
-      case 'follows':  va = a.followers||0;    vb = b.followers||0;    break;
-      case 'views':    va = a.views||0;        vb = b.views||0;        break;
-      case 'ret3s':    va = a.retention3s||0;  vb = b.retention3s||0;  break;
-      case 'skip':     va = a.skipRate||0;     vb = b.skipRate||0;     break;
-      case 'likes':    va = a.likes||0;        vb = b.likes||0;        break;
-      case 'shares':   va = a.shares||0;       vb = b.shares||0;       break;
-      case 'name':     va = (a.reelName||'').toLowerCase(); vb = (b.reelName||'').toLowerCase(); break;
-      case 'category': va = (a.category||'').toLowerCase(); vb = (b.category||'').toLowerCase(); break;
+      case 'grade':       va = a.stats.avgScore;     vb = b.stats.avgScore;     break;
+      case 'matches':     va = a.stats.count;        vb = b.stats.count;        break;
+      case 'lastused':    va = parseDate(a.stats.lastUsed); vb = parseDate(b.stats.lastUsed); break;
+      case 'avgfollows':  va = a.stats.avgFollowers; vb = b.stats.avgFollowers; break;
+      case 'avgviews':    va = a.stats.avgViews;     vb = b.stats.avgViews;     break;
+      case 'density':     va = a.stats.avgDensity;   vb = b.stats.avgDensity;   break;
+      case 'name':        va = (a.archetype.name||'').toLowerCase(); vb = (b.archetype.name||'').toLowerCase(); break;
       default: return 0;
     }
     if (va < vb) return sortDir === 'asc' ? -1 : 1;
@@ -952,9 +818,7 @@ function handleSortChange() {
   if (dir === 'asc' || dir === 'desc') {
     sortDir = dir;
     sortKey = parts.slice(0, -1).join('-');
-  } else {
-    sortKey = val;
-  }
+  } else { sortKey = val; }
   document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
   applyFilters();
 }
@@ -963,13 +827,7 @@ function toggleSortDir() {
   document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
   applyFilters();
 }
-function toggleHookNeeded() {
-  filterHookNeededOnly = !filterHookNeededOnly;
-  document.getElementById('btnHookNeeded').classList.toggle('active-red', filterHookNeededOnly);
-  applyFilters();
-}
 
-/* ── ADVANCED FILTER PANEL ── */
 function toggleAdvFilters() {
   advFiltersOpen = !advFiltersOpen;
   document.getElementById('advFiltersPanel').classList.toggle('open', advFiltersOpen);
@@ -977,169 +835,122 @@ function toggleAdvFilters() {
 }
 function countActiveFilters() {
   const f = advFilters; let n = 0;
-  if (f.followsMin !== '') n++; if (f.followsMax !== '') n++;
-  if (f.viewsMin   !== '') n++; if (f.viewsMax   !== '') n++;
-  if (f.retMin     !== '') n++; if (f.retMax     !== '') n++;
-  if (f.skipMin    !== '') n++; if (f.skipMax    !== '') n++;
-  if (f.scoreMin   !== '') n++; if (f.scoreMax   !== '') n++;
-  if (f.dateFrom)  n++; if (f.dateTo)   n++;
-  if (f.outlier)   n++; if (f.hasIg)   n++;
+  ['minMatches','followsMin','followsMax','viewsMin','viewsMax','retMin','retMax','scoreMin','scoreMax','dateFrom','dateTo','source'].forEach(k => { if (f[k]) n++; });
   return n;
 }
 function updateFilterBadge() {
   const n = countActiveFilters();
-  const badge = document.getElementById('filterBadge');
-  badge.style.display = n > 0 ? 'inline-flex' : 'none';
-  badge.textContent = n;
-  const cnt = document.getElementById('advActiveCount');
-  const num = document.getElementById('advActiveNum');
-  if (cnt) { cnt.style.display = n > 0 ? 'inline' : 'none'; if (num) num.textContent = n; }
+  const b = document.getElementById('filterBadge');
+  b.style.display = n > 0 ? 'inline-flex' : 'none'; b.textContent = n;
+  const cnt = document.getElementById('advActiveCount'), num = document.getElementById('advActiveNum');
+  cnt.style.display = n > 0 ? 'inline' : 'none'; num.textContent = n;
 }
 function readAdvFilters() {
-  const g = id => document.getElementById(id);
-  advFilters.followsMin = g('advFollowsMin').value;
-  advFilters.followsMax = g('advFollowsMax').value;
-  advFilters.viewsMin   = g('advViewsMin').value;
-  advFilters.viewsMax   = g('advViewsMax').value;
-  advFilters.retMin     = g('advRetMin').value;
-  advFilters.retMax     = g('advRetMax').value;
-  advFilters.skipMin    = g('advSkipMin').value;
-  advFilters.skipMax    = g('advSkipMax').value;
-  advFilters.scoreMin   = g('advScoreMin').value;
-  advFilters.scoreMax   = g('advScoreMax').value;
-  advFilters.dateFrom   = g('advDateFrom').value;
-  advFilters.dateTo     = g('advDateTo').value;
-  advFilters.outlier    = g('advOutlier').value;
-  advFilters.hasIg      = g('advHasIg').checked;
+  const g = id => document.getElementById(id).value;
+  advFilters.minMatches = g('advMinMatches');
+  advFilters.followsMin = g('advFollowsMin');
+  advFilters.followsMax = g('advFollowsMax');
+  advFilters.viewsMin = g('advViewsMin');
+  advFilters.viewsMax = g('advViewsMax');
+  advFilters.retMin = g('advRetMin');
+  advFilters.retMax = g('advRetMax');
+  advFilters.scoreMin = g('advScoreMin');
+  advFilters.scoreMax = g('advScoreMax');
+  advFilters.dateFrom = g('advDateFrom');
+  advFilters.dateTo = g('advDateTo');
+  advFilters.source = g('advSource');
   updateFilterBadge();
   applyFilters();
 }
 function clearAdvFilters() {
-  advFilters = { followsMin:'', followsMax:'', viewsMin:'', viewsMax:'', retMin:'', retMax:'', skipMin:'', skipMax:'', scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'', outlier:'', hasIg:false };
-  ['advFollowsMin','advFollowsMax','advViewsMin','advViewsMax','advRetMin','advRetMax','advSkipMin','advSkipMax','advScoreMin','advScoreMax','advDateFrom','advDateTo'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-  const ov = document.getElementById('advOutlier'); if(ov) ov.value='';
-  const ig = document.getElementById('advHasIg'); if(ig) ig.checked=false;
-  updateFilterBadge();
-  applyFilters();
+  advFilters = { minMatches:'', followsMin:'', followsMax:'', viewsMin:'', viewsMax:'', retMin:'', retMax:'', scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'', source:'' };
+  ['advMinMatches','advFollowsMin','advFollowsMax','advViewsMin','advViewsMax','advRetMin','advRetMax','advScoreMin','advScoreMax','advDateFrom','advDateTo'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const s = document.getElementById('advSource'); if (s) s.value = '';
+  updateFilterBadge(); applyFilters();
 }
 
-/* ══════════════════════════════════════════════
-   RENDER
-══════════════════════════════════════════════ */
-const ICONS = {
-  copy:  `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
-  edit:  `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
-  del:   `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`,
-  check: `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
-};
+/* ══════════════════════════════════════════════════════════════════
+   RENDER — ARCHETYPE CARDS
+══════════════════════════════════════════════════════════════════ */
+function archetypeColor(a) { return a.color || 'var(--orange)'; }
 
-function actionBtns(id) {
-  return `<div class="hook-actions" onclick="event.stopPropagation()">
-    <button class="action-btn copy" onclick="copyHook(${id},this)" title="Copy hook">${ICONS.copy}</button>
-    <button class="action-btn" onclick="openModal(hooks.find(h=>h.id===${id}))" title="Edit">${ICONS.edit}</button>
-    <button class="action-btn delete" onclick="requestDelete(${id})" title="Delete">${ICONS.del}</button>
+function subSectionMixBarHtml(d) {
+  const a = d.archetype;
+  if (!a.subSections || !d.members.length) return '';
+  const counts = {};
+  d.members.forEach(m => { counts[m.subSectionId] = (counts[m.subSectionId]||0) + 1; });
+  const subIds = a.subSections.map(s => s.id).concat(['general']);
+  const total = d.members.length;
+  const palette = ['var(--blue)','var(--orange)','var(--green)','var(--purple)','var(--pink)','var(--gold)','var(--text-muted)'];
+  const segments = subIds.map((sid, idx) => {
+    const c = counts[sid] || 0;
+    if (!c) return '';
+    const pct = (c / total) * 100;
+    const sub = a.subSections.find(s => s.id === sid);
+    const name = sub ? sub.name : 'General';
+    return `<div class="subsection-mix-seg" style="width:${pct}%;background:${palette[idx % palette.length]};" title="${escHtml(name)}: ${c} reel${c!==1?'s':''}"></div>`;
+  }).join('');
+  // Legend (only sub-sections that have ≥1)
+  const legend = subIds.filter(sid => counts[sid]).slice(0, 4).map((sid, idx) => {
+    const sub = a.subSections.find(s => s.id === sid);
+    const name = sub ? sub.name : 'General';
+    const realIdx = subIds.indexOf(sid);
+    return `<span class="subsection-mix-legend-item"><span class="subsection-mix-legend-dot" style="background:${palette[realIdx % palette.length]};"></span>${escHtml(name)} <strong style="color:var(--text-muted);">(${counts[sid]})</strong></span>`;
+  }).join('');
+  return `<div class="subsection-mix">${segments}</div><div class="subsection-mix-legend">${legend}</div>`;
+}
+
+function archetypeCardHtml(d) {
+  const a = d.archetype, st = d.stats;
+  const letter = scoreToLetter(st.avgScore);
+  const color = gradeColor(letter);
+  const lastUsedTxt = st.lastUsed ? `${daysSince(st.lastUsed)}d ago` : '—';
+  const matchColor = archetypeColor(a);
+  return `<div class="archetype-card ${a._builtin ? '' : 'custom'}" style="border-left-color:${matchColor};" onclick="openDetail('${a.id}')">
+    <div class="archetype-card-top">
+      <div class="archetype-card-title-wrap">
+        <div class="archetype-card-name"><span class="archetype-card-icon">${escHtml(a.icon||'•')}</span>${escHtml(a.name)}</div>
+        <div class="archetype-card-desc">${escHtml(a.description||'')}</div>
+      </div>
+      <div class="archetype-grade">
+        <div class="archetype-grade-letter" style="color:${color}">${letter}</div>
+        <div class="archetype-grade-num">${st.avgScore ? st.avgScore.toFixed(1)+'/10' : 'no data'}</div>
+      </div>
+    </div>
+    ${subSectionMixBarHtml(d)}
+    <div class="archetype-card-meta">
+      <span class="archetype-match-count" style="background:${matchColor}1f;color:${matchColor};">${st.count} reel${st.count!==1?'s':''}</span>
+      <div class="archetype-meta-item"><div class="archetype-meta-lbl">Avg Follows</div><div class="archetype-meta-val orange">${fmt(Math.round(st.avgFollowers))}</div></div>
+      <div class="archetype-meta-item"><div class="archetype-meta-lbl">Avg Views</div><div class="archetype-meta-val">${fmt(Math.round(st.avgViews))}</div></div>
+      <div class="archetype-meta-item"><div class="archetype-meta-lbl">Density</div><div class="archetype-meta-val blue">${st.avgDensity ? st.avgDensity.toFixed(1) : '—'}</div></div>
+      <div class="archetype-meta-item"><div class="archetype-meta-lbl">Last Used</div><div class="archetype-meta-val">${lastUsedTxt}</div></div>
+      <div class="archetype-actions" onclick="event.stopPropagation()">
+        ${!a._builtin ? `<button class="action-btn" onclick="openEdit('${a.id}')" title="Edit"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>` : ''}
+        ${!a._builtin ? `<button class="action-btn delete" onclick="requestDeleteArchetype('${a.id}')" title="Delete"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>` : ''}
+      </div>
+    </div>
   </div>`;
-}
-
-function outlierBadgeHtml(h) {
-  const o = getOutlier(h);
-  if (o === 'outlier')      return `<span class="outlier-badge outlier-star">⭐ Outlier</span>`;
-  if (o === 'near-outlier') return `<span class="outlier-badge outlier-near">~ Near Outlier</span>`;
-  return '';
-}
-
-function scoreBadgeHtml(score) {
-  const si = scoreInfo(score);
-  return score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>${si.label}</span>` : '';
-}
-
-function typeBadgeHtml(t) { return t ? `<span class="type-badge ${getTypeClass(t)}">${escHtml(t)}</span>` : ''; }
-function catBadgeHtml(c)  { return c ? `<span class="cat-badge">${escHtml(c)}</span>` : ''; }
-function dateBadgeHtml(d) { return d ? `<span class="date-badge">${escHtml(d)}</span>` : ''; }
-function reelLinkHtml(h)  {
-  const name = escHtml(h.reelName || h.text || 'Untitled');
-  return h.instagramUrl
-    ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${name} ↗</a>`
-    : name;
-}
-
-function renderGrid(filtered) {
-  if (!filtered.length) return emptyHtml();
-  return `<div class="hooks-grid">${filtered.map(h => {
-    const score = computeScore(h);
-    const si    = scoreInfo(score);
-    const sel   = selectedIds.has(h.id);
-    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
-    return `<div class="hook-card${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="card-${h.id}" ${clickHandler}>
-      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
-      ${selectMode ? `<div class="card-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
-      <div class="hook-card-top">
-        ${catBadgeHtml(h.category)} ${typeBadgeHtml(h.type)} ${dateBadgeHtml(h.date)}
-        ${outlierBadgeHtml(h)}
-      </div>
-      <div class="reel-name">${reelLinkHtml(h)}</div>
-      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '')}
-      <div class="hook-card-metrics">
-        <div class="metric-item"><span class="metric-label">Follows</span><span class="metric-value orange">${fmt(h.followers)}</span></div>
-        <div class="metric-item"><span class="metric-label">Views</span><span class="metric-value">${fmt(h.views)}</span></div>
-        <div class="metric-item"><span class="metric-label">3-Sec Ret</span><span class="metric-value blue">${fmtPct(h.retention3s)}</span></div>
-        <div class="metric-item"><span class="metric-label">Skip Rate</span><span class="metric-value pink">${fmtPct(h.skipRate)}</span></div>
-      </div>
-      <div class="hook-card-secondary">
-        <div class="sec-item"><span class="sec-label">Likes</span><span class="sec-value">${fmt(h.likes)}</span></div>
-        <div class="sec-item"><span class="sec-label">Shares</span><span class="sec-value">${fmt(h.shares)}</span></div>
-        <div class="sec-item"><span class="sec-label">Comments</span><span class="sec-value">${fmt(h.comments)}</span></div>
-        <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length||'—')}</span></div>
-      </div>
-      <div class="hook-card-footer">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          ${score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>&nbsp;${si.label}</span>` : ''}
-          ${h.instagramUrl ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
-        </div>
-        ${!selectMode ? actionBtns(h.id) : ''}
-      </div>
-    </div>`;
-  }).join('')}</div>`;
-}
-
-function renderList(filtered) {
-  if (!filtered.length) return emptyHtml();
-  return `<div class="hooks-list">${filtered.map(h => {
-    const score = computeScore(h);
-    const si    = scoreInfo(score);
-    const sel   = selectedIds.has(h.id);
-    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
-    return `<div class="hook-list-item${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="listitem-${h.id}" style="position:relative;" ${clickHandler}>
-      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
-      ${selectMode ? `<div class="list-checkbox-wrap" style="position:relative;z-index:10;"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
-      <div>
-        <div class="hook-list-reel">${reelLinkHtml(h)} ${outlierBadgeHtml(h)}</div>
-        ${h.hookNeeded ? '<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0,80))}${h.text.length>80?'…':''}"</div>` : '')}
-        <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}${dateBadgeHtml(h.date)}</div>
-      </div>
-      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span><span class="hook-list-stat-lbl">Follows</span></div>
-      <div class="hook-list-stat"><span class="hook-list-stat-val">${fmt(h.views)}</span><span class="hook-list-stat-lbl">Views</span></div>
-      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span><span class="hook-list-stat-lbl">3-Sec Ret</span></div>
-      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:${si.color};">${fmtScore(score)}</span><span class="hook-list-stat-lbl">Score</span></div>
-      ${h.instagramUrl && !selectMode ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
-      ${!selectMode ? actionBtns(h.id) : ''}
-    </div>`;
-  }).join('')}</div>`;
 }
 
 function emptyHtml() {
-  return `<div class="empty-state">
-    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
-    <h3>No reels found</h3>
-    <p>Import a CSV from your Analytics Sheet, or add a reel manually.</p>
-  </div>`;
+  if (!hooks.length) {
+    return `<div class="empty-state">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+      <h3>No reels in your database yet</h3>
+      <p>Add reels (with their hook text) in the <a href="content-database.html" style="color:var(--orange);">Content Database</a>, then come back to see them classified into archetypes.</p>
+    </div>`;
+  }
+  return `<div class="empty-state"><h3>No archetypes match your filters</h3><p>Try clearing filters or widening the score range.</p></div>`;
 }
 
 function applyFilters() {
   const filtered = getSorted(getFiltered());
-  document.getElementById('resultsCount').textContent = `${filtered.length} reel${filtered.length!==1?'s':''}`;
-  document.getElementById('hooksContainer').innerHTML =
-    currentView === 'grid' ? renderGrid(filtered) : renderList(filtered);
+  document.getElementById('resultsCount').textContent = `${filtered.length} archetype${filtered.length!==1?'s':''}`;
+  const c = document.getElementById('archetypesContainer');
+  if (!filtered.length) { c.innerHTML = emptyHtml(); return; }
+  c.innerHTML = currentView === 'grid'
+    ? `<div class="archetypes-grid">${filtered.map(archetypeCardHtml).join('')}</div>`
+    : `<div class="archetypes-list">${filtered.map(archetypeCardHtml).join('')}</div>`;
 }
 function setView(v) {
   currentView = v;
@@ -1148,578 +959,580 @@ function setView(v) {
   applyFilters();
 }
 
-/* ══════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════════════════════ */
+function renderSidebar() {
+  const scored = derived.filter(d => d.stats.count > 0 && d.stats.avgScore > 0)
+                        .sort((a,b) => b.stats.avgScore - a.stats.avgScore).slice(0, 5);
+  const tp = document.getElementById('topPerformers');
+  if (!scored.length) tp.innerHTML = '<div class="sidebar-empty">No scored archetypes yet</div>';
+  else tp.innerHTML = scored.map((d, i) => {
+    const letter = scoreToLetter(d.stats.avgScore);
+    const color = gradeColor(letter);
+    return `<div class="sidebar-row" onclick="openDetail('${d.archetype.id}')">
+      <div class="sidebar-row-rank ${i===0?'':i===1?'rank-2':'rank-3'}">${i+1}</div>
+      <div class="sidebar-row-body">
+        <div class="sidebar-row-name">${escHtml(d.archetype.name)}</div>
+        <div class="sidebar-row-meta"><span class="grade" style="color:${color}">${letter}</span><span>${d.stats.count} reel${d.stats.count!==1?'s':''}</span><span>${fmt(Math.round(d.stats.avgFollowers))} follows</span></div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const gaps = derived.filter(d => d.stats.count > 0 && d.stats.avgScore >= 6 && d.stats.lastUsed && daysSince(d.stats.lastUsed) >= 21)
+                       .sort((a,b) => b.stats.avgScore - a.stats.avgScore).slice(0, 5);
+  const gf = document.getElementById('gapFinder');
+  if (!gaps.length) gf.innerHTML = '<div class="sidebar-empty">No stale high-performers — you\'re on top of things!</div>';
+  else gf.innerHTML = gaps.map(d => {
+    const letter = scoreToLetter(d.stats.avgScore);
+    const color = gradeColor(letter);
+    return `<div class="sidebar-row" onclick="openDetail('${d.archetype.id}')">
+      <div class="sidebar-row-body">
+        <div class="sidebar-row-name">${escHtml(d.archetype.name)}</div>
+        <div class="sidebar-row-meta"><span class="grade" style="color:${color}">${letter}</span><span>${daysSince(d.stats.lastUsed)}d ago</span><span>${d.stats.count} reel${d.stats.count!==1?'s':''}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   UNGROUPED TRAY
+══════════════════════════════════════════════════════════════════ */
+function renderUngrouped() {
+  const classified = new Set();
+  derived.forEach(d => d.members.forEach(m => classified.add(m.reel.id)));
+  const ungrouped = hooks.filter(h => h.text && !classified.has(h.id))
+                          .sort((a,b) => computeScore(b) - computeScore(a));
+  document.getElementById('ungroupedCount').textContent = ungrouped.length;
+  const list = document.getElementById('ungroupedList');
+  if (!ungrouped.length) {
+    list.innerHTML = '<div class="sidebar-empty">All hooks are classified into at least one archetype.</div>';
+    return;
+  }
+  list.innerHTML = ungrouped.slice(0, 80).map(h => {
+    const score = computeScore(h);
+    const color = score ? gradeColor(scoreToLetter(score)) : 'var(--text-dim)';
+    const c = classifications.get(h.id);
+    const near = c && c.nearMiss && c.nearMiss.score > 0
+      ? archetypes.find(a => a.id === c.nearMiss.archetypeId)
+      : null;
+    const nearTxt = near ? `<div class="ungrouped-text-nearmiss">Near miss: <strong style="color:${near.color};">${escHtml(near.name)}</strong> (score ${c.nearMiss.score})</div>` : '';
+    const archOptions = archetypes.map(a => `<option value="${escHtml(a.id)}">${escHtml(a.name)}</option>`).join('');
+    return `<div class="ungrouped-item">
+      <div>
+        <div class="ungrouped-text">"${escHtml(h.text)}"</div>
+        <div class="ungrouped-text-reel">${escHtml(h.reelName || 'Untitled')}${h.date?' · '+escHtml(h.date):''}</div>
+        ${nearTxt}
+      </div>
+      <div class="ungrouped-score" style="color:${color}">${score ? score.toFixed(1) : '—'}</div>
+      <button class="btn-small btn-small-primary" onclick="openNewArchetypeFromText('${escapeForOnclick(h.text)}')">+ Archetype</button>
+      <select class="btn-small" style="padding:5px 8px;background:var(--bg);color:var(--text-muted);" onchange="pinReelToArchetype(${h.id}, this.value); this.value='';">
+        <option value="">Assign to…</option>
+        ${archOptions}
+      </select>
+    </div>`;
+  }).join('') + (ungrouped.length > 80 ? `<div class="sidebar-empty">+ ${ungrouped.length - 80} more</div>` : '');
+}
+
+function escapeForOnclick(s) {
+  return String(s||'').replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'&quot;').replace(/\n/g,' ');
+}
+
+function toggleUngrouped() { document.getElementById('ungroupedTray').classList.toggle('open'); }
+
+function pinReelToArchetype(reelId, archetypeId) {
+  if (!archetypeId) return;
+  if (!state.pinnedReels[archetypeId]) state.pinnedReels[archetypeId] = [];
+  if (!state.pinnedReels[archetypeId].includes(reelId)) state.pinnedReels[archetypeId].push(reelId);
+  // Remove from excluded if present
+  if (state.excludedReels[archetypeId]) {
+    state.excludedReels[archetypeId] = state.excludedReels[archetypeId].filter(id => id !== reelId);
+  }
+  saveState();
+  buildDerived(); updateStats(); applyFilters(); renderSidebar(); renderUngrouped();
+  const a = archetypes.find(a => a.id === archetypeId);
+  showToast({ title: 'Pinned', msg: `Reel locked to <em>${escHtml(a ? a.name : archetypeId)}</em>.` });
+}
+
+/* ══════════════════════════════════════════════════════════════════
    DETAIL MODAL
-══════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════════ */
 function openDetail(id) {
-  if (selectMode) { toggleSelect(id); return; }
-  const h = hooks.find(x => x.id === id);
-  if (!h) return;
+  const d = derived.find(x => x.archetype.id === id);
+  if (!d) return;
   currentDetailId = id;
-
-  const score  = computeScore(h);
-  const si     = scoreInfo(score);
-  const ri     = retInfo(h.retention3s);
-  const outlier = getOutlier(h);
-  const avgRet  = libAvg('retention3s');
-  const avgSkip = libAvg('skipRate');
-  const avgFollows = libAvg('followers');
-
-  // Header
-  document.getElementById('detailTitle').textContent = h.reelName || h.text || 'Untitled';
-  document.getElementById('detailMeta').innerHTML =
-    catBadgeHtml(h.category) + typeBadgeHtml(h.type) + dateBadgeHtml(h.date) +
-    (outlier==='outlier' ? '<span class="outlier-badge outlier-star">⭐ Outlier</span>' :
-     outlier==='near-outlier' ? '<span class="outlier-badge outlier-near">~ Near Outlier</span>' : '');
-  // Instagram button in header
-  const igBtn = document.getElementById('detailIgBtn');
-  if (h.instagramUrl) { igBtn.href = h.instagramUrl; igBtn.style.display = 'inline-flex'; }
-  else { igBtn.style.display = 'none'; }
-
-  // Retention score breakdown for display
-  const ret = h.retention3s||0, follows = h.followers||0, skip = h.skipRate||0;
-  let retPts = 0;
-  if(ret>=60)retPts=5; else if(ret>=55)retPts=4; else if(ret>=50)retPts=3; else if(ret>=45)retPts=2; else if(ret>=40)retPts=1; else if(ret>0)retPts=0.5;
-  let followPts = 0;
-  if(follows>=20)followPts=5; else if(follows>=10)followPts=3.5; else if(follows>=5)followPts=2; else if(follows>=1)followPts=1;
-  let skipAdj = skip>65&&skip>0?-0.5:skip>0&&skip<50?0.5:0;
-
-  // Body HTML
-  document.getElementById('detailBody').innerHTML = `
-    <div class="detail-score-row">
-      <div class="detail-score-main">
-        <div class="detail-score-num" style="color:${si.color}">${fmtScore(score)}</div>
-        <div class="detail-score-label" style="color:${si.color}">${si.label}</div>
-      </div>
-      <div class="detail-score-gauge-wrap">
-        <div class="detail-score-gauge-label">Performance Score</div>
-        <div class="detail-score-gauge">
-          <div class="detail-score-gauge-fill" style="width:${score*10}%;background:${si.color}"></div>
-        </div>
-        <div class="detail-score-breakdown">
-          <span>Retention: +${retPts}</span>
-          <span>Follows: +${followPts}</span>
-          ${skipAdj ? `<span>Skip adj: ${skipAdj>0?'+':''}${skipAdj}</span>` : ''}
-        </div>
-      </div>
-    </div>
-
-    <div class="detail-metrics-grid">
-      <div class="detail-metric"><div class="detail-metric-lbl">Followers Gained</div><div class="detail-metric-val" style="color:var(--orange)">${fmt(h.followers)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Views</div><div class="detail-metric-val">${fmt(h.views)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">3-Sec Retention</div><div class="detail-metric-val" style="color:${ri.color}">${fmtPct(h.retention3s)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Skip Rate</div><div class="detail-metric-val" style="color:var(--pink)">${fmtPct(h.skipRate)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Likes</div><div class="detail-metric-val">${fmt(h.likes)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Shares</div><div class="detail-metric-val">${fmt(h.shares)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Comments</div><div class="detail-metric-val">${fmt(h.comments)}</div></div>
-      <div class="detail-metric"><div class="detail-metric-lbl">Length</div><div class="detail-metric-val" style="font-size:18px">${escHtml(h.length||'—')}</div></div>
-    </div>
-
-    <div class="detail-section-title">Retention vs Skip Rate</div>
-    <div class="detail-bars">
-      <div class="detail-bar-row">
-        <div class="detail-bar-header">
-          <span class="detail-bar-name">3-Sec Retention</span>
-          <span class="detail-bar-val" style="color:${ri.color}">${fmtPct(h.retention3s)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgRet.toFixed(1)}%)</small></span>
-        </div>
-        <div class="detail-bar-track">
-          <div class="detail-bar-fill" style="width:${Math.min(h.retention3s||0,100)}%;background:${ri.color}"></div>
-          <div class="detail-bar-bench" style="left:${Math.min(avgRet,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
-          <div class="detail-bar-bench" style="left:50%;background:rgba(255,215,0,0.5);" title="50% benchmark"></div>
-        </div>
-      </div>
-      <div class="detail-bar-row" style="margin-top:14px;">
-        <div class="detail-bar-header">
-          <span class="detail-bar-name">Skip Rate <small style="color:var(--text-dim);font-size:10px;">(lower = better)</small></span>
-          <span class="detail-bar-val" style="color:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}">${fmtPct(h.skipRate)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgSkip.toFixed(1)}%)</small></span>
-        </div>
-        <div class="detail-bar-track">
-          <div class="detail-bar-fill" style="width:${Math.min(h.skipRate||0,100)}%;background:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}"></div>
-          <div class="detail-bar-bench" style="left:${Math.min(avgSkip,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="detail-section-title">vs Library Average</div>
-    <div class="detail-chart-wrap"><canvas id="detailChart" height="140"></canvas></div>
-
-    ${h.text || h.hookNeeded ? `
-    <div class="detail-section-title">Hook</div>
-    <div class="detail-hook-box">
-      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed — no hook text recorded</span>' : `"${escHtml(h.text)}"` }
-    </div>` : ''}
-
-    ${h.instagramUrl ? `
-    <div class="detail-section-title">Instagram Reel</div>
-    <a class="ig-card-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">
-      <div class="ig-card-icon">
-        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-      </div>
-      <div class="ig-card-text">
-        <div class="ig-card-label">View on Instagram</div>
-        <div class="ig-card-url">${escHtml(h.instagramUrl)}</div>
-      </div>
-      <div class="ig-card-arrow">↗</div>
-    </a>` : ''}
-
-    <div class="detail-section-title">Secondary Data</div>
-    <div class="detail-secondary">
-      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT%</div><div class="detail-sec-val">${fmtPct(h.avgWtPct)}</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT Sec</div><div class="detail-sec-val">${escHtml(h.avgWtSec||'—')}</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Follows ?x</div><div class="detail-sec-val">${h.followsMultiplier||0}x</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Views ?x</div><div class="detail-sec-val">${h.viewsMultiplier||0}x</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Likes ?x</div><div class="detail-sec-val">${h.likesMultiplier||0}x</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Shares ?x</div><div class="detail-sec-val">${h.sharesMultiplier||0}x</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">IG Link</div><div class="detail-sec-val">${h.instagramUrl ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" style="color:var(--blue);">View ↗</a>` : '—'}</div></div>
-      <div class="detail-sec"><div class="detail-sec-lbl">Hook Type</div><div class="detail-sec-val">${escHtml(h.type||'—')}</div></div>
-    </div>
-
-    ${h.notes ? `<div class="detail-section-title">Notes</div><div class="detail-notes">${escHtml(h.notes)}</div>` : ''}
-  `;
-
+  currentSubSectionId = 'all';
+  showingPatterns = false;
+  document.getElementById('detailName').innerHTML = `<span style="margin-right:6px;">${escHtml(d.archetype.icon||'')}</span>${escHtml(d.archetype.name)}${d.archetype._builtin ? '' : ' <span style="font-size:11px;color:var(--purple);font-family:Oswald,sans-serif;letter-spacing:1px;text-transform:uppercase;">[custom]</span>'}`;
+  document.getElementById('detailDesc').textContent = d.archetype.description || '';
+  document.getElementById('detailEditBtn').style.display = d.archetype._builtin ? 'none' : '';
+  renderDetailBody();
   document.getElementById('detailOverlay').classList.add('open');
+}
 
-  // Init comparison chart after DOM is ready
-  setTimeout(() => {
-    if (detailChartInst) detailChartInst.destroy();
-    const ctx = document.getElementById('detailChart');
-    if (!ctx) return;
-    detailChartInst = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: ['3-Sec Ret %', 'Skip Rate %', 'Follows', 'Score /10'],
-        datasets: [
-          {
-            label: 'This Reel',
-            data: [h.retention3s||0, h.skipRate||0, h.followers||0, score],
-            backgroundColor: ['rgba(51,154,233,0.7)','rgba(237,10,115,0.7)','rgba(255,107,53,0.7)','rgba(62,207,106,0.7)'],
-            borderRadius: 4,
-          },
-          {
-            label: 'Library Avg',
-            data: [avgRet, avgSkip, avgFollows, (() => {const s=hooks.map(x=>computeScore(x)).filter(Boolean);return s.length?(s.reduce((a,b)=>a+b,0)/s.length):0;})()],
-            backgroundColor: 'rgba(255,255,255,0.08)',
-            borderColor: 'rgba(255,255,255,0.2)',
-            borderWidth: 1,
-            borderRadius: 4,
-          }
-        ]
-      },
-      options: {
-        responsive: true, maintainAspectRatio: true,
-        plugins: { legend: { labels: { font: { size: 11 } } } },
-        scales: {
-          x: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } } },
-          y: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } }, beginAtZero: true }
-        }
+function renderDetailBody() {
+  const d = derived.find(x => x.archetype.id === currentDetailId);
+  if (!d) return;
+  const st = d.stats;
+  const overallLetter = scoreToLetter(st.avgScore);
+  const overallColor = gradeColor(overallLetter);
+
+  // Sub-section grouping for current view
+  const groups = {};
+  for (const m of d.members) {
+    const sid = m.subSectionId || 'general';
+    if (!groups[sid]) groups[sid] = [];
+    groups[sid].push(m);
+  }
+
+  // Build tabs
+  const a = d.archetype;
+  const tabIds = ['all'];
+  if (a.subSections) {
+    a.subSections.forEach(s => { if (groups[s.id] && groups[s.id].length) tabIds.push(s.id); });
+  }
+  if (groups['general'] && groups['general'].length) tabIds.push('general');
+
+  const tabsHtml = tabIds.map(tid => {
+    let name, members;
+    if (tid === 'all') { name = 'All'; members = d.members; }
+    else if (tid === 'general') { name = 'General'; members = groups['general']; }
+    else { const s = a.subSections.find(x => x.id === tid); name = s ? s.name : tid; members = groups[tid]; }
+    const reels = members.map(m => m.reel);
+    const subSt = aggregateStats(reels);
+    const subLetter = scoreToLetter(subSt.avgScore);
+    const subColor = gradeColor(subLetter);
+    const active = tid === currentSubSectionId;
+    return `<button class="subsection-tab ${active?'active':''}" onclick="setSubSection('${tid}')">
+      <span class="subsection-tab-name">${escHtml(name)}</span>
+      <span class="subsection-tab-count">(${members.length})</span>
+      <span class="subsection-tab-grade" style="color:${subColor};">${subLetter}</span>
+    </button>`;
+  }).join('');
+
+  // Active sub-section content
+  let members = d.members;
+  let activeName = 'All reels in this archetype';
+  if (currentSubSectionId === 'general') { members = groups['general'] || []; activeName = 'General — reels in this archetype that don\'t fit a specific sub-section'; }
+  else if (currentSubSectionId !== 'all') {
+    members = groups[currentSubSectionId] || [];
+    const s = a.subSections ? a.subSections.find(x => x.id === currentSubSectionId) : null;
+    activeName = s ? s.name : currentSubSectionId;
+  }
+
+  // Sub-section panel + grade
+  let subPanelHtml = '';
+  if (currentSubSectionId !== 'all') {
+    const reels = members.map(m => m.reel);
+    const subSt = aggregateStats(reels);
+    const subLetter = scoreToLetter(subSt.avgScore);
+    const subColor = gradeColor(subLetter);
+    subPanelHtml = `<div class="subsection-panel">
+      <div class="subsection-panel-letter" style="color:${subColor}">${subLetter}</div>
+      <div class="subsection-panel-body">
+        <div class="subsection-panel-name">${escHtml(activeName)}</div>
+        <div class="subsection-panel-meta">${reels.length} reel${reels.length!==1?'s':''} · avg score ${subSt.avgScore.toFixed(1)} · ${fmtPct(subSt.avgRet)} retention · ${fmt(Math.round(subSt.avgFollowers))} avg followers</div>
+      </div>
+      <div class="subsection-panel-actions">
+        <button class="btn-toggle-patterns ${showingPatterns?'active':''}" onclick="togglePatterns()">${showingPatterns?'Hide':'Show'} Literal Sub-patterns</button>
+      </div>
+    </div>`;
+  }
+
+  // Literal sub-patterns block
+  let patternsHtml = '';
+  if (showingPatterns && currentSubSectionId !== 'all') {
+    const reels = members.map(m => m.reel);
+    const clusters = clusterLiteralPatterns(reels, 0.40);
+    if (clusters.length) {
+      patternsHtml = `<div class="literal-patterns">
+        <div class="literal-patterns-title">📐 Literal Sub-patterns (trigram clusters of ${reels.length} reels)</div>
+        ${clusters.map(c => {
+          const tmpl = deriveLiteralTemplate(c);
+          const tmplHtml = escHtml(tmpl).replace(/___/g, '<span class="slot">___</span>');
+          return `<div class="literal-pattern-item">
+            <div class="literal-pattern-template">${tmplHtml}</div>
+            <div class="literal-pattern-count">${c.length} reels match this literal pattern</div>
+          </div>`;
+        }).join('')}
+      </div>`;
+    } else {
+      patternsHtml = `<div class="literal-patterns"><div class="literal-patterns-title">No tight literal clusters found</div><div style="font-size:11px;color:var(--text-muted);">The reels in this sub-section don't share enough literal vocabulary to form sub-patterns. That's normal when the concept is broad.</div></div>`;
+    }
+  }
+
+  document.getElementById('detailBody').innerHTML = `
+    <div class="grade-card">
+      <div class="grade-overall">
+        <div class="grade-letter-big" style="color:${overallColor}">${overallLetter}</div>
+        <div class="grade-overall-body">
+          <div class="grade-overall-label">Overall Archetype Grade</div>
+          <div class="grade-overall-num">${st.avgScore ? st.avgScore.toFixed(1) + ' / 10' : 'No data'}</div>
+          <div class="grade-overall-sub">Aggregate across ${st.count} matched reel${st.count!==1?'s':''}${st.lastUsed?' · last used '+daysSince(st.lastUsed)+'d ago':''} · avg hook density ${st.avgDensity ? st.avgDensity.toFixed(1) : '—'}</div>
+        </div>
+      </div>
+      <div class="grade-subgrades">
+        ${subgradeHtml('Hook Power', st.hookPower, `${fmtPct(st.avgRet)} avg 3s retention`, 'var(--blue)')}
+        ${subgradeHtml('Follower Pull', st.followerPull, `${fmt(Math.round(st.avgFollowers))} avg followers gained`, 'var(--orange)')}
+        ${subgradeHtml('Engagement', st.engagement, `${st.avgEng.toFixed(1)}% avg (likes+sh+com)/views`, 'var(--pink)')}
+      </div>
+    </div>
+
+    <div class="subsection-tabs">${tabsHtml}</div>
+    ${subPanelHtml}
+    ${patternsHtml}
+
+    <div class="matched-section-title">
+      <span>Reels (${members.length})</span>
+      <select class="matched-sort" id="matchedSortKey" onchange="rerenderMembers()">
+        <option value="score-desc">Reel Score: High → Low</option>
+        <option value="relevance-desc">Archetype Relevance: High → Low</option>
+        <option value="follows-desc">Followers: High → Low</option>
+        <option value="views-desc">Views: High → Low</option>
+        <option value="date-desc">Date: Newest First</option>
+      </select>
+    </div>
+    <div class="matched-reels-list" id="matchedReelsList">${renderMembers(members, 'score', 'desc')}</div>
+  `;
+}
+
+function subgradeHtml(label, score, meta, color) {
+  const letter = scoreToLetter(score);
+  const lc = gradeColor(letter);
+  return `<div class="subgrade">
+    <div class="subgrade-top"><span class="subgrade-label">${escHtml(label)}</span><span class="subgrade-letter" style="color:${lc}">${letter}</span></div>
+    <div class="subgrade-bar"><div class="subgrade-fill" style="width:${score*10}%;background:${color}"></div></div>
+    <div class="subgrade-meta">${escHtml(meta)}</div>
+  </div>`;
+}
+
+function renderMembers(members, key, dir) {
+  if (!members.length) return `<div class="sidebar-empty">No reels in this view.</div>`;
+  const sorted = [...members].sort((a,b) => {
+    let va, vb;
+    switch (key) {
+      case 'score':     va = computeScore(a.reel); vb = computeScore(b.reel); break;
+      case 'relevance': va = a.score; vb = b.score; break;
+      case 'follows':   va = a.reel.followers||0; vb = b.reel.followers||0; break;
+      case 'views':     va = a.reel.views||0; vb = b.reel.views||0; break;
+      case 'date':      va = parseDate(a.reel.date); vb = parseDate(b.reel.date); break;
+      default: return 0;
+    }
+    if (va < vb) return dir === 'asc' ? -1 : 1;
+    if (va > vb) return dir === 'asc' ?  1 : -1;
+    return 0;
+  });
+  return sorted.map(m => {
+    const h = m.reel;
+    const score = computeScore(h);
+    const color = score ? gradeColor(scoreToLetter(score)) : 'var(--text-dim)';
+    const c = classifications.get(h.id);
+    const pinned = (state.pinnedReels[currentDetailId]||[]).includes(h.id);
+    const link = h.instagramUrl
+      ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${escHtml(h.reelName||'Untitled')} ↗</a>`
+      : escHtml(h.reelName||'Untitled');
+    // Archetype chips: primary (this archetype) + secondaries
+    const chips = [];
+    if (c) {
+      const isPrimary = c.primary === currentDetailId;
+      const primaryArch = archetypes.find(a => a.id === c.primary);
+      if (primaryArch) {
+        const isThis = primaryArch.id === currentDetailId;
+        chips.push(`<span class="archetype-chip primary" style="color:${primaryArch.color};border-color:${primaryArch.color}80;background:${primaryArch.color}1f;">${isThis?'⭐ ':''}${escHtml(primaryArch.name)}</span>`);
       }
-    });
-  }, 80);
+      c.secondaries.forEach(sid => {
+        const sa = archetypes.find(a => a.id === sid);
+        if (sa) chips.push(`<span class="archetype-chip" style="color:${sa.color};border-color:${sa.color}60;">${escHtml(sa.name)}</span>`);
+      });
+    }
+    if (m.pinned) chips.unshift(`<span class="archetype-chip" style="color:var(--gold);border-color:rgba(255,215,0,0.5);">📌 Pinned</span>`);
+    const density = c ? c.density : 0;
+    const dots = `<span class="density-dot" title="Hook density: ${density} archetype${density!==1?'s':''}">
+      <span class="${density>=1?'on':''}"></span>
+      <span class="${density>=2?'on':''}"></span>
+      <span class="${density>=3?'on':''}"></span>
+    </span>`;
+    return `<div class="matched-reel ${pinned?'pinned':''}">
+      <div>
+        <div class="matched-reel-name">${link}</div>
+        ${h.text ? `<div class="matched-reel-hook">"${escHtml(h.text)}"</div>` : ''}
+        <div class="matched-reel-tags">${chips.join('')}${dots}</div>
+      </div>
+      <div class="matched-reel-stat">
+        <div class="matched-reel-stat-val" style="color:${color}">${score ? score.toFixed(1) : '—'}</div>
+        <div class="matched-reel-stat-lbl">Score</div>
+      </div>
+      <div class="matched-reel-stat">
+        <div class="matched-reel-stat-val">${fmt(h.followers)}</div>
+        <div class="matched-reel-stat-lbl">Follows</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;">
+        <button class="pin-btn ${pinned?'pinned':''}" onclick="togglePin(${h.id})" title="${pinned?'Unpin from':'Pin to'} this archetype">⭐</button>
+        <button class="pin-btn" onclick="excludeFromArchetype(${h.id})" title="Exclude from this archetype">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function rerenderMembers() {
+  const val = document.getElementById('matchedSortKey').value;
+  const [key, dir] = val.split('-');
+  const d = derived.find(x => x.archetype.id === currentDetailId);
+  if (!d) return;
+  let members = d.members;
+  if (currentSubSectionId === 'general') members = d.members.filter(m => m.subSectionId === 'general');
+  else if (currentSubSectionId !== 'all') members = d.members.filter(m => m.subSectionId === currentSubSectionId);
+  document.getElementById('matchedReelsList').innerHTML = renderMembers(members, key, dir);
+}
+
+function setSubSection(id) { currentSubSectionId = id; showingPatterns = false; renderDetailBody(); }
+function togglePatterns() { showingPatterns = !showingPatterns; renderDetailBody(); }
+
+function togglePin(reelId) {
+  const archetypeId = currentDetailId;
+  if (!state.pinnedReels[archetypeId]) state.pinnedReels[archetypeId] = [];
+  const idx = state.pinnedReels[archetypeId].indexOf(reelId);
+  if (idx >= 0) state.pinnedReels[archetypeId].splice(idx, 1);
+  else {
+    state.pinnedReels[archetypeId].push(reelId);
+    if (state.excludedReels[archetypeId]) state.excludedReels[archetypeId] = state.excludedReels[archetypeId].filter(id => id !== reelId);
+  }
+  saveState();
+  buildDerived(); updateStats(); applyFilters(); renderSidebar(); renderUngrouped();
+  renderDetailBody();
+}
+
+function excludeFromArchetype(reelId) {
+  const archetypeId = currentDetailId;
+  if (!state.excludedReels[archetypeId]) state.excludedReels[archetypeId] = [];
+  if (!state.excludedReels[archetypeId].includes(reelId)) state.excludedReels[archetypeId].push(reelId);
+  if (state.pinnedReels[archetypeId]) state.pinnedReels[archetypeId] = state.pinnedReels[archetypeId].filter(id => id !== reelId);
+  saveState();
+  buildDerived(); updateStats(); applyFilters(); renderSidebar(); renderUngrouped();
+  renderDetailBody();
 }
 
 function closeDetail() {
   document.getElementById('detailOverlay').classList.remove('open');
   currentDetailId = null;
-  if (detailChartInst) { detailChartInst.destroy(); detailChartInst = null; }
 }
 function handleDetailOverlayClick(e) { if (e.target === document.getElementById('detailOverlay')) closeDetail(); }
-
 function editFromDetail() {
-  const h = hooks.find(x => x.id === currentDetailId);
-  if (h) { closeDetail(); openModal(h); }
+  const id = currentDetailId; closeDetail(); openEdit(id);
 }
 
-/* ══════════════════════════════════════════════
-   LIBRARY CHARTS
-══════════════════════════════════════════════ */
-function toggleCharts() {
-  chartsOpen = !chartsOpen;
-  document.getElementById('btnCharts').classList.toggle('active-blue', chartsOpen);
-  const panel = document.getElementById('chartsPanel');
-  panel.classList.toggle('open', chartsOpen);
-  if (chartsOpen) initLibCharts();
+/* ══════════════════════════════════════════════════════════════════
+   NEW / EDIT ARCHETYPE
+══════════════════════════════════════════════════════════════════ */
+function openNewArchetype() { openEditModal(null, ''); }
+function openNewArchetypeFromText(text) { openEditModal(null, text); }
+function openEdit(id) {
+  const a = (state.customArchetypes || []).find(x => x.id === id);
+  if (a) openEditModal(a, '');
+  else { showToast({ title: 'Built-in archetype', msg: 'Built-in archetypes can\'t be edited directly. Disable it and add a custom version, or pin/exclude individual reels.' }); }
 }
 
-function initLibCharts() {
-  const sorted = [...hooks].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+function openEditModal(a, prefillText) {
+  document.getElementById('editId').value = a ? a.id : '';
+  document.getElementById('editModalTitle').textContent = a ? 'Edit Archetype' : 'New Archetype';
+  document.getElementById('editName').value = a ? (a.name||'') : '';
+  document.getElementById('editDescription').value = a ? (a.description||'') : '';
+  // Flatten signal groups
+  const groups = a ? (a.signals || []) : [];
+  const g3 = groups.find(g => g.weight === 3); const g2 = groups.find(g => g.weight === 2); const g1 = groups.find(g => g.weight === 1);
+  document.getElementById('editSig3').value = g3 ? g3.keywords.join(', ') : '';
+  document.getElementById('editSig2').value = g2 ? g2.keywords.join(', ') : '';
+  document.getElementById('editSig1').value = g1 ? g1.keywords.join(', ') : '';
+  // Sub-sections
+  document.getElementById('editSubSectionsContainer').innerHTML = '';
+  if (a && a.subSections) a.subSections.forEach(s => addSubSectionRow(s));
 
-  // ── Follows Over Time ──
-  if (libCharts.follows) libCharts.follows.destroy();
-  const ctxF = document.getElementById('chartFollowsTime');
-  libCharts.follows = new Chart(ctxF, {
-    type: 'line',
-    data: {
-      labels: sorted.map(h => h.date || ''),
-      datasets: [{
-        label: 'Followers Gained',
-        data: sorted.map(h => h.followers || 0),
-        borderColor: 'rgba(255,107,53,0.9)',
-        backgroundColor: 'rgba(255,107,53,0.1)',
-        fill: true, tension: 0.3, pointRadius: 3,
-        pointBackgroundColor: sorted.map(h => (h.followers||0)>=10 ? '#FFD700' : 'rgba(255,107,53,0.9)'),
-        pointRadius: sorted.map(h => (h.followers||0)>=10 ? 6 : 3),
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:9}, maxTicksLimit: 8, maxRotation: 45 } },
-        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, beginAtZero: true }
-      }
-    }
-  });
-
-  // ── Views vs Follows Scatter ──
-  if (libCharts.scatter) libCharts.scatter.destroy();
-  const ctxS = document.getElementById('chartViewsFollows');
-  const scatterData = hooks.filter(h => h.views && h.followers !== undefined).map(h => ({
-    x: h.views || 0,
-    y: h.followers || 0,
-    label: h.reelName || 'Untitled'
-  }));
-  libCharts.scatter = new Chart(ctxS, {
-    type: 'scatter',
-    data: {
-      datasets: [{
-        label: 'Reels',
-        data: scatterData,
-        backgroundColor: scatterData.map(d => d.y >= 10 ? 'rgba(255,215,0,0.8)' : d.y >= 6 ? 'rgba(255,107,53,0.7)' : 'rgba(51,154,233,0.5)'),
-        pointRadius: scatterData.map(d => d.y >= 10 ? 7 : 4),
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: ${fmt(ctx.raw.x)} views, ${ctx.raw.y} follows` } }
-      },
-      scales: {
-        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10}, callback: v => fmt(v) }, title: { display: true, text: 'Views', color: '#5a8ab0', font:{size:10} } },
-        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, title: { display: true, text: 'Follows', color: '#5a8ab0', font:{size:10} }, beginAtZero: true }
-      }
-    }
-  });
-
-  // ── Avg Retention by Category ──
-  if (libCharts.retCat) libCharts.retCat.destroy();
-  const ctxR = document.getElementById('chartRetCategory');
-  const catMap = {};
-  hooks.forEach(h => {
-    if (!h.category || !h.retention3s) return;
-    if (!catMap[h.category]) catMap[h.category] = [];
-    catMap[h.category].push(h.retention3s);
-  });
-  const cats = Object.keys(catMap).sort();
-  const catAvgs = cats.map(c => catMap[c].reduce((a,b)=>a+b,0)/catMap[c].length);
-  libCharts.retCat = new Chart(ctxR, {
-    type: 'bar',
-    data: {
-      labels: cats,
-      datasets: [{
-        label: 'Avg 3-Sec Retention %',
-        data: catAvgs,
-        backgroundColor: catAvgs.map(v => v>=60?'rgba(62,207,106,0.7)':v>=50?'rgba(51,154,233,0.7)':v>=45?'rgba(255,107,53,0.7)':'rgba(231,76,60,0.7)'),
-        borderRadius: 4,
-      }]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, min: 30, max: 80 },
-        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} } }
-      }
-    }
-  });
+  // Live preview
+  const previewFn = () => updateEditPreview(prefillText);
+  ['editName','editDescription','editSig3','editSig2','editSig1'].forEach(id => document.getElementById(id).oninput = previewFn);
+  if (prefillText) document.getElementById('editSig3').value = prefillText.split(' ').slice(0,4).join(' ');
+  previewFn();
+  document.getElementById('editOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('editName').focus(), 100);
 }
 
-/* ══════════════════════════════════════════════
-   HOOK MODAL (ADD / EDIT)
-══════════════════════════════════════════════ */
-function openModal(hook) {
-  if (typeof hook === 'number') hook = hooks.find(h => h.id === hook);
-  populateModalSelects(hook);
-  document.getElementById('editId').value        = hook ? hook.id : '';
-  document.getElementById('modalTitle').textContent = hook ? 'Edit Reel' : 'Add Reel';
-  document.getElementById('fReelName').value     = hook ? (hook.reelName||'') : '';
-  document.getElementById('fInstagramUrl').value = hook ? (hook.instagramUrl||'') : '';
-  document.getElementById('fDate').value         = hook ? (hook.date||'') : '';
-  document.getElementById('fText').value         = hook ? (hook.text||'') : '';
-  document.getElementById('fScore').value        = hook ? (hook.score||'') : '';
-  document.getElementById('fFollowers').value    = hook ? (hook.followers||'') : '';
-  document.getElementById('fViews').value        = hook ? (hook.views||'') : '';
-  document.getElementById('fRetention3s').value  = hook ? (hook.retention3s||'') : '';
-  document.getElementById('fSkipRate').value     = hook ? (hook.skipRate||'') : '';
-  document.getElementById('fLikes').value        = hook ? (hook.likes||'') : '';
-  document.getElementById('fComments').value     = hook ? (hook.comments||'') : '';
-  document.getElementById('fShares').value       = hook ? (hook.shares||'') : '';
-  document.getElementById('fLength').value       = hook ? (hook.length||'') : '';
-  document.getElementById('fAvgWtSec').value     = hook ? (hook.avgWtSec||'') : '';
-  document.getElementById('fAvgWtPct').value     = hook ? (hook.avgWtPct||'') : '';
-  document.getElementById('fFollowsX').value     = hook ? (hook.followsMultiplier||'') : '';
-  document.getElementById('fViewsX').value       = hook ? (hook.viewsMultiplier||'') : '';
-  document.getElementById('fLikesX').value       = hook ? (hook.likesMultiplier||'') : '';
-  document.getElementById('fSharesX').value      = hook ? (hook.sharesMultiplier||'') : '';
-  document.getElementById('fNotes').value        = hook ? (hook.notes||'') : '';
-  document.getElementById('modalOverlay').classList.add('open');
-  setTimeout(() => document.getElementById('fReelName').focus(), 100);
+let subSectionCounter = 0;
+function addSubSectionRow(prefill) {
+  subSectionCounter++;
+  const id = 'subSect_' + subSectionCounter;
+  const container = document.getElementById('editSubSectionsContainer');
+  const row = document.createElement('div');
+  row.style.cssText = 'background:var(--bg);border:1px solid var(--border-dim);border-radius:6px;padding:10px 12px;margin-bottom:8px;';
+  row.dataset.subId = prefill ? prefill.id : ('custom-sub-' + subSectionCounter);
+  const g3kw = prefill && prefill.signals ? (prefill.signals.find(g=>g.weight===3)?.keywords||[]).join(', ') : '';
+  const g2kw = prefill && prefill.signals ? (prefill.signals.find(g=>g.weight===2)?.keywords||[]).join(', ') : '';
+  row.innerHTML = `
+    <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:6px;">
+      <input type="text" class="form-control sub-name" placeholder="Sub-section name" value="${escHtml(prefill?prefill.name:'')}" style="flex:1;">
+      <button class="action-btn delete" onclick="this.closest('[data-sub-id]').remove()" title="Remove sub-section">✕</button>
+    </div>
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">w3 keywords</div>
+    <input type="text" class="form-control sub-sig3" placeholder="e.g. coach said, head coach" value="${escHtml(g3kw)}" style="margin-bottom:6px;font-size:12px;padding:6px 10px;">
+    <div style="font-size:10px;color:var(--text-dim);margin-bottom:4px;">w2 keywords</div>
+    <input type="text" class="form-control sub-sig2" placeholder="optional supporting keywords" value="${escHtml(g2kw)}" style="font-size:12px;padding:6px 10px;">
+  `;
+  container.appendChild(row);
 }
-function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
-function handleOverlayClick(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-function saveHook() {
-  const id       = document.getElementById('editId').value;
-  const reelName = document.getElementById('fReelName').value.trim();
-  const text     = document.getElementById('fText').value.trim();
-  if (!reelName && !text) { alert('Enter a reel name or hook text.'); return; }
-  const hook = {
-    id:               id ? parseInt(id) : Date.now(),
-    reelName,
-    instagramUrl:     document.getElementById('fInstagramUrl').value.trim(),
-    text, hookNeeded: !text,
-    type:             document.getElementById('fType').value,
-    category:         document.getElementById('fCat').value,
-    date:             document.getElementById('fDate').value.trim(),
-    score:            parseFloat(document.getElementById('fScore').value)||0,
-    followers:        parseInt(document.getElementById('fFollowers').value)||0,
-    views:            parseInt(document.getElementById('fViews').value)||0,
-    retention3s:      parseFloat(document.getElementById('fRetention3s').value)||0,
-    skipRate:         parseFloat(document.getElementById('fSkipRate').value)||0,
-    likes:            parseInt(document.getElementById('fLikes').value)||0,
-    comments:         parseInt(document.getElementById('fComments').value)||0,
-    shares:           parseInt(document.getElementById('fShares').value)||0,
-    length:           document.getElementById('fLength').value.trim(),
-    avgWtSec:         document.getElementById('fAvgWtSec').value.trim(),
-    avgWtPct:         parseFloat(document.getElementById('fAvgWtPct').value)||0,
-    followsMultiplier:parseFloat(document.getElementById('fFollowsX').value)||0,
-    viewsMultiplier:  parseFloat(document.getElementById('fViewsX').value)||0,
-    likesMultiplier:  parseFloat(document.getElementById('fLikesX').value)||0,
-    sharesMultiplier: parseFloat(document.getElementById('fSharesX').value)||0,
-    notes:            document.getElementById('fNotes').value.trim(),
+function parseKwField(v) {
+  return String(v||'').split(',').map(s => s.trim()).filter(Boolean);
+}
+
+function buildArchetypeFromForm() {
+  const signals = [];
+  const kw3 = parseKwField(document.getElementById('editSig3').value);
+  const kw2 = parseKwField(document.getElementById('editSig2').value);
+  const kw1 = parseKwField(document.getElementById('editSig1').value);
+  if (kw3.length) signals.push({ weight: 3, keywords: kw3 });
+  if (kw2.length) signals.push({ weight: 2, keywords: kw2 });
+  if (kw1.length) signals.push({ weight: 1, keywords: kw1 });
+  // Sub-sections
+  const subSections = [];
+  document.querySelectorAll('#editSubSectionsContainer [data-sub-id]').forEach(row => {
+    const name = row.querySelector('.sub-name').value.trim();
+    if (!name) return;
+    const subSig = [];
+    const s3 = parseKwField(row.querySelector('.sub-sig3').value);
+    const s2 = parseKwField(row.querySelector('.sub-sig2').value);
+    if (s3.length) subSig.push({ weight: 3, keywords: s3 });
+    if (s2.length) subSig.push({ weight: 2, keywords: s2 });
+    subSections.push({ id: row.dataset.subId, name, signals: subSig });
+  });
+  return {
+    name: document.getElementById('editName').value.trim(),
+    description: document.getElementById('editDescription').value.trim(),
+    color: 'var(--purple)',
+    icon: '✨',
+    signals, subSections,
   };
-  if (id) { const idx=hooks.findIndex(h=>h.id===parseInt(id)); if(idx>=0) hooks[idx]=hook; }
-  else hooks.push(hook);
-  saveData(); updateStats(); applyFilters(); closeModal();
 }
 
-/* ══════════════════════════════════════════════
-   COPY
-══════════════════════════════════════════════ */
-function copyHook(id, btn) {
-  const h = hooks.find(x => x.id===id);
-  if (!h?.text) return;
-  navigator.clipboard.writeText(h.text).then(() => {
-    btn.classList.add('copied'); const orig=btn.innerHTML; btn.innerHTML=ICONS.check;
-    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML=orig; }, 1800);
-  }).catch(() => prompt('Copy hook:', h.text));
-}
-
-/* ══════════════════════════════════════════════
-   DELETE
-══════════════════════════════════════════════ */
-function requestDelete(id) {
-  isBulkDelete = false; deleteTargetId = id;
-  const h = hooks.find(x=>x.id===id);
-  const name = h?(h.reelName||h.text||'this entry'):'this entry';
-  document.getElementById('confirmTitle').textContent   = 'Delete Reel?';
-  document.getElementById('confirmMsg').textContent     = `"${name}" will be permanently removed.`;
-  document.getElementById('confirmWarning').style.display = 'none';
-  document.getElementById('confirmDeleteBtn').textContent = 'Delete';
-  document.getElementById('confirmOverlay').classList.add('open');
-}
-function requestBulkDelete() {
-  const count = selectedIds.size; if (!count) return;
-  isBulkDelete = true; deleteTargetId = null;
-  document.getElementById('confirmTitle').textContent   = `Delete ${count} Reel${count!==1?'s':''}?`;
-  document.getElementById('confirmMsg').textContent     = `You are about to permanently delete ${count} reel${count!==1?'s':''} from your library.`;
-  const warn = document.getElementById('confirmWarning');
-  warn.textContent = '⚠ This cannot be undone. All selected entries will be removed.';
-  warn.style.display = 'block';
-  document.getElementById('confirmDeleteBtn').textContent = `Delete ${count}`;
-  document.getElementById('confirmOverlay').classList.add('open');
-}
-function closeConfirm() { deleteTargetId=null; isBulkDelete=false; document.getElementById('confirmOverlay').classList.remove('open'); }
-function confirmDelete() {
-  if (isBulkDelete) { hooks=hooks.filter(h=>!selectedIds.has(h.id)); selectedIds.clear(); exitSelectMode(); }
-  else if (deleteTargetId!==null) hooks=hooks.filter(h=>h.id!==deleteTargetId);
-  saveData(); updateStats(); applyFilters(); closeConfirm();
-}
-
-/* ══════════════════════════════════════════════
-   SELECT MODE
-══════════════════════════════════════════════ */
-function toggleSelectMode() { selectMode ? exitSelectMode() : enterSelectMode(); }
-function enterSelectMode() {
-  selectMode=true; selectedIds.clear();
-  document.getElementById('btnSelectMode').classList.add('active');
-  document.getElementById('bulkBar').classList.add('open');
-  document.body.style.paddingBottom='60px';
-  updateBulkBar(); applyFilters();
-}
-function exitSelectMode() {
-  selectMode=false; selectedIds.clear();
-  document.getElementById('btnSelectMode').classList.remove('active');
-  document.getElementById('bulkBar').classList.remove('open');
-  document.body.style.paddingBottom='';
-  applyFilters();
-}
-function toggleSelect(id) {
-  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
-  updateBulkBar();
-  const sel = selectedIds.has(id);
-  ['card-','listitem-'].forEach(pfx => {
-    const el = document.getElementById(pfx+id); if(!el) return;
-    el.classList.toggle('selected', sel);
-    const cb = el.querySelector('.card-checkbox'); if(cb) cb.checked=sel;
-  });
-}
-function selectAll()   { getSorted(getFiltered()).forEach(h=>selectedIds.add(h.id)); updateBulkBar(); applyFilters(); }
-function deselectAll() { selectedIds.clear(); updateBulkBar(); applyFilters(); }
-function updateBulkBar() {
-  const count = selectedIds.size;
-  document.getElementById('bulkSelectedCount').textContent = count;
-  const btn = document.getElementById('btnBulkDelete');
-  btn.disabled = count===0;
-  btn.textContent = count>0 ? `🗑 Delete ${count} Selected` : '🗑 Delete Selected';
-}
-
-/* ══════════════════════════════════════════════
-   CSV IMPORT
-══════════════════════════════════════════════ */
-function parseCSV(text) {
-  const rows=[]; let row=[],field='',inQ=false,i=0;
-  while(i<text.length){
-    const ch=text[i];
-    if(inQ){if(ch==='"'&&text[i+1]==='"'){field+='"';i+=2;}else if(ch==='"'){inQ=false;i++;}else{field+=ch;i++;}}
-    else{
-      if(ch==='"'){inQ=true;i++;}
-      else if(ch===','){row.push(field);field='';i++;}
-      else if(ch==='\n'||ch==='\r'){
-        row.push(field);field='';
-        if(row.some(c=>c!==''))rows.push(row);
-        row=[];i+=(ch==='\r'&&text[i+1]==='\n')?2:1;
-      }else{field+=ch;i++;}
-    }
-  }
-  if(field!==''||row.length){row.push(field);if(row.some(c=>c!==''))rows.push(row);}
-  return rows;
-}
-const parseN   = s => { if(!s)return 0; const n=parseInt(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
-const parsePF  = s => { if(!s)return 0; const n=parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
-const parsePct = s => { if(!s||String(s).includes('#'))return 0; const n=parseFloat(String(s).replace('%','')); return isNaN(n)?0:n; };
-const parseMx  = s => { if(!s)return 0; return parsePF(String(s).replace('x','')); };
-
-function handleCSVFile(input) {
-  const file=input.files[0]; if(!file){return;} input.value='';
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const rows=parseCSV(e.target.result);
-    if(rows.length<2){alert('No data rows found.');return;}
-    const header=rows[0].map(h=>h.trim()), col={};
-    header.forEach((h,i)=>col[h]=i);
-    const now=Date.now(); pendingImportData=[]; let hnCount=0;
-    const catsToAdd=new Set();
-    rows.slice(1).forEach((cols,idx)=>{
-      const reelName=(cols[col['Reel']]||'').trim(); if(!reelName)return;
-      const rawCat=(cols[col['Category']]||'').trim(); if(rawCat)catsToAdd.add(rawCat);
-      const hookText=(cols[col['Hook']]||'').trim(); const hookNeeded=!hookText;
-      if(hookNeeded)hnCount++;
-      pendingImportData.push({
-        id:now+idx, reelName, instagramUrl:(cols[col['Instagram URL']]||'').trim(), text:hookText, hookNeeded,
-        type:'', category:rawCat, date:cols[col['Date']]||'',
-        followsMultiplier:parseMx(cols[col['Follows (?x)']]),
-        followers:parseN(cols[col['Follows']]),
-        views:parseN(cols[col['Views']]),
-        likes:parseN(cols[col['Likes']]),
-        comments:parseN(cols[col['Comments']]),
-        shares:parseN(cols[col['Shares']]),
-        avgWtPct:parsePct(cols[col['AVG WT%']]),
-        avgWtSec:cols[col['AVG WT Sec']]||'',
-        length:cols[col['Length']]||'',
-        retention3s:parsePct(cols[col['3 Sec RTR']]),
-        skipRate:parsePct(cols[col['Skip']]),
-        viewsMultiplier:parseMx(cols[col['Views (?x)']]),
-        likesMultiplier:parseMx(cols[col['Likes (?x)']]),
-        sharesMultiplier:parseMx(cols[col['Shares (?x)']]),
-        score:0, notes:'',
-      });
-    });
-    catsToAdd.forEach(c=>{if(!hookCategories.includes(c))hookCategories.push(c);});
-    saveCats(); populateFilterSelects();
-    // Compute new vs duplicate by reel name (case-insensitive)
-    const existingNames = new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
-    const newCount = pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim())).length;
-    const dupCount = pendingImportData.length - newCount;
-    document.getElementById('importCount').textContent=pendingImportData.length;
-    document.getElementById('importSub').textContent=`reels found in CSV`;
-    document.getElementById('importNewCount').textContent=newCount;
-    document.getElementById('importDupCount').textContent=dupCount;
-    document.getElementById('importBreakdown').style.display='flex';
-    const warn=document.getElementById('importWarning');
-    if(hnCount>0){warn.style.display='flex';document.getElementById('importWarningText').textContent=`${hnCount} reel${hnCount!==1?'s':''} will be flagged as Hook Needed`;}
-    else warn.style.display='none';
-    document.querySelector('input[name="importMode"][value="merge"]').checked=true;
-    document.getElementById('importOverlay').classList.add('open');
-  };
-  reader.readAsText(file);
-}
-function closeImport(){document.getElementById('importOverlay').classList.remove('open');pendingImportData=[];}
-function handleImportOverlayClick(e){if(e.target===document.getElementById('importOverlay'))closeImport();}
-function confirmImport(){
-  const mode=document.querySelector('input[name="importMode"]:checked').value;
-  if(mode==='replace'){
-    hooks=pendingImportData;
-  } else if(mode==='merge'){
-    const existingNames=new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
-    const toAdd=pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim()));
-    hooks=hooks.concat(toAdd);
+function updateEditPreview(prefillText) {
+  const a = buildArchetypeFromForm();
+  if (!a.signals.length) { document.getElementById('editMatchPreview').innerHTML = '<em>Enter at least one keyword group to preview matches…</em>'; return; }
+  const matches = hooks.filter(h => h.text && scoreAgainst(h.text, a) >= 3);
+  if (!matches.length) {
+    document.getElementById('editMatchPreview').innerHTML = `<span style="color:var(--text-dim);">No reels in your database match these signals yet.</span>`;
   } else {
-    hooks=hooks.concat(pendingImportData);
+    const preview = matches.slice(0,3).map(h => `<div style="font-style:italic;color:rgba(255,255,255,0.8);margin-top:4px;">"${escHtml(h.text.slice(0,90))}${h.text.length>90?'…':''}"</div>`).join('');
+    document.getElementById('editMatchPreview').innerHTML = `<strong style="color:var(--green);">${matches.length} live match${matches.length!==1?'es':''}:</strong>${preview}${matches.length>3?`<div style="color:var(--text-dim);margin-top:4px;">+ ${matches.length-3} more</div>`:''}`;
   }
-  saveData();updateStats();applyFilters();closeImport();
-  if(chartsOpen)initLibCharts();
 }
 
-/* ══════════════════════════════════════════════
-   MANAGE LISTS
-══════════════════════════════════════════════ */
-function openManage(){renderManageLists();document.getElementById('manageOverlay').classList.add('open');}
-function closeManage(){document.getElementById('manageOverlay').classList.remove('open');}
-function handleManageOverlayClick(e){if(e.target===document.getElementById('manageOverlay'))closeManage();}
-function renderManageLists(){
-  const dI=`<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
-  document.getElementById('manageTypesList').innerHTML=hookTypes.length
-    ?hookTypes.map((t,i)=>`<div class="manage-item"><span>${escHtml(t)}</span><button class="action-btn delete" onclick="removeType(${i})">${dI}</button></div>`).join('')
-    :'<div class="manage-empty">No types yet</div>';
-  document.getElementById('manageCatsList').innerHTML=hookCategories.length
-    ?hookCategories.map((c,i)=>`<div class="manage-item"><span>${escHtml(c)}</span><button class="action-btn delete" onclick="removeCategory(${i})">${dI}</button></div>`).join('')
-    :'<div class="manage-empty">No categories yet</div>';
-}
-function addType(){const i=document.getElementById('newTypeInput'),v=i.value.trim();if(!v||hookTypes.includes(v)){i.focus();return;}hookTypes.push(v);saveTypes();i.value='';renderManageLists();populateFilterSelects();updateStats();}
-function removeType(i){hookTypes.splice(i,1);saveTypes();renderManageLists();populateFilterSelects();updateStats();}
-function addCategory(){const i=document.getElementById('newCatInput'),v=i.value.trim();if(!v||hookCategories.includes(v)){i.focus();return;}hookCategories.push(v);saveCats();i.value='';renderManageLists();populateFilterSelects();}
-function removeCategory(i){hookCategories.splice(i,1);saveCats();renderManageLists();populateFilterSelects();}
+function closeEdit() { document.getElementById('editOverlay').classList.remove('open'); }
+function handleEditOverlayClick(e) { if (e.target === document.getElementById('editOverlay')) closeEdit(); }
 
-/* ══════════════════════════════════════════════
-   KEYBOARD
-══════════════════════════════════════════════ */
+function saveArchetype() {
+  const id = document.getElementById('editId').value;
+  const a = buildArchetypeFromForm();
+  if (!a.name) { alert('Name is required.'); return; }
+  if (!a.signals.length) { alert('Add at least one signal keyword group.'); return; }
+  if (id) {
+    const idx = (state.customArchetypes||[]).findIndex(x => x.id === id);
+    if (idx >= 0) state.customArchetypes[idx] = { ...state.customArchetypes[idx], ...a };
+  } else {
+    state.customArchetypes = state.customArchetypes || [];
+    state.customArchetypes.push({ id: 'custom-' + uid(), ...a });
+  }
+  saveState();
+  closeEdit();
+  refresh();
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   DELETE / CONFIRM
+══════════════════════════════════════════════════════════════════ */
+function requestDeleteArchetype(id) {
+  const a = (state.customArchetypes||[]).find(x => x.id === id);
+  if (!a) return;
+  pendingAction = { kind: 'delete', archetypeId: id };
+  document.getElementById('confirmTitle').textContent = 'Delete Custom Archetype?';
+  document.getElementById('confirmMsg').textContent = `"${a.name}" will be removed. The reels themselves stay in your database.`;
+  document.getElementById('confirmActionBtn').textContent = 'Delete';
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm() { pendingAction = null; document.getElementById('confirmOverlay').classList.remove('open'); }
+function confirmAction() {
+  if (!pendingAction) { closeConfirm(); return; }
+  if (pendingAction.kind === 'delete') {
+    state.customArchetypes = (state.customArchetypes||[]).filter(x => x.id !== pendingAction.archetypeId);
+    saveState();
+  }
+  closeConfirm();
+  refresh();
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   RE-CLASSIFY (manual trigger)
+══════════════════════════════════════════════════════════════════ */
+function reclassifyAll() {
+  refresh();
+  const classified = new Set();
+  derived.forEach(d => d.members.forEach(m => classified.add(m.reel.id)));
+  const total = hooks.filter(h => h.text).length;
+  showToast({ title: 'Re-classified', msg: `${classified.size} of ${total} hooks landed in at least one archetype.` });
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════════════════════ */
+function showToast({ title, msg, durationMs = 4500 }) {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `
+    <div class="toast-body">
+      <div class="toast-title">${escHtml(title)}</div>
+      <div class="toast-msg">${msg}</div>
+    </div>
+    <button class="toast-close">&#x2715;</button>
+  `;
+  stack.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('open'));
+  const remove = () => { el.classList.remove('open'); setTimeout(() => el.remove(), 250); };
+  el.querySelector('.toast-close').onclick = remove;
+  setTimeout(remove, durationMs);
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   REFRESH
+══════════════════════════════════════════════════════════════════ */
+function refresh() {
+  loadAll();
+  buildArchetypeWorkingSet();
+  classifyAllReels();
+  buildDerived();
+  updateStats();
+  applyFilters();
+  renderSidebar();
+  renderUngrouped();
+  updateFilterBadge();
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   URL PARAMS (deep links)
+══════════════════════════════════════════════════════════════════ */
+function handleUrlParams() {
+  const params = new URLSearchParams(window.location.search);
+  const archId = params.get('archetype');
+  if (archId) { setTimeout(() => openDetail(archId), 200); return; }
+  const newFrom = params.get('newFromHook');
+  if (newFrom) setTimeout(() => openEditModal(null, newFrom), 200);
+}
+
 document.addEventListener('keydown', e => {
-  if (e.key==='Escape') {
-    closeModal(); closeConfirm(); closeManage(); closeImport(); closeDetail();
-    if (selectMode) exitSelectMode();
-  }
+  if (e.key === 'Escape') { closeDetail(); closeEdit(); closeConfirm(); }
 });
-document.getElementById('newTypeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addType();});
-document.getElementById('newCatInput').addEventListener('keydown',e=>{if(e.key==='Enter')addCategory();});
 
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
-loadData();
-populateFilterSelects();
-updateStats();
-applyFilters();
+/* INIT */
+refresh();
+handleUrlParams();
 </script>
 </body>
 </html>

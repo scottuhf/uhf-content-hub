@@ -6,6 +6,7 @@
 <title>Content Database — Upper Hand Fantasy</title>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Roboto:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="js/hook-archetypes.js"></script>
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -14,514 +15,369 @@
   --blue:       #339AE9;
   --orange:     #FF6B35;
   --green:      #3ECF6A;
+  --purple:     #9B59B6;
+  --red:        #E74C3C;
   --white:      #FFFFFF;
   --bg:         #061525;
   --bg-card:    #0d2a47;
-  --bg-card-cs: #090f1a;
   --border-dim: #1a3a5c;
   --text-muted: #5a8ab0;
   --text-dim:   #2d4a63;
 }
 
-html, body {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--white);
-  font-family: 'Roboto', sans-serif;
-  overflow-x: hidden;
-}
+html, body { min-height: 100vh; background: var(--bg); color: var(--white); font-family: 'Roboto', sans-serif; overflow-x: hidden; }
 
 body::before {
-  content: '';
-  display: block;
-  height: 4px;
+  content: ''; display: block; height: 4px;
   background: linear-gradient(90deg, var(--pink) 0%, var(--blue) 60%, var(--orange) 100%);
-  width: 100%;
-  position: fixed;
-  top: 0; left: 0;
-  z-index: 100;
+  width: 100%; position: fixed; top: 0; left: 0; z-index: 100;
 }
 
 /* ── HEADER ── */
 .site-header {
-  position: fixed;
-  top: 4px; left: 0; right: 0;
-  z-index: 99;
-  background: rgba(6, 21, 37, 0.92);
-  backdrop-filter: blur(12px);
+  position: fixed; top: 4px; left: 0; right: 0; z-index: 99;
+  background: rgba(6,21,37,0.95); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 40px;
-  height: 64px;
-  gap: 24px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 40px; height: 64px; gap: 24px;
 }
-
-.logo {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  text-decoration: none;
-}
-.logo-mark {
-  width: 48px; height: 48px;
-  border-radius: 8px;
-  overflow: hidden;
-  flex-shrink: 0;
-  border: 1px solid var(--border-dim);
-}
+.logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+.logo-mark { width: 48px; height: 48px; border-radius: 8px; overflow: hidden; flex-shrink: 0; border: 1px solid var(--border-dim); }
 .logo-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .logo-text { display: flex; flex-direction: column; line-height: 1; }
-.logo-top {
-  font-family: 'Oswald', sans-serif;
-  font-size: 17px; font-weight: 700;
-  letter-spacing: 2px;
-  color: #fff;
-  text-transform: uppercase;
-}
-.logo-sub {
-  font-size: 10px; letter-spacing: 3px;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  margin-top: 3px;
-}
-
-.header-nav {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-left: 1px solid var(--border-dim);
-  padding-left: 20px;
-  height: 100%;
-}
-.nav-tab {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 500;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  text-decoration: none;
-  padding: 6px 14px;
-  border-radius: 4px;
-  border: 1px solid transparent;
-  transition: all 0.18s ease;
-  white-space: nowrap;
-}
+.logo-top { font-family: 'Oswald', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 2px; color: #fff; text-transform: uppercase; }
+.logo-sub { font-size: 10px; letter-spacing: 3px; color: var(--text-muted); text-transform: uppercase; margin-top: 3px; }
+.header-nav { display: flex; align-items: center; gap: 4px; border-left: 1px solid var(--border-dim); padding-left: 20px; height: 100%; }
+.nav-tab { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); text-decoration: none; padding: 6px 14px; border-radius: 4px; border: 1px solid transparent; transition: all 0.18s; white-space: nowrap; }
 .nav-tab:hover { color: #fff; background: rgba(255,255,255,0.06); }
-.nav-tab.active {
-  color: var(--orange);
-  background: rgba(255,107,53,0.1);
-  border-color: rgba(255,107,53,0.3);
-}
-
-.header-right {
-  display: flex; align-items: center; gap: 12px;
-}
-.btn-add {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  background: var(--pink);
-  color: #fff;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 18px;
-  cursor: pointer;
-  transition: all 0.18s;
-  white-space: nowrap;
-}
+.nav-tab.active { color: var(--orange); background: rgba(255,107,53,0.1); border-color: rgba(255,107,53,0.3); }
+.header-right { display: flex; align-items: center; gap: 8px; }
+.btn-outline { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 14px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+.btn-outline:hover { color: #fff; background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.2); }
+.btn-import { color: var(--blue); border-color: rgba(51,154,233,0.3); }
+.btn-import:hover { color: var(--blue); border-color: var(--blue); background: rgba(51,154,233,0.08); }
+.btn-add { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; background: var(--pink); color: #fff; border: none; border-radius: 6px; padding: 8px 18px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
 .btn-add:hover { background: #c4085f; transform: translateY(-1px); }
 
 /* ── MAIN ── */
-.main {
-  padding: 88px 40px 80px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
+.main { padding: 88px 40px 80px; max-width: 1400px; margin: 0 auto; }
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 28px; padding-top: 20px; flex-wrap: wrap; gap: 16px; }
+.page-title { font-family: 'Oswald', sans-serif; font-size: 36px; font-weight: 700; color: #fff; letter-spacing: 1px; }
+.page-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
 
-.page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 28px;
-  padding-top: 20px;
-}
-.page-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 36px; font-weight: 700;
-  color: #fff;
-  letter-spacing: 1px;
-}
-.page-sub {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: 4px;
-}
-
-/* ── ANALYTICS BAR ── */
-.analytics-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-.stat-card {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 18px 20px;
-  border-left: 3px solid var(--orange);
-}
-.stat-card-label {
-  font-size: 10px; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  margin-bottom: 8px;
-}
-.stat-card-value {
-  font-family: 'Oswald', sans-serif;
-  font-size: 28px; font-weight: 700;
-  color: var(--orange);
-  line-height: 1;
-  margin-bottom: 4px;
-}
-.stat-card-value.pink { color: var(--pink); }
-.stat-card-value.blue { color: var(--blue); }
+/* ── STATS ── */
+.stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; border-left: 3px solid var(--orange); }
+.stat-card-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
+.stat-card-value { font-family: 'Oswald', sans-serif; font-size: 28px; font-weight: 700; color: var(--orange); line-height: 1; margin-bottom: 4px; }
+.stat-card-value.pink  { color: var(--pink); }
+.stat-card-value.blue  { color: var(--blue); }
 .stat-card-value.green { color: var(--green); }
-.stat-card-sub {
-  font-size: 11px;
-  color: var(--text-muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+.stat-card-sub { font-size: 11px; color: var(--text-muted); }
+
+/* ── CHARTS PANEL ── */
+.charts-panel { margin-bottom: 24px; display: none; }
+.charts-panel.open { display: block; }
+.charts-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.chart-card { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px; }
+.chart-card-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 14px; }
 
 /* ── FILTER BAR ── */
-.filter-bar {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 16px 20px;
-  margin-bottom: 20px;
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.filter-bar input,
-.filter-bar select {
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  color: #fff;
-  border-radius: 6px;
-  padding: 8px 12px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 13px;
-  outline: none;
-  transition: border-color 0.18s;
-}
-.filter-bar input:focus,
-.filter-bar select:focus { border-color: var(--orange); }
-.filter-bar input { flex: 1; min-width: 200px; }
-.filter-bar select { min-width: 140px; cursor: pointer; }
+.filter-bar { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 20px; margin-bottom: 24px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.filter-bar input, .filter-bar select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; }
+.filter-bar input:focus, .filter-bar select:focus { border-color: var(--orange); }
+.filter-bar input { flex: 1; min-width: 160px; }
+.filter-bar select { min-width: 120px; cursor: pointer; }
 .filter-bar select option { background: #0d1e35; }
-.results-count {
-  font-size: 12px;
-  color: var(--text-muted);
-  margin-left: auto;
-  white-space: nowrap;
-}
+.filter-pill { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.18s; white-space: nowrap; }
+.filter-pill:hover { color: #fff; }
+.filter-pill.active { border-color: var(--orange); color: var(--orange); background: rgba(255,107,53,0.08); }
+.filter-pill.active-red { border-color: var(--red); color: var(--red); background: rgba(231,76,60,0.08); }
+.filter-pill.active-blue { border-color: var(--blue); color: var(--blue); background: rgba(51,154,233,0.08); }
+.sort-dir-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 6px; padding: 8px 10px; cursor: pointer; font-size: 14px; transition: all 0.18s; line-height: 1; }
+.sort-dir-btn:hover { color: #fff; border-color: var(--orange); }
+.view-toggle { display: flex; gap: 4px; }
+.view-btn { background: var(--bg); border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
+.view-btn:hover, .view-btn.active { border-color: var(--orange); color: var(--orange); }
+.view-btn svg { width: 16px; height: 16px; fill: currentColor; }
+.results-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; margin-left: auto; }
 
-/* ── TABLE WRAPPER ── */
-.table-wrap {
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  overflow: hidden;
-  overflow-x: auto;
-}
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 900px;
-}
-.data-table th {
-  font-family: 'Oswald', sans-serif;
-  font-size: 10px; font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  padding: 12px 14px;
-  text-align: left;
-  background: rgba(0,0,0,0.2);
-  border-bottom: 1px solid var(--border-dim);
-  white-space: nowrap;
-  cursor: pointer;
-  user-select: none;
-  transition: color 0.15s;
-}
-.data-table th:hover { color: #fff; }
-.data-table th.sort-asc::after { content: ' ↑'; color: var(--orange); }
-.data-table th.sort-desc::after { content: ' ↓'; color: var(--orange); }
-.data-table td {
-  padding: 11px 14px;
-  font-size: 13px;
-  border-bottom: 1px solid rgba(26,58,92,0.5);
-  vertical-align: middle;
-  color: #cde;
-}
-.data-table tr:last-child td { border-bottom: none; }
-.data-table tbody tr {
-  transition: background 0.12s;
-  cursor: default;
-}
-.data-table tbody tr:hover { background: rgba(255,255,255,0.03); }
-.data-table tbody tr:nth-child(even) { background: rgba(0,0,0,0.08); }
-.data-table tbody tr:nth-child(even):hover { background: rgba(255,255,255,0.03); }
+/* ── GRID ── */
+.hooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; }
 
-.col-num { color: var(--text-dim); font-size: 11px; text-align: center; width: 36px; }
-.col-date { white-space: nowrap; font-size: 11px; color: var(--text-muted); }
-.col-title { max-width: 200px; }
-.col-title strong { color: #fff; font-size: 13px; font-weight: 500; display: block; margin-bottom: 2px; }
-.col-title span { font-size: 11px; color: var(--text-muted); }
-.col-hook { max-width: 220px; font-size: 12px; color: var(--text-muted); font-style: italic; }
-.col-hook-text { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.col-num-val { text-align: right; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 500; white-space: nowrap; }
-.col-eng { text-align: right; font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: var(--green); }
-.col-actions { white-space: nowrap; }
+/* ── CARDS ── */
+.hook-card {
+  background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px;
+  padding: 18px 20px; display: flex; flex-direction: column; gap: 12px;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  position: relative; cursor: pointer;
+}
+.hook-card:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,0,0,0.4); border-color: rgba(255,107,53,0.4); }
+.hook-card.hook-needed { border-left: 3px solid var(--red); }
+.hook-card.select-mode { cursor: pointer; user-select: none; }
+.hook-card.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
+.hook-card-top { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.reel-name { font-size: 14px; font-weight: 700; color: #fff; line-height: 1.3; }
+.reel-name a { color: #fff; text-decoration: none; }
+.reel-name a:hover { color: var(--blue); }
+.hook-text { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.5; font-style: italic; }
+.hook-needed-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(231,76,60,0.15); border: 1px solid rgba(231,76,60,0.35); color: var(--red); font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 4px 10px; border-radius: 4px; }
+.hook-card-metrics { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.metric-item { display: flex; flex-direction: column; gap: 2px; }
+.metric-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.metric-value { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: #fff; line-height: 1; }
+.metric-value.orange { color: var(--orange); }
+.metric-value.blue   { color: var(--blue); }
+.metric-value.pink   { color: var(--pink); }
+.metric-value.green  { color: var(--green); }
+.hook-card-secondary { display: flex; gap: 12px; padding-top: 8px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.sec-item { display: flex; flex-direction: column; gap: 1px; }
+.sec-label { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+.sec-value { font-size: 12px; font-weight: 500; color: var(--text-muted); }
+.hook-card-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; border-top: 1px solid var(--border-dim); }
+.hook-actions { display: flex; gap: 5px; }
+
+/* ── LIST VIEW ── */
+.hooks-list { display: flex; flex-direction: column; gap: 8px; }
+.hook-list-item { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 18px; display: grid; grid-template-columns: 1fr auto auto auto auto auto; align-items: center; gap: 14px; transition: border-color 0.18s, background 0.15s; cursor: pointer; position: relative; }
+.hook-list-item:hover { border-color: rgba(255,107,53,0.4); background: rgba(255,107,53,0.04); }
+.hook-list-item.hook-needed { border-left: 3px solid var(--red); }
+.hook-list-item.select-mode { user-select: none; }
+.hook-list-item.selected { border-color: var(--orange) !important; background: rgba(255,107,53,0.07); }
+.hook-list-reel { font-size: 14px; font-weight: 600; color: #fff; }
+.hook-list-reel a { color: #fff; text-decoration: none; }
+.hook-list-hook { font-size: 12px; color: var(--text-muted); font-style: italic; margin-top: 2px; }
+.hook-list-badges { display: flex; gap: 5px; margin-top: 4px; flex-wrap: wrap; }
+.hook-list-stat { display: flex; flex-direction: column; align-items: flex-end; gap: 1px; }
+.hook-list-stat-val { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; }
+.hook-list-stat-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); }
+
+/* ── SELECT MODE ── */
+.select-overlay { position: absolute; inset: 0; z-index: 5; border-radius: inherit; }
+.card-checkbox-wrap { position: absolute; top: 14px; right: 14px; z-index: 10; }
+.card-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--orange); }
+.list-checkbox-wrap { display: flex; align-items: center; z-index: 10; position: relative; }
+
+/* ── BULK BAR ── */
+.bulk-bar { position: fixed; bottom: 0; left: 0; right: 0; z-index: 150; background: rgba(10,24,42,0.98); border-top: 2px solid var(--orange); backdrop-filter: blur(16px); padding: 14px 40px; display: flex; align-items: center; gap: 12px; transform: translateY(100%); transition: transform 0.25s ease; }
+.bulk-bar.open { transform: translateY(0); }
+.bulk-count { font-family: 'Oswald', sans-serif; font-size: 16px; font-weight: 600; color: var(--text-muted); min-width: 110px; }
+.bulk-count strong { color: var(--orange); font-size: 20px; }
+.btn-bulk { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border-radius: 6px; padding: 8px 16px; cursor: pointer; transition: all 0.18s; border: 1px solid var(--border-dim); background: transparent; color: var(--text-muted); }
+.btn-bulk:hover { color: #fff; border-color: rgba(255,255,255,0.3); }
+.btn-bulk-delete { background: rgba(231,76,60,0.12); color: var(--red); border-color: rgba(231,76,60,0.4); }
+.btn-bulk-delete:hover { background: var(--red); color: #fff; border-color: var(--red); }
+.btn-bulk-delete:disabled { opacity: 0.4; pointer-events: none; }
+.bulk-spacer { margin-left: auto; }
 
 /* ── BADGES ── */
-.badge {
-  display: inline-block;
-  font-size: 9px; font-weight: 700; letter-spacing: 1px;
-  text-transform: uppercase;
-  padding: 3px 8px;
-  border-radius: 3px;
-  white-space: nowrap;
-}
-.badge-published { background: rgba(237,10,115,0.15); color: var(--pink); }
-.badge-draft     { background: rgba(90,138,176,0.12); color: var(--text-muted); }
-.badge-idea      { background: rgba(51,154,233,0.12); color: var(--blue); }
-.badge-archived  { background: rgba(45,74,99,0.3);    color: var(--text-dim); }
+.type-badge { display: inline-block; font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; white-space: nowrap; }
+.type-c0 { background: rgba(51,154,233,0.15);  color: var(--blue); }
+.type-c1 { background: rgba(237,10,115,0.15);  color: var(--pink); }
+.type-c2 { background: rgba(255,107,53,0.15);  color: var(--orange); }
+.type-c3 { background: rgba(62,207,106,0.12);  color: var(--green); }
+.type-c4 { background: rgba(155,89,182,0.15);  color: var(--purple); }
+.cat-badge { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 7px; border-radius: 3px; background: rgba(255,255,255,0.06); color: var(--text-muted); white-space: nowrap; }
+.date-badge { font-size: 10px; color: var(--text-dim); }
+.outlier-badge { display: inline-flex; align-items: center; gap: 3px; font-size: 9px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; padding: 2px 8px; border-radius: 3px; white-space: nowrap; }
+.outlier-star { background: rgba(255,215,0,0.15); color: #FFD700; border: 1px solid rgba(255,215,0,0.3); }
+.outlier-near { background: rgba(255,107,53,0.12); color: var(--orange); border: 1px solid rgba(255,107,53,0.25); }
 
-.type-badge {
-  display: inline-block;
-  font-size: 9px; font-weight: 600; letter-spacing: 0.5px;
-  text-transform: uppercase;
-  padding: 2px 7px;
-  border-radius: 3px;
-  background: rgba(255,107,53,0.1);
-  color: var(--orange);
-  white-space: nowrap;
-}
+/* ── SCORE BADGE ── */
+.score-badge { display: inline-flex; align-items: center; gap: 6px; font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; }
+.score-num { font-size: 18px; font-weight: 700; }
 
 /* ── ACTION BUTTONS ── */
-.action-btn {
-  background: none;
-  border: 1px solid var(--border-dim);
-  color: var(--text-muted);
-  border-radius: 5px;
-  width: 30px; height: 30px;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-right: 4px;
-}
+.action-btn { background: none; border: 1px solid var(--border-dim); color: var(--text-muted); border-radius: 5px; width: 30px; height: 30px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s; }
 .action-btn:hover { border-color: #fff; color: #fff; }
 .action-btn.delete:hover { border-color: #ff4444; color: #ff4444; }
+.action-btn.copy:hover { border-color: var(--green); color: var(--green); }
+.action-btn.copy.copied { border-color: var(--green); color: var(--green); }
 .action-btn svg { width: 13px; height: 13px; fill: currentColor; }
 
 /* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-muted);
-}
+.empty-state { text-align: center; padding: 80px 20px; color: var(--text-muted); }
 .empty-state svg { width: 48px; height: 48px; fill: var(--text-dim); margin-bottom: 16px; }
 .empty-state h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: var(--text-muted); margin-bottom: 8px; }
 .empty-state p { font-size: 13px; color: var(--text-dim); }
 
-/* ── MODAL ── */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.7);
-  z-index: 200;
-  display: flex; align-items: center; justify-content: center;
-  padding: 20px;
-  backdrop-filter: blur(4px);
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.2s;
-}
+/* ── MODAL BASE ── */
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(4px); opacity: 0; visibility: hidden; transition: all 0.2s; }
 .modal-overlay.open { opacity: 1; visibility: visible; }
-.modal {
-  background: #0d1e35;
-  border: 1px solid var(--border-dim);
-  border-radius: 12px;
-  width: 100%;
-  max-width: 560px;
-  max-height: 90vh;
-  overflow-y: auto;
-  transform: translateY(16px);
-  transition: transform 0.2s;
-}
+.modal { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 12px; width: 100%; max-width: 600px; max-height: 92vh; overflow-y: auto; transform: translateY(16px); transition: transform 0.2s; }
 .modal-overlay.open .modal { transform: translateY(0); }
-.modal-header {
-  padding: 20px 24px 16px;
-  border-bottom: 1px solid var(--border-dim);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.modal-title {
-  font-family: 'Oswald', sans-serif;
-  font-size: 20px; font-weight: 700;
-  color: #fff;
-}
-.modal-close {
-  background: none; border: none;
-  color: var(--text-muted);
-  cursor: pointer;
-  font-size: 22px;
-  line-height: 1;
-  padding: 4px;
-  transition: color 0.15s;
-}
+.modal-header { padding: 18px 24px 14px; border-bottom: 1px solid var(--border-dim); display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.modal-title { font-family: 'Oswald', sans-serif; font-size: 20px; font-weight: 700; color: #fff; line-height: 1.2; }
+.modal-close { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 22px; line-height: 1; padding: 2px 4px; transition: color 0.15s; flex-shrink: 0; }
 .modal-close:hover { color: #fff; }
-.modal-body { padding: 20px 24px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
-.form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-.form-group:last-child { margin-bottom: 0; }
-.form-label {
-  font-size: 10px; font-weight: 700; letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-}
-.form-control {
-  background: var(--bg);
-  border: 1px solid var(--border-dim);
-  color: #fff;
-  border-radius: 6px;
-  padding: 10px 12px;
-  font-family: 'Roboto', sans-serif;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.18s;
-  width: 100%;
-}
+.modal-body { padding: 18px 24px; }
+.modal-footer { padding: 14px 24px 18px; border-top: 1px solid var(--border-dim); display: flex; gap: 10px; justify-content: flex-end; }
+
+/* ── DETAIL MODAL ── */
+.detail-modal { max-width: 740px; }
+.detail-header-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px; }
+.detail-score-row { display: flex; align-items: center; gap: 20px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; }
+.detail-score-main { display: flex; flex-direction: column; align-items: center; gap: 4px; min-width: 70px; }
+.detail-score-num { font-family: 'Oswald', sans-serif; font-size: 40px; font-weight: 700; line-height: 1; }
+.detail-score-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; font-weight: 700; }
+.detail-score-gauge-wrap { flex: 1; }
+.detail-score-gauge-label { font-size: 10px; color: var(--text-muted); margin-bottom: 6px; letter-spacing: 1px; text-transform: uppercase; }
+.detail-score-gauge { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: hidden; margin-bottom: 6px; }
+.detail-score-gauge-fill { height: 100%; border-radius: 5px; transition: width 0.6s ease; }
+.detail-score-breakdown { font-size: 11px; color: var(--text-dim); display: flex; gap: 16px; flex-wrap: wrap; }
+.detail-score-breakdown span { color: var(--text-muted); }
+.detail-metrics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
+.detail-metric { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; }
+.detail-metric-lbl { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px; }
+.detail-metric-val { font-family: 'Oswald', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; color: #fff; }
+.detail-section-title { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
+.detail-bars { margin-bottom: 18px; }
+.detail-bar-row { margin-bottom: 12px; }
+.detail-bar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
+.detail-bar-name { font-size: 11px; color: var(--text-muted); }
+.detail-bar-val { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; }
+.detail-bar-track { height: 10px; background: var(--border-dim); border-radius: 5px; overflow: visible; position: relative; }
+.detail-bar-fill { height: 100%; border-radius: 5px; position: relative; transition: width 0.5s ease; }
+.detail-bar-bench { position: absolute; top: -3px; bottom: -3px; width: 2px; border-radius: 1px; }
+.detail-hook-box { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 14px 16px; margin-bottom: 18px; font-size: 14px; line-height: 1.6; color: rgba(255,255,255,0.85); font-style: italic; }
+.detail-chart-wrap { margin-bottom: 18px; }
+.detail-secondary { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 18px; }
+.detail-sec { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 6px; padding: 8px 10px; }
+.detail-sec-lbl { font-size: 9px; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 3px; }
+.detail-sec-val { font-size: 13px; font-weight: 500; color: var(--text-muted); }
+.detail-notes { background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+/* ── EDIT / ADD FORM ── */
+.form-section-label { font-size: 9px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin: 16px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border-dim); }
+.form-section-label:first-child { margin-top: 0; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); }
+.form-control { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 9px 12px; font-family: 'Roboto', sans-serif; font-size: 13px; outline: none; transition: border-color 0.18s; width: 100%; }
 .form-control:focus { border-color: var(--orange); }
 .form-control option { background: #0d1e35; }
-textarea.form-control { resize: vertical; min-height: 70px; }
-.eng-display {
-  font-family: 'Oswald', sans-serif;
-  font-size: 22px; font-weight: 700;
-  color: var(--green);
-  margin-top: 2px;
-}
-.modal-footer {
-  padding: 16px 24px 20px;
-  border-top: 1px solid var(--border-dim);
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-.btn {
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px; font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 22px;
-  cursor: pointer;
-  transition: all 0.18s;
-}
+textarea.form-control { resize: vertical; min-height: 80px; }
+.form-full { margin-bottom: 12px; }
+.btn { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; border: none; border-radius: 6px; padding: 10px 22px; cursor: pointer; transition: all 0.18s; }
 .btn-primary { background: var(--pink); color: #fff; }
 .btn-primary:hover { background: #c4085f; }
 .btn-secondary { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
 .btn-secondary:hover { color: #fff; border-color: #fff; }
+.btn-edit { background: rgba(51,154,233,0.12); color: var(--blue); border: 1px solid rgba(51,154,233,0.3); }
+.btn-edit:hover { background: var(--blue); color: #fff; }
 
-/* ── CONFIRM DIALOG ── */
-.confirm-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,0.8);
-  z-index: 300;
-  display: flex; align-items: center; justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.15s;
-}
+/* ── MANAGE MODAL ── */
+.manage-modal { max-width: 640px; }
+.manage-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.manage-section-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.manage-list { display: flex; flex-direction: column; gap: 5px; max-height: 260px; overflow-y: auto; margin-bottom: 10px; }
+.manage-item { display: flex; align-items: center; justify-content: space-between; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 5px; padding: 7px 10px; font-size: 13px; color: #fff; }
+.manage-add-row { display: flex; gap: 8px; }
+.manage-add-row .form-control { flex: 1; padding: 8px 10px; font-size: 13px; }
+.btn-add-item { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--orange); color: #fff; border: none; border-radius: 5px; padding: 8px 12px; cursor: pointer; transition: background 0.15s; white-space: nowrap; flex-shrink: 0; }
+.btn-add-item:hover { background: #e05a25; }
+.manage-empty { font-size: 12px; color: var(--text-dim); padding: 8px 0; font-style: italic; }
+
+/* ── IMPORT MODAL ── */
+.import-modal { max-width: 500px; }
+.import-result { text-align: center; padding: 20px 0; }
+.import-count { font-family: 'Oswald', sans-serif; font-size: 48px; font-weight: 700; color: var(--blue); line-height: 1; }
+.import-sub { font-size: 14px; color: var(--text-muted); margin-top: 8px; }
+.import-warning { background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.3); border-radius: 8px; padding: 12px 16px; margin-top: 16px; font-size: 13px; color: var(--red); display: flex; align-items: center; gap: 8px; }
+.import-options { display: flex; flex-direction: column; gap: 8px; margin-top: 20px; }
+.import-option { display: flex; align-items: flex-start; gap: 10px; background: var(--bg); border: 1px solid var(--border-dim); border-radius: 8px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s; }
+.import-option:hover { border-color: var(--orange); }
+.import-option input[type=radio] { margin-top: 2px; accent-color: var(--orange); }
+.import-option-label { font-size: 13px; font-weight: 600; color: #fff; }
+.import-option-desc { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── CONFIRM ── */
+.confirm-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.15s; }
 .confirm-overlay.open { opacity: 1; visibility: visible; }
-.confirm-box {
-  background: #0d1e35;
-  border: 1px solid var(--border-dim);
-  border-radius: 10px;
-  padding: 28px 32px;
-  max-width: 380px;
-  text-align: center;
-}
+.confirm-box { background: #0d1e35; border: 1px solid var(--border-dim); border-radius: 10px; padding: 28px 32px; max-width: 420px; text-align: center; }
 .confirm-box h3 { font-family: 'Oswald', sans-serif; font-size: 18px; color: #fff; margin-bottom: 10px; }
-.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+.confirm-box p { font-size: 13px; color: var(--text-muted); margin-bottom: 8px; line-height: 1.6; }
+.confirm-warning { font-size: 12px; color: var(--red); background: rgba(231,76,60,0.1); border: 1px solid rgba(231,76,60,0.25); border-radius: 6px; padding: 8px 12px; margin-bottom: 20px; }
 .confirm-btns { display: flex; gap: 10px; justify-content: center; }
 .btn-danger { background: #c0392b; color: #fff; }
 .btn-danger:hover { background: #e74c3c; }
 
-/* ── SORT INDICATORS ── */
-.data-table th.sortable { cursor: pointer; user-select: none; }
-.data-table th.sortable:hover { color: #fff; }
-.sort-indicator { color: var(--text-dim); margin-left: 4px; font-size: 9px; }
-.data-table th.sort-active { color: var(--pink); border-bottom: 2px solid var(--pink); }
-.data-table th.sort-active .sort-indicator { color: var(--pink); }
+/* ── ADVANCED FILTERS PANEL ── */
+.adv-filters-panel { background: var(--bg-card); border: 1px solid var(--border-dim); border-radius: 10px; padding: 18px 20px 14px; margin-bottom: 24px; display: none; }
+.adv-filters-panel.open { display: block; }
+.adv-filters-title { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid var(--border-dim); }
+.adv-filters-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; margin-bottom: 14px; }
+.adv-filter-field { display: flex; flex-direction: column; gap: 5px; }
+.adv-filter-label { font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-dim); }
+.adv-filter-inputs { display: flex; gap: 6px; align-items: center; }
+.adv-filter-inputs input, .adv-filter-inputs select { background: var(--bg); border: 1px solid var(--border-dim); color: #fff; border-radius: 6px; padding: 7px 10px; font-family: 'Roboto', sans-serif; font-size: 12px; outline: none; transition: border-color 0.18s; min-width: 0; flex: 1; }
+.adv-filter-inputs input:focus, .adv-filter-inputs select:focus { border-color: var(--orange); }
+.adv-filter-inputs select option { background: #0d1e35; }
+.adv-filter-sep { font-size: 10px; color: var(--text-dim); flex-shrink: 0; }
+.adv-filter-check { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.adv-filter-check input[type=checkbox] { accent-color: var(--orange); width: 15px; height: 15px; cursor: pointer; }
+.adv-filter-check span { font-size: 12px; color: var(--text-muted); }
+.adv-filters-footer { display: flex; gap: 10px; align-items: center; padding-top: 12px; border-top: 1px solid var(--border-dim); flex-wrap: wrap; }
+.adv-active-count { font-size: 11px; color: var(--text-muted); margin-left: auto; }
+.adv-active-count strong { color: var(--orange); }
+.btn-clear-filters { font-family: 'Roboto', sans-serif; font-size: 12px; color: var(--red); background: none; border: 1px solid rgba(231,76,60,0.3); border-radius: 5px; cursor: pointer; padding: 6px 12px; transition: all 0.15s; }
+.btn-clear-filters:hover { background: rgba(231,76,60,0.1); border-color: var(--red); }
+.filter-count-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--orange); color: #fff; border-radius: 10px; font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; padding: 0 4px; margin-left: 5px; vertical-align: middle; }
 
-/* ── CHART SECTION ── */
-.chart-section {
-  margin-bottom: 20px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-dim);
-  border-radius: 8px;
-  overflow: hidden;
-}
-.chart-toggle {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 18px;
-  cursor: pointer;
-  font-family: 'Oswald', sans-serif;
-  font-size: 12px;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--text-muted);
-  border-bottom: 1px solid transparent;
-  transition: color 0.15s;
-}
-.chart-toggle:hover { color: #fff; }
-.chart-toggle.open { border-bottom-color: var(--border-dim); }
-#chartContainer { padding: 20px; }
+/* ── INSTAGRAM BUTTON ── */
+.ig-link { display: inline-flex; align-items: center; gap: 5px; background: rgba(225,48,108,0.1); border: 1px solid rgba(225,48,108,0.3); color: #e1306c; border-radius: 5px; padding: 5px 10px; font-family: 'Oswald', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; line-height: 1; }
+.ig-link:hover { background: rgba(225,48,108,0.2); border-color: #e1306c; color: #e1306c; }
+.ig-link svg { width: 11px; height: 11px; fill: currentColor; flex-shrink: 0; }
+.ig-card-link { display: flex; align-items: center; gap: 14px; background: var(--bg); border: 1px solid rgba(225,48,108,0.25); border-radius: 10px; padding: 14px 18px; margin-bottom: 18px; text-decoration: none; transition: all 0.18s; cursor: pointer; }
+.ig-card-link:hover { border-color: #e1306c; background: rgba(225,48,108,0.06); }
+.ig-card-icon { width: 38px; height: 38px; border-radius: 10px; background: rgba(225,48,108,0.12); border: 1px solid rgba(225,48,108,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.ig-card-icon svg { width: 20px; height: 20px; fill: #e1306c; }
+.ig-card-text { flex: 1; min-width: 0; }
+.ig-card-label { font-family: 'Oswald', sans-serif; font-size: 13px; font-weight: 600; color: #e1306c; letter-spacing: 0.5px; margin-bottom: 3px; }
+.ig-card-url { font-size: 11px; color: var(--text-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ig-card-arrow { font-size: 20px; color: rgba(225,48,108,0.5); flex-shrink: 0; }
 
-/* ── DETAIL ROW ── */
-.detail-row td { background: #061f38; border-top: none; padding: 16px 20px; }
-.detail-grid { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: start; }
-.ratio-display { text-align: center; padding-top: 8px; }
-.ratio-num { font-family: 'Oswald', sans-serif; font-size: 32px; font-weight: 700; color: var(--orange); }
-.ratio-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
-.stat-pills { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
-.stat-pill { background: rgba(255,255,255,0.05); border: 1px solid var(--border-dim); border-radius: 4px; padding: 4px 10px; font-size: 10px; color: var(--text-muted); }
-.stat-pill strong { color: #fff; font-size: 12px; display: block; }
-.mini-bar-wrap { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
-.mini-bar-label { font-size: 10px; color: var(--text-muted); width: 80px; text-align: right; }
-.mini-bar-track { flex: 1; height: 6px; background: var(--border-dim); border-radius: 3px; overflow: hidden; }
-.mini-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-.mini-bar-val { font-size: 10px; color: var(--white); width: 60px; }
+/* ── MIGRATION BANNER ── */
+.migration-banner { background: linear-gradient(135deg, rgba(51,154,233,0.12), rgba(155,89,182,0.12)); border: 1px solid rgba(51,154,233,0.4); border-left: 4px solid var(--blue); border-radius: 10px; padding: 16px 20px; margin-bottom: 20px; display: none; align-items: center; gap: 16px; flex-wrap: wrap; }
+.migration-banner.open { display: flex; }
+.migration-banner-icon { font-size: 24px; flex-shrink: 0; }
+.migration-banner-text { flex: 1; min-width: 220px; }
+.migration-banner-title { font-family: 'Oswald', sans-serif; font-size: 14px; font-weight: 600; color: #fff; letter-spacing: 0.5px; margin-bottom: 3px; }
+.migration-banner-sub { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+.migration-banner-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.btn-migrate { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: var(--blue); color: #fff; border: none; border-radius: 6px; padding: 9px 16px; cursor: pointer; transition: background 0.15s; }
+.btn-migrate:hover { background: #1d7fc8; }
+.btn-migrate-dismiss { background: transparent; color: var(--text-muted); border: 1px solid var(--border-dim); }
+.btn-migrate-dismiss:hover { color: #fff; border-color: #fff; }
+
+/* ── SUGGEST-SKELETON TOAST ── */
+.toast-stack { position: fixed; bottom: 24px; right: 24px; z-index: 400; display: flex; flex-direction: column; gap: 10px; max-width: 380px; }
+.toast { background: #0d1e35; border: 1px solid var(--border-dim); border-left: 4px solid var(--orange); border-radius: 10px; padding: 14px 16px; box-shadow: 0 12px 32px rgba(0,0,0,0.5); display: flex; gap: 12px; align-items: flex-start; opacity: 0; transform: translateX(20px); transition: all 0.25s ease; }
+.toast.open { opacity: 1; transform: translateX(0); }
+.toast-icon { font-size: 18px; flex-shrink: 0; line-height: 1.2; }
+.toast-body { flex: 1; min-width: 0; }
+.toast-title { font-family: 'Oswald', sans-serif; font-size: 12px; font-weight: 600; color: #fff; letter-spacing: 0.5px; margin-bottom: 4px; }
+.toast-msg { font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 8px; }
+.toast-msg em { color: rgba(255,255,255,0.85); font-style: italic; }
+.toast-action { font-family: 'Oswald', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; background: rgba(255,107,53,0.12); color: var(--orange); border: 1px solid rgba(255,107,53,0.4); border-radius: 5px; padding: 6px 12px; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.15s; }
+.toast-action:hover { background: var(--orange); color: #fff; }
+.toast-close { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 16px; line-height: 1; flex-shrink: 0; padding: 2px 4px; transition: color 0.15s; }
+.toast-close:hover { color: #fff; }
 
 @media (max-width: 900px) {
-  .site-header { padding: 0 20px; }
-  .main { padding: 88px 20px 60px; }
-  .analytics-row { grid-template-columns: repeat(2, 1fr); }
-  .header-nav { gap: 2px; padding-left: 12px; }
-  .nav-tab { padding: 5px 8px; font-size: 10px; }
+  .site-header { padding: 0 16px; }
+  .main { padding: 88px 16px 60px; }
+  .stats-row { grid-template-columns: repeat(2, 1fr); }
+  .hooks-grid { grid-template-columns: 1fr; }
+  .charts-grid { grid-template-columns: 1fr; }
+  .header-nav { gap: 2px; padding-left: 10px; }
+  .nav-tab { padding: 5px 7px; font-size: 10px; }
+  .hook-list-item { grid-template-columns: 1fr; }
+  .manage-cols { grid-template-columns: 1fr; }
+  .btn-outline { display: none; }
+  .hook-card-metrics { grid-template-columns: repeat(2, 1fr); }
+  .detail-metrics-grid { grid-template-columns: repeat(2, 1fr); }
+  .detail-secondary { grid-template-columns: repeat(2, 1fr); }
 }
 </style>
 </head>
@@ -544,106 +400,218 @@ textarea.form-control { resize: vertical; min-height: 70px; }
     <a href="shorts-hub.html" class="nav-tab">Short-Form</a>
     <a href="ideation-framework.html" class="nav-tab">Ideation Framework</a>
     <a href="video-converter.html" class="nav-tab">Video Converter</a>
+    <a href="hook-library.html" class="nav-tab">Hook Library</a>
     <a href="content-database.html" class="nav-tab active">Database</a>
   </nav>
   <div class="header-right">
-    <button class="btn-add" onclick="openModal()">+ Add Reel</button>
+    <button class="btn-outline btn-import" onclick="document.getElementById('csvFileInput').click()">↑ Import CSV</button>
+    <button class="btn-outline" onclick="openManage()">Manage Lists</button>
+    <button class="btn-add" onclick="openModal()">+ Add Hook</button>
   </div>
 </header>
+
+<input type="file" id="csvFileInput" accept=".csv" style="display:none" onchange="handleCSVFile(this)">
 
 <main class="main">
   <div class="page-header">
     <div>
       <div class="page-title">Content Database</div>
-      <div class="page-sub">Track every reel — performance, hooks, topics, and status</div>
+      <div class="page-sub">Every reel — analytics, hooks, and performance. Click any card to explore.</div>
     </div>
   </div>
 
-  <!-- ANALYTICS ROW -->
-  <div class="analytics-row" id="analyticsRow">
+  <!-- MIGRATION BANNER -->
+  <div class="migration-banner" id="migrationBanner">
+    <div class="migration-banner-icon">📦</div>
+    <div class="migration-banner-text">
+      <div class="migration-banner-title">Old content database found</div>
+      <div class="migration-banner-sub" id="migrationBannerSub">Found reels in your previous content database. Import them into this library?</div>
+    </div>
+    <div class="migration-banner-actions">
+      <button class="btn-migrate" onclick="runMigration()">Import</button>
+      <button class="btn-migrate btn-migrate-dismiss" onclick="dismissMigration()">Dismiss</button>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
     <div class="stat-card">
       <div class="stat-card-label">Total Reels</div>
       <div class="stat-card-value" id="statTotal">—</div>
-      <div class="stat-card-sub">in database</div>
+      <div class="stat-card-sub">in library</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Avg Views</div>
-      <div class="stat-card-value pink" id="statAvgViews">—</div>
-      <div class="stat-card-sub">per reel</div>
+    <div class="stat-card" style="border-left-color:var(--red);">
+      <div class="stat-card-label">Hooks Needed</div>
+      <div class="stat-card-value pink" id="statHooksNeeded">—</div>
+      <div class="stat-card-sub">missing hook text</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Avg Engagement</div>
-      <div class="stat-card-value blue" id="statAvgEng">—</div>
-      <div class="stat-card-sub">likes + comments / views</div>
+    <div class="stat-card" style="border-left-color:var(--blue);">
+      <div class="stat-card-label">Avg 3-Sec Retention</div>
+      <div class="stat-card-value blue" id="statAvgRet">—</div>
+      <div class="stat-card-sub" id="statRetBench">across logged reels</div>
     </div>
-    <div class="stat-card">
-      <div class="stat-card-label">Top Performer</div>
-      <div class="stat-card-value green" id="statTopViews">—</div>
-      <div class="stat-card-sub" id="statTopTitle">most views</div>
+    <div class="stat-card" style="border-left-color:#FFD700;">
+      <div class="stat-card-label">Outlier Reels</div>
+      <div class="stat-card-value" style="color:#FFD700;" id="statOutliers">—</div>
+      <div class="stat-card-sub">10+ followers gained</div>
+    </div>
+  </div>
+
+  <!-- CHARTS PANEL -->
+  <div class="charts-panel" id="chartsPanel">
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-card-title">📈 Followers Over Time</div>
+        <canvas id="chartFollowsTime" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">🔍 Views vs Follows (Scatter)</div>
+        <canvas id="chartViewsFollows" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <div class="chart-card-title">📊 Avg 3-Sec Retention by Category</div>
+        <canvas id="chartRetCategory" height="180"></canvas>
+      </div>
     </div>
   </div>
 
   <!-- FILTER BAR -->
   <div class="filter-bar">
-    <input type="text" id="searchInput" placeholder="Search title, hook, topic..." oninput="applyFilters()">
-    <select id="filterType" onchange="applyFilters()">
-      <option value="">All Types</option>
-      <option>Breakdown</option>
-      <option>Countdown</option>
-      <option>Curiosity</option>
-      <option>Engaging</option>
-      <option>Highlight</option>
-      <option>Meme</option>
-      <option>Preview</option>
-      <option>Promo</option>
-      <option>React</option>
-      <option>Recap</option>
-      <option>Spotlight</option>
-      <option>Tweet Reel</option>
+    <input type="text" id="searchInput" placeholder="Search reels or hooks..." oninput="applyFilters()">
+    <select id="filterCat" onchange="applyFilters()"><option value="">All Categories</option></select>
+    <select id="filterType" onchange="applyFilters()"><option value="">All Hook Types</option></select>
+    <select id="sortKey" onchange="handleSortChange()">
+      <option value="date-desc">Date: Newest First</option>
+      <option value="date-asc">Date: Oldest First</option>
+      <option value="score-desc">Score: High → Low</option>
+      <option value="follows-desc">Follows: High → Low</option>
+      <option value="views-desc">Views: High → Low</option>
+      <option value="ret3s-desc">3-Sec Ret: High → Low</option>
+      <option value="skip-asc">Skip Rate: Low → High</option>
+      <option value="likes-desc">Likes: High → Low</option>
+      <option value="shares-desc">Shares: High → Low</option>
+      <option value="name-asc">Name: A → Z</option>
+      <option value="category-asc">Category: A → Z</option>
     </select>
-    <span class="results-count" id="resultsCount">Showing 0 of 0 reels</span>
+    <button class="sort-dir-btn" id="sortDirBtn" onclick="toggleSortDir()" title="Flip sort direction">↓</button>
+    <button class="filter-pill" id="btnAdvFilters" onclick="toggleAdvFilters()">⚙ Filters<span class="filter-count-badge" id="filterBadge" style="display:none">0</span></button>
+    <button class="filter-pill" id="btnHookNeeded" onclick="toggleHookNeeded()">⚠ Hook Needed</button>
+    <button class="filter-pill" id="btnSelectMode" onclick="toggleSelectMode()">☑ Select</button>
+    <button class="filter-pill" id="btnCharts" onclick="toggleCharts()">📊 Charts</button>
+    <span class="results-label" id="resultsCount">0 reels</span>
+    <div class="view-toggle">
+      <button class="view-btn active" id="btnGrid" onclick="setView('grid')" title="Grid">
+        <svg viewBox="0 0 24 24"><path d="M3 3h8v8H3zm10 0h8v8h-8zM3 13h8v8H3zm10 0h8v8h-8z"/></svg>
+      </button>
+      <button class="view-btn" id="btnList" onclick="setView('list')" title="List">
+        <svg viewBox="0 0 24 24"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg>
+      </button>
+    </div>
   </div>
 
-  <!-- CHART SECTION -->
-  <div class="chart-section">
-    <div class="chart-toggle" id="chartToggle" onclick="toggleChart()">
-      <span>📊 Views → Followers Chart</span>
-      <span id="chartToggleIcon">▼</span>
+  <!-- ADVANCED FILTERS PANEL -->
+  <div class="adv-filters-panel" id="advFiltersPanel">
+    <div class="adv-filters-title">Advanced Filters</div>
+    <div class="adv-filters-grid">
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Followers Gained</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advFollowsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advFollowsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Views</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advViewsMin" placeholder="Min" min="0" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advViewsMax" placeholder="Max" min="0" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">3-Sec Retention %</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advRetMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advRetMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Skip Rate %</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advSkipMin" placeholder="Min" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advSkipMax" placeholder="Max" min="0" max="100" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Performance Score</div>
+        <div class="adv-filter-inputs">
+          <input type="number" id="advScoreMin" placeholder="Min" min="0" max="10" step="0.1" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="number" id="advScoreMax" placeholder="Max" min="0" max="10" step="0.1" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Date Range</div>
+        <div class="adv-filter-inputs">
+          <input type="date" id="advDateFrom" oninput="readAdvFilters()">
+          <span class="adv-filter-sep">–</span>
+          <input type="date" id="advDateTo" oninput="readAdvFilters()">
+        </div>
+      </div>
+      <div class="adv-filter-field">
+        <div class="adv-filter-label">Outlier Status</div>
+        <div class="adv-filter-inputs">
+          <select id="advOutlier" onchange="readAdvFilters()">
+            <option value="">Any</option>
+            <option value="outlier">⭐ Outlier only (10+ follows)</option>
+            <option value="near-outlier">~ Near Outlier only (6–9)</option>
+            <option value="any-outlier">Any outlier / near-outlier</option>
+            <option value="none">No outlier flag</option>
+          </select>
+        </div>
+      </div>
+      <div class="adv-filter-field" style="justify-content:flex-end;padding-top:8px;">
+        <label class="adv-filter-check">
+          <input type="checkbox" id="advHasIg" onchange="readAdvFilters()">
+          <span>Has Instagram link</span>
+        </label>
+      </div>
     </div>
-    <div id="chartContainer" style="display:none;">
-      <canvas id="reelChart" height="300"></canvas>
+    <div class="adv-filters-footer">
+      <button class="btn btn-secondary" onclick="clearAdvFilters()">✕ Clear All Filters</button>
+      <span class="adv-active-count" id="advActiveCount" style="display:none"><strong id="advActiveNum">0</strong> active filter(s)</span>
     </div>
   </div>
 
-  <!-- TABLE -->
-  <div class="table-wrap">
-    <table class="data-table" id="dataTable">
-      <thead>
-        <tr>
-          <th class="col-num">#</th>
-          <th class="sortable" id="th-date" onclick="sortBy('date')">Date<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-title" onclick="sortBy('title')">Title / Topic<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-hook" onclick="sortBy('hook')">Hook<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-type" onclick="sortBy('type')">Type<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-follows" onclick="sortBy('follows')" style="text-align:right;">Follows<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-views" onclick="sortBy('views')" style="text-align:right;">Views<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-threeSecRTR" onclick="sortBy('threeSecRTR')" style="text-align:right;">3 Sec RTR<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-skipPct" onclick="sortBy('skipPct')" style="text-align:right;">Skip%<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-likes" onclick="sortBy('likes')" style="text-align:right;">Likes<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-comments" onclick="sortBy('comments')" style="text-align:right;">Comments<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-shares" onclick="sortBy('shares')" style="text-align:right;">Shares<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-length" onclick="sortBy('length')" style="text-align:center;">Length<span class="sort-indicator">⇅</span></th>
-          <th class="sortable" id="th-eng" onclick="sortBy('eng')" style="text-align:right;">Eng%<span class="sort-indicator">⇅</span></th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody"></tbody>
-    </table>
-  </div>
+  <div id="hooksContainer"></div>
 </main>
 
-<!-- ADD/EDIT MODAL -->
-<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+<!-- DETAIL MODAL -->
+<div class="modal-overlay" id="detailOverlay" onclick="handleDetailOverlayClick(event)">
+  <div class="modal detail-modal">
+    <div class="modal-header">
+      <div style="flex:1;min-width:0;">
+        <div class="modal-title" id="detailTitle">Reel Name</div>
+        <div class="detail-header-meta" id="detailMeta"></div>
+      </div>
+      <div style="display:flex;gap:8px;flex-shrink:0;margin-top:2px;align-items:center;">
+        <a class="ig-link" id="detailIgBtn" href="#" target="_blank" rel="noopener" style="display:none;" onclick="event.stopPropagation()">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          Instagram
+        </a>
+        <button class="btn btn-edit" id="detailEditBtn" onclick="editFromDetail()">Edit</button>
+        <button class="modal-close" onclick="closeDetail()">&#x2715;</button>
+      </div>
+    </div>
+    <div class="modal-body" id="detailBody"></div>
+  </div>
+</div>
+
+<!-- ADD / EDIT MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)" style="z-index:210;">
   <div class="modal" id="modalBox">
     <div class="modal-header">
       <div class="modal-title" id="modalTitle">Add Reel</div>
@@ -651,554 +619,1304 @@ textarea.form-control { resize: vertical; min-height: 70px; }
     </div>
     <div class="modal-body">
       <input type="hidden" id="editId">
+      <div class="form-section-label">Reel Info</div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Date</label>
-          <input type="date" id="fDate" class="form-control">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Content Type</label>
-          <select id="fType" class="form-control">
-            <option>Breakdown</option>
-            <option>Countdown</option>
-            <option>Curiosity</option>
-            <option>Engaging</option>
-            <option>Highlight</option>
-            <option>Meme</option>
-            <option>Preview</option>
-            <option>Promo</option>
-            <option>React</option>
-            <option>Recap</option>
-            <option>Spotlight</option>
-            <option>Tweet Reel</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Title / Topic</label>
-        <input type="text" id="fTitle" class="form-control" placeholder="e.g. The RB Nobody Is Rostering">
-      </div>
-      <div class="form-group">
-        <label class="form-label">Hook</label>
-        <textarea id="fHook" class="form-control" placeholder="Opening hook line..."></textarea>
+        <div class="form-group"><label class="form-label">Reel Name</label><input type="text" id="fReelName" class="form-control" placeholder="e.g. Bad, Good, Best..."></div>
+        <div class="form-group"><label class="form-label">Instagram URL</label><input type="url" id="fInstagramUrl" class="form-control" placeholder="https://www.instagram.com/reel/..."></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Views</label>
-          <input type="number" id="fViews" class="form-control" placeholder="0" oninput="calcEng()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Follows Gained</label>
-          <input type="number" id="fFollows" class="form-control" placeholder="0">
-        </div>
+        <div class="form-group"><label class="form-label">Category</label><select id="fCat" class="form-control"></select></div>
+        <div class="form-group"><label class="form-label">Date</label><input type="text" id="fDate" class="form-control" placeholder="4/28/2026"></div>
+      </div>
+      <div class="form-section-label">Hook</div>
+      <div class="form-full form-group">
+        <label class="form-label">Hook Text <span style="color:var(--text-dim);font-size:9px;">(blank = Hook Needed flag)</span></label>
+        <textarea id="fText" class="form-control" style="min-height:80px;font-size:14px;" placeholder="Opening hook line..."></textarea>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Likes</label>
-          <input type="number" id="fLikes" class="form-control" placeholder="0" oninput="calcEng()">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Comments</label>
-          <input type="number" id="fComments" class="form-control" placeholder="0" oninput="calcEng()">
-        </div>
+        <div class="form-group"><label class="form-label">Hook Type</label><select id="fType" class="form-control"></select></div>
+        <div class="form-group"><label class="form-label" title="Auto-computed from data; set manually to override">Score Override (1–10)</label><input type="number" id="fScore" class="form-control" min="0" max="10" step="0.1" placeholder="Auto-computed"></div>
+      </div>
+      <div class="form-section-label">Key Metrics</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Followers Gained</label><input type="number" id="fFollowers" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Views</label><input type="number" id="fViews" class="form-control" min="0" placeholder="0"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">3 Sec RTR %</label>
-          <input type="number" step="0.1" id="fThreeSecRTR" class="form-control" placeholder="e.g. 42.0">
-        </div>
-        <div class="form-group">
-          <label class="form-label">Skip %</label>
-          <input type="number" step="0.1" id="fSkipPct" class="form-control" placeholder="e.g. 65.1">
-        </div>
+        <div class="form-group"><label class="form-label">3-Sec Retention %</label><input type="number" id="fRetention3s" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 55.0"></div>
+        <div class="form-group"><label class="form-label">Skip Rate %</label><input type="number" id="fSkipRate" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 57.0"></div>
+      </div>
+      <div class="form-section-label">Additional Metrics</div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Likes</label><input type="number" id="fLikes" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Comments</label><input type="number" id="fComments" class="form-control" min="0" placeholder="0"></div>
       </div>
       <div class="form-row">
-        <div class="form-group">
-          <label class="form-label">Engagement Rate</label>
-          <div class="eng-display" id="engDisplay">0.00%</div>
-        </div>
+        <div class="form-group"><label class="form-label">Shares</label><input type="number" id="fShares" class="form-control" min="0" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">Length (m:ss)</label><input type="text" id="fLength" class="form-control" placeholder="e.g. 1:26"></div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Notes</label>
-        <textarea id="fNotes" class="form-control" placeholder="Additional notes, ideas, context..."></textarea>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Avg Watch Time (m:ss)</label><input type="text" id="fAvgWtSec" class="form-control" placeholder="e.g. 0:22"></div>
+        <div class="form-group"><label class="form-label">Avg WT %</label><input type="number" id="fAvgWtPct" class="form-control" min="0" max="100" step="0.1" placeholder="e.g. 18.4"></div>
       </div>
+      <div class="form-section-label">Multipliers <span style="font-weight:400;color:var(--text-dim);">(least important)</span></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Follows (?x)</label><input type="number" id="fFollowsX" class="form-control" min="0" step="0.1" placeholder="0.0"></div>
+        <div class="form-group"><label class="form-label">Views (?x)</label><input type="number" id="fViewsX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Likes (?x)</label><input type="number" id="fLikesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
+        <div class="form-group"><label class="form-label">Shares (?x)</label><input type="number" id="fSharesX" class="form-control" min="0" step="0.1" placeholder="1.0"></div>
+      </div>
+      <div class="form-section-label">Notes</div>
+      <div class="form-full form-group"><textarea id="fNotes" class="form-control" placeholder="Any context or observations..."></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveReel()">Save Reel</button>
+      <button class="btn btn-primary" onclick="saveHook()">Save</button>
     </div>
   </div>
 </div>
 
-<!-- CONFIRM DIALOG -->
+<!-- IMPORT MODAL -->
+<div class="modal-overlay" id="importOverlay" onclick="handleImportOverlayClick(event)" style="z-index:220;">
+  <div class="modal import-modal">
+    <div class="modal-header"><div class="modal-title">Import CSV</div><button class="modal-close" onclick="closeImport()">&#x2715;</button></div>
+    <div class="modal-body">
+      <div class="import-result">
+        <div class="import-count" id="importCount">0</div>
+        <div class="import-sub" id="importSub">reels found in CSV</div>
+        <div id="importBreakdown" style="display:none;margin-top:12px;display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+          <div style="text-align:center;">
+            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--green);" id="importNewCount">0</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">new reels</div>
+          </div>
+          <div style="text-align:center;">
+            <div style="font-family:'Oswald',sans-serif;font-size:24px;font-weight:700;color:var(--text-dim);" id="importDupCount">0</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">already in library</div>
+          </div>
+        </div>
+        <div class="import-warning" id="importWarning" style="display:none;margin-top:12px;"><span>⚠</span><span id="importWarningText"></span></div>
+      </div>
+      <div class="import-options">
+        <label class="import-option"><input type="radio" name="importMode" value="merge" checked><div><div class="import-option-label">Smart Merge <span style="color:var(--green);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-left:6px;">Recommended</span></div><div class="import-option-desc">Add only new reels — skip any that already exist in your library (matched by reel name)</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="append"><div><div class="import-option-label">Append All</div><div class="import-option-desc">Add every row from the CSV, even if the reel name already exists</div></div></label>
+        <label class="import-option"><input type="radio" name="importMode" value="replace"><div><div class="import-option-label">Replace Library</div><div class="import-option-desc">Clear all existing entries and import fresh — cannot be undone</div></div></label>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeImport()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmImport()">Import</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE LISTS MODAL -->
+<div class="modal-overlay" id="manageOverlay" onclick="handleManageOverlayClick(event)" style="z-index:230;">
+  <div class="modal manage-modal">
+    <div class="modal-header"><div class="modal-title">Manage Lists</div><button class="modal-close" onclick="closeManage()">&#x2715;</button></div>
+    <div class="modal-body">
+      <div class="manage-cols">
+        <div>
+          <div class="manage-section-title">Hook Types</div>
+          <div class="manage-list" id="manageTypesList"></div>
+          <div class="manage-add-row"><input type="text" id="newTypeInput" class="form-control" placeholder="New type..."><button class="btn-add-item" onclick="addType()">+ Add</button></div>
+        </div>
+        <div>
+          <div class="manage-section-title">Content Categories</div>
+          <div class="manage-list" id="manageCatsList"></div>
+          <div class="manage-add-row"><input type="text" id="newCatInput" class="form-control" placeholder="New category..."><button class="btn-add-item" onclick="addCategory()">+ Add</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeManage()">Done</button></div>
+  </div>
+</div>
+
+<!-- BULK ACTION BAR -->
+<div class="bulk-bar" id="bulkBar">
+  <div class="bulk-count"><strong id="bulkSelectedCount">0</strong> selected</div>
+  <button class="btn-bulk" onclick="selectAll()">Select All</button>
+  <button class="btn-bulk" onclick="deselectAll()">Deselect All</button>
+  <button class="btn-bulk btn-bulk-delete" id="btnBulkDelete" onclick="requestBulkDelete()" disabled>🗑 Delete Selected</button>
+  <div class="bulk-spacer"></div>
+  <button class="btn-bulk" onclick="toggleSelectMode()">✕ Cancel</button>
+</div>
+
+<!-- TOAST STACK (suggest-skeleton) -->
+<div class="toast-stack" id="toastStack"></div>
+
+<!-- CONFIRM -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <h3>Delete Reel?</h3>
-    <p>This action cannot be undone. The reel and all its data will be permanently removed.</p>
+    <h3 id="confirmTitle">Delete?</h3>
+    <p id="confirmMsg"></p>
+    <p class="confirm-warning" id="confirmWarning" style="display:none;"></p>
     <div class="confirm-btns">
       <button class="btn btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
+      <button class="btn btn-danger" id="confirmDeleteBtn" onclick="confirmDelete()">Delete</button>
     </div>
   </div>
 </div>
 
 <script>
-const STORAGE_KEY = 'uhf_content_db_v3';
-let reels = [];
-let deleteTargetId = null;
-let currentSort = { col: 'date', dir: 'desc' };
-let chartInstance = null;
-let chartBuilt = false;
-let expandedRowId = null;
+/* ══════════════════════════════════════════════
+   STORAGE & STATE
+══════════════════════════════════════════════ */
+const STORAGE_KEY      = 'uhf_hook_library';
+const TYPES_KEY        = 'uhf_hook_types';
+const CATS_KEY         = 'uhf_hook_categories';
+const OLD_DB_KEY       = 'uhf_content_db_v3';
+const MIGRATED_FLAG    = 'uhf_content_db_v3_migrated';
 
-const SEED_DATA = [
-  { id: 1,  date: '2026-04-02', title: 'Early Draft Trends',                hook: '', type: 'Countdown',  views: 35600,   likes: 637,   comments: 9,   shares: 40,    avgWatchTime: '0.0%',   length: '2:10', notes: '', follows: 6,  threeSecRTR: 42.0, skipPct: 65.1 },
-  { id: 2,  date: '2026-04-02', title: 'Kirk Cousins Week 1',               hook: '', type: 'Tweet Reel', views: 59000,   likes: 856,   comments: 30,  shares: 242,   avgWatchTime: '0.0%',   length: '0:08', notes: '', follows: 1,  threeSecRTR: 55.0, skipPct: 55.0 },
-  { id: 3,  date: '2026-04-01', title: '3 Rookie Sleepers',                 hook: '', type: 'Countdown',  views: 29000,   likes: 644,   comments: 17,  shares: 55,    avgWatchTime: '0.0%',   length: '1:49', notes: '', follows: 4,  threeSecRTR: 41.6, skipPct: 65.4 },
-  { id: 4,  date: '2026-03-31', title: 'Jeremiyah Love to the Giants?',     hook: '', type: 'Breakdown',  views: 31000,   likes: 541,   comments: 44,  shares: 153,   avgWatchTime: '0.0%',   length: '1:51', notes: '', follows: 1,  threeSecRTR: 46.9, skipPct: 61.4 },
-  { id: 5,  date: '2026-03-30', title: 'Fixing the Dolphins',               hook: '', type: 'Countdown',  views: 30000,   likes: 552,   comments: 18,  shares: 57,    avgWatchTime: '0.0%',   length: '1:38', notes: '', follows: 0,  threeSecRTR: 44.3, skipPct: 63.5 },
-  { id: 6,  date: '2026-03-27', title: 'Buy, Sell, Hold',                   hook: '', type: 'Countdown',  views: 34000,   likes: 499,   comments: 23,  shares: 41,    avgWatchTime: '0.0%',   length: '1:54', notes: '', follows: 0,  threeSecRTR: 45.2, skipPct: 63.6 },
-  { id: 7,  date: '2026-03-26', title: 'Age of Peak Production',            hook: '', type: 'Breakdown',  views: 33000,   likes: 630,   comments: 33,  shares: 52,    avgWatchTime: '23.6%',  length: '1:29', notes: '', follows: 3,  threeSecRTR: 42.4, skipPct: 65.8 },
-  { id: 8,  date: '2026-03-25', title: 'Dynasty WR Stat Tiers',             hook: '', type: 'Engaging',   views: 25000,   likes: 411,   comments: 12,  shares: 35,    avgWatchTime: '9.9%',   length: '2:32', notes: '', follows: 1,  threeSecRTR: 39.0, skipPct: 67.8 },
-  { id: 9,  date: '2026-03-24', title: 'Free Agents Remaining',             hook: '', type: 'Tweet Reel', views: 78000,   likes: 792,   comments: 47,  shares: 155,   avgWatchTime: '63.6%',  length: '0:11', notes: '', follows: 0,  threeSecRTR: 66.3, skipPct: 44.0 },
-  { id: 10, date: '2026-03-24', title: 'B. Robinson Dilemma',               hook: '', type: 'Meme',       views: 61000,   likes: 1200,  comments: 11,  shares: 1800,  avgWatchTime: '66.7%',  length: '0:09', notes: '', follows: 0,  threeSecRTR: 54.0, skipPct: 57.9 },
-  { id: 11, date: '2026-03-23', title: 'Steelers Backfield',                hook: '', type: 'Breakdown',  views: 43000,   likes: 866,   comments: 14,  shares: 53,    avgWatchTime: '20.0%',  length: '1:10', notes: '', follows: 7,  threeSecRTR: 48.4, skipPct: 60.7 },
-  { id: 12, date: '2026-03-22', title: 'Chig Okonkwo Breakout',             hook: '', type: 'Breakdown',  views: 54000,   likes: 2300,  comments: 59,  shares: 357,   avgWatchTime: '20.0%',  length: '1:50', notes: '', follows: 41, threeSecRTR: 53.0, skipPct: 57.3 },
-  { id: 13, date: '2026-03-22', title: 'Mike Evans Comeback',               hook: '', type: 'Breakdown',  views: 24000,   likes: 379,   comments: 3,   shares: 27,    avgWatchTime: '11.5%',  length: '1:27', notes: '', follows: 0,  threeSecRTR: 37.8, skipPct: 68.7 },
-  { id: 14, date: '2026-03-20', title: '5 Sneaky Free Agency Winners',      hook: '', type: 'Countdown',  views: 38000,   likes: 599,   comments: 5,   shares: 22,    avgWatchTime: '21.3%',  length: '1:29', notes: '', follows: 2,  threeSecRTR: null, skipPct: 65.5 },
-  { id: 15, date: '2026-03-19', title: 'Bhayshul Tuten in Trouble',        hook: '', type: 'Breakdown',  views: 36000,   likes: 634,   comments: 32,  shares: 87,    avgWatchTime: '17.5%',  length: '1:43', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.1 },
-  { id: 16, date: '2026-03-18', title: 'Jaylen Waddle Fallout',            hook: '', type: 'Breakdown',  views: 29000,   likes: 735,   comments: 27,  shares: 105,   avgWatchTime: '13.5%',  length: '2:58', notes: '', follows: 0,  threeSecRTR: null, skipPct: 66.0 },
-  { id: 17, date: '2026-03-16', title: 'Dynasty Classes',                  hook: '', type: 'Promo',      views: 44000,   likes: 496,   comments: 673, shares: 34,    avgWatchTime: '13.2%',  length: '1:31', notes: '', follows: 1,  threeSecRTR: null, skipPct: 71.7 },
-  { id: 18, date: '2026-03-14', title: 'Two Running Backs (Emergent)',      hook: '', type: 'Promo',      views: 57000,   likes: 1200,  comments: 63,  shares: 101,   avgWatchTime: '18.3%',  length: '2:49', notes: '', follows: 2,  threeSecRTR: null, skipPct: 60.4 },
-  { id: 19, date: '2026-03-13', title: 'Kenneth Walker React',              hook: '', type: 'React',      views: 29000,   likes: 371,   comments: 32,  shares: 18,    avgWatchTime: '14.2%',  length: '1:46', notes: '', follows: 2,  threeSecRTR: null, skipPct: 60.8 },
-  { id: 20, date: '2026-03-12', title: 'Luther Burden Fallout',             hook: '', type: 'Breakdown',  views: 46000,   likes: 890,   comments: 36,  shares: 110,   avgWatchTime: '14.0%',  length: '1:33', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.7 },
-  { id: 21, date: '2026-03-10', title: 'Free Agency Winners',               hook: '', type: 'Countdown',  views: 45000,   likes: 794,   comments: 39,  shares: 50,    avgWatchTime: '20.3%',  length: '2:52', notes: '', follows: 3,  threeSecRTR: null, skipPct: 61.2 },
-  { id: 22, date: '2026-03-09', title: 'New WRs for Top QBs',               hook: '', type: 'Countdown',  views: 32000,   likes: 348,   comments: 36,  shares: 3,     avgWatchTime: '9.4%',   length: '2:07', notes: '', follows: 1,  threeSecRTR: null, skipPct: 71.1 },
-  { id: 23, date: '2026-03-08', title: 'Stocks Set to Soar',                hook: '', type: 'Countdown',  views: 37000,   likes: 748,   comments: 29,  shares: 32,    avgWatchTime: '16.1%',  length: '3:00', notes: '', follows: 1,  threeSecRTR: null, skipPct: 65.4 },
-  { id: 24, date: '2026-03-08', title: 'Stock Falling',                     hook: '', type: 'Countdown',  views: 33000,   likes: 477,   comments: 12,  shares: 7,     avgWatchTime: '15.2%',  length: '2:18', notes: '', follows: 0,  threeSecRTR: null, skipPct: 68.8 },
-  { id: 25, date: '2026-03-07', title: 'Buy or Sell Rumors',                hook: '', type: 'Engaging',   views: 34000,   likes: 531,   comments: 18,  shares: 15,    avgWatchTime: '15.9%',  length: '1:47', notes: '', follows: 0,  threeSecRTR: null, skipPct: 59.5 },
-  { id: 26, date: '2026-03-06', title: 'Free Agent RB Fits',                hook: '', type: 'Countdown',  views: 30000,   likes: 452,   comments: 9,   shares: 33,    avgWatchTime: '9.8%',   length: '1:52', notes: '', follows: 1,  threeSecRTR: null, skipPct: 55.9 },
-  { id: 27, date: '2026-03-05', title: 'RJ Harvey Downfall',                hook: '', type: 'Breakdown',  views: 43000,   likes: 757,   comments: 41,  shares: 160,   avgWatchTime: '22.2%',  length: '1:21', notes: '', follows: 4,  threeSecRTR: null, skipPct: 55.3 },
-  { id: 28, date: '2026-03-04', title: 'David Montgomery Houston',          hook: '', type: 'Countdown',  views: 39000,   likes: 782,   comments: 14,  shares: 42,    avgWatchTime: '24.3%',  length: '1:14', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.8 },
-  { id: 29, date: '2026-03-04', title: '6 New Homes for Players',           hook: '', type: 'Countdown',  views: 41000,   likes: 858,   comments: 55,  shares: 44,    avgWatchTime: '20.8%',  length: '2:39', notes: '', follows: 0,  threeSecRTR: null, skipPct: 65.1 },
-  { id: 30, date: '2026-03-01', title: 'WR Prospect Overview',              hook: '', type: 'Engaging',   views: 40000,   likes: 616,   comments: 16,  shares: 20,    avgWatchTime: '9.8%',   length: '2:33', notes: '', follows: 4,  threeSecRTR: null, skipPct: 68.6 },
-  { id: 31, date: '2026-02-28', title: 'Combine Breakdown',                 hook: '', type: 'Recap',      views: 17000,   likes: 267,   comments: 7,   shares: 7,     avgWatchTime: '10.4%',  length: '1:17', notes: '', follows: 0,  threeSecRTR: null, skipPct: 75.6 },
-  { id: 32, date: '2026-02-27', title: '40 Yard Dash (Emergent)',           hook: '', type: 'Promo',      views: 23000,   likes: 351,   comments: 18,  shares: 84,    avgWatchTime: '12.2%',  length: '1:30', notes: '', follows: 1,  threeSecRTR: null, skipPct: 68.5 },
-  { id: 33, date: '2026-02-27', title: '3 Prospects Draft Stock Climbing',  hook: '', type: 'Countdown',  views: 22000,   likes: 384,   comments: 6,   shares: 7,     avgWatchTime: '14.5%',  length: '1:57', notes: '', follows: 0,  threeSecRTR: null, skipPct: 69.3 },
-  { id: 34, date: '2026-02-25', title: 'Post-Cut Winners',                  hook: '', type: 'Engaging',   views: 29000,   likes: 314,   comments: 5,   shares: 10,    avgWatchTime: '25.0%',  length: '0:44', notes: '', follows: 0,  threeSecRTR: null, skipPct: 69.3 },
-  { id: 35, date: '2026-02-24', title: 'Jets and Breece Hall',              hook: '', type: 'Meme',       views: 52000,   likes: 1100,  comments: 25,  shares: 1100,  avgWatchTime: '50.0%',  length: '0:10', notes: '', follows: 1,  threeSecRTR: null, skipPct: 61.0 },
-  { id: 36, date: '2026-02-19', title: 'Colston Loveland Elite',            hook: '', type: 'Breakdown',  views: 29000,   likes: 368,   comments: 11,  shares: 7,     avgWatchTime: '25.0%',  length: '0:32', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 37, date: '2026-02-18', title: 'Players on the Rise',               hook: '', type: 'Countdown',  views: 31000,   likes: 462,   comments: 10,  shares: 25,    avgWatchTime: '16.9%',  length: '1:58', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 38, date: '2026-02-17', title: 'Time to Panic Dynasty',             hook: '', type: 'Countdown',  views: 55000,   likes: 727,   comments: 23,  shares: 75,    avgWatchTime: '22.4%',  length: '1:25', notes: '', follows: 2,  threeSecRTR: null, skipPct: null },
-  { id: 39, date: '2026-02-16', title: 'Potential Risers',                  hook: '', type: 'Countdown',  views: 68000,   likes: 1000,  comments: 40,  shares: 79,    avgWatchTime: '27.1%',  length: '1:10', notes: '', follows: 5,  threeSecRTR: null, skipPct: null },
-  { id: 40, date: '2026-02-15', title: 'Rhamondre Stevenson New RB1',      hook: '', type: 'Breakdown',  views: 35000,   likes: 454,   comments: 9,   shares: 46,    avgWatchTime: '11.5%',  length: '1:18', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 41, date: '2026-02-12', title: 'Klint Kubiak Hired Winners',        hook: '', type: 'Countdown',  views: 72000,   likes: 3500,  comments: 42,  shares: 901,   avgWatchTime: '31.6%',  length: '1:35', notes: '', follows: 52, threeSecRTR: null, skipPct: null },
-  { id: 42, date: '2026-02-10', title: '2016 NFL Trivia',                   hook: '', type: 'Engaging',   views: 23000,   likes: 242,   comments: 7,   shares: 23,    avgWatchTime: '15.1%',  length: '2:06', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 43, date: '2026-02-08', title: 'JSN Historic Season (OG)',          hook: '', type: 'Promo',      views: 31000,   likes: 558,   comments: 16,  shares: 10,    avgWatchTime: '10.5%',  length: '1:35', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 44, date: '2026-02-07', title: 'Sam Darnold Comeback (OG)',         hook: '', type: 'Promo',      views: 30000,   likes: 391,   comments: 3,   shares: 12,    avgWatchTime: '11.7%',  length: '1:34', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 45, date: '2026-02-06', title: 'Drake Maye Crush Seattle (AC)',     hook: '', type: 'Promo',      views: 57000,   likes: 1300,  comments: 174, shares: 589,   avgWatchTime: '17.3%',  length: '1:21', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 46, date: '2026-02-05', title: 'Coaching Carousel',                 hook: '', type: 'Countdown',  views: 24000,   likes: 492,   comments: 27,  shares: 64,    avgWatchTime: '14.6%',  length: '2:37', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 47, date: '2026-02-02', title: 'Can I Gain One Yard',               hook: '', type: 'Engaging',   views: 56000,   likes: 572,   comments: 11,  shares: 28,    avgWatchTime: '31.8%',  length: '0:44', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 48, date: '2026-01-31', title: 'Senior Bowl Highlights',            hook: '', type: 'Highlight',  views: 22000,   likes: 259,   comments: 2,   shares: 39,    avgWatchTime: '8.0%',   length: '1:40', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 49, date: '2026-01-30', title: 'Tanner Koziol UH Fan',              hook: '', type: 'Spotlight',  views: 46000,   likes: 1100,  comments: 48,  shares: 183,   avgWatchTime: '16.7%',  length: '1:12', notes: '', follows: 5,  threeSecRTR: null, skipPct: null },
-  { id: 50, date: '2026-01-29', title: 'Tyren Montgomery Backstory',        hook: '', type: 'Spotlight',  views: 56000,   likes: 1800,  comments: 18,  shares: 718,   avgWatchTime: '22.0%',  length: '1:31', notes: '', follows: 11, threeSecRTR: null, skipPct: null },
-  { id: 51, date: '2026-01-28', title: '4 WRs Making Names Senior Bowl',    hook: '', type: 'Countdown',  views: 21000,   likes: 581,   comments: 19,  shares: 76,    avgWatchTime: '22.1%',  length: '1:17', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 52, date: '2026-01-27', title: "Who's Leading These Backfields",    hook: '', type: 'Engaging',   views: 27000,   likes: 230,   comments: 13,  shares: 9,     avgWatchTime: '9.7%',   length: '2:25', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 53, date: '2026-01-27', title: 'Senior Bowl Hype Reel',             hook: '', type: 'Preview',    views: 17000,   likes: 278,   comments: 11,  shares: 10,    avgWatchTime: '11.3%',  length: '1:02', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 54, date: '2026-01-25', title: 'Arthur Smith Terrorizing',          hook: '', type: 'Meme',       views: 35000,   likes: 837,   comments: 13,  shares: 308,   avgWatchTime: '60.0%',  length: '0:10', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 55, date: '2026-01-24', title: 'Dalton Kincaid Recap',              hook: '', type: 'Breakdown',  views: 41000,   likes: 659,   comments: 10,  shares: 136,   avgWatchTime: '15.4%',  length: '1:05', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 56, date: '2026-01-23', title: 'Drew Petzing Hate',                 hook: '', type: 'Breakdown',  views: 30000,   likes: 637,   comments: 30,  shares: 490,   avgWatchTime: '11.8%',  length: '2:33', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 57, date: '2026-01-22', title: 'Mike McDaniel Changes Everything',  hook: '', type: 'Breakdown',  views: 49000,   likes: 1400,  comments: 46,  shares: 191,   avgWatchTime: '18.4%',  length: '2:38', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 58, date: '2026-01-21', title: 'Kenneth Walker Off-Season',         hook: '', type: 'Curiosity',  views: 37000,   likes: 616,   comments: 20,  shares: 35,    avgWatchTime: '16.3%',  length: '1:44', notes: '', follows: 2,  threeSecRTR: null, skipPct: null },
-  { id: 59, date: '2026-01-20', title: 'Coaching Carousel January',         hook: '', type: 'Countdown',  views: 39000,   likes: 682,   comments: 17,  shares: 67,    avgWatchTime: '14.9%',  length: '2:21', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 60, date: '2026-01-19', title: '4 Tough Truths',                    hook: '', type: 'Countdown',  views: 44000,   likes: 508,   comments: 7,   shares: 6,     avgWatchTime: '9.8%',   length: '2:43', notes: '', follows: 0,  threeSecRTR: null, skipPct: null },
-  { id: 61, date: '2026-01-18', title: 'CJ Stroud Truthers',                hook: '', type: 'Meme',       views: 75000,   likes: 3100,  comments: 20,  shares: 2600,  avgWatchTime: '62.5%',  length: '0:08', notes: '', follows: 3,  threeSecRTR: null, skipPct: null },
-  { id: 62, date: '2026-01-17', title: 'The Bills Leaving the Playoffs',    hook: '', type: 'Meme',       views: 1150000, likes: 77000, comments: 273, shares: 59000, avgWatchTime: '111.1%', length: '0:09', notes: '🔥 Viral', follows: 71, threeSecRTR: null, skipPct: null },
-  { id: 63, date: '2026-01-16', title: 'Ricky Pearsall Alpha Receiver',     hook: '', type: 'Curiosity',  views: 38000,   likes: 572,   comments: 21,  shares: 90,    avgWatchTime: '9.8%',   length: '1:52', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-  { id: 64, date: '2026-01-15', title: 'Cardinals Receiver Decision',       hook: '', type: 'Curiosity',  views: 32000,   likes: 431,   comments: 14,  shares: 16,    avgWatchTime: '17.1%',  length: '1:10', notes: '', follows: 1,  threeSecRTR: null, skipPct: null },
-];
+let hooks = [], hookTypes = [], hookCategories = [];
+let deleteTargetId = null, isBulkDelete = false;
+let currentView = 'grid';
+let filterHookNeededOnly = false;
+let selectMode = false, selectedIds = new Set();
+let pendingImportData = [];
+let sortKey = 'date', sortDir = 'desc';
+let chartsOpen = false, advFiltersOpen = false;
+let libCharts = {}, detailChartInst = null;
+let currentDetailId = null;
+let advFilters = {
+  followsMin:'', followsMax:'', viewsMin:'', viewsMax:'',
+  retMin:'', retMax:'', skipMin:'', skipMax:'',
+  scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'',
+  outlier:'', hasIg: false
+};
 
+const DEFAULT_TYPES = ['Question', 'Statement', 'Warning', 'Number', 'Curiosity'];
+const DEFAULT_CATS  = ['Countdown', 'Breakdown', 'Engaging', 'Green Screen', 'Promo', 'Meme', 'Tweet Reel', 'React', 'Spotlight', 'Highlight', 'Curiosity', 'Recap', 'Preview'];
+const TYPE_COLOR_COUNT = 5;
+
+Chart.defaults.color = '#5a8ab0';
+Chart.defaults.borderColor = '#1a3a5c';
+
+/* ── STORAGE ── */
 function loadData() {
-  const stored = localStorage.getItem(STORAGE_KEY);
-  if (stored) {
-    reels = JSON.parse(stored);
-  } else {
-    reels = SEED_DATA.map(r => ({ ...r }));
-    saveData();
+  hooks = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  hookTypes = JSON.parse(localStorage.getItem(TYPES_KEY) || 'null') || [...DEFAULT_TYPES];
+  hookCategories = JSON.parse(localStorage.getItem(CATS_KEY) || 'null') || [...DEFAULT_CATS];
+}
+function saveData()  { localStorage.setItem(STORAGE_KEY, JSON.stringify(hooks)); }
+function saveTypes() { localStorage.setItem(TYPES_KEY,   JSON.stringify(hookTypes)); }
+function saveCats()  { localStorage.setItem(CATS_KEY,    JSON.stringify(hookCategories)); }
+
+/* ══════════════════════════════════════════════
+   MIGRATION (from uhf_content_db_v3)
+══════════════════════════════════════════════ */
+function checkMigration() {
+  if (localStorage.getItem(MIGRATED_FLAG) === '1') return;
+  const raw = localStorage.getItem(OLD_DB_KEY);
+  if (!raw) return;
+  try {
+    const old = JSON.parse(raw);
+    if (!Array.isArray(old) || old.length === 0) return;
+    const existingNames = new Set(hooks.map(h => (h.reelName||'').toLowerCase().trim()));
+    const newCount = old.filter(r => !existingNames.has(((r.title)||'').toLowerCase().trim())).length;
+    const sub = document.getElementById('migrationBannerSub');
+    if (sub) sub.textContent = `Found ${old.length} reel${old.length!==1?'s':''} in your previous content database (${newCount} new). Import them into this library?`;
+    document.getElementById('migrationBanner').classList.add('open');
+  } catch(e) { console.warn('Migration check failed', e); }
+}
+
+function mapOldRecord(r) {
+  // YYYY-MM-DD → M/D/YYYY
+  let date = r.date || '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+    const [y,m,d] = date.split('-');
+    date = `${+m}/${+d}/${y}`;
   }
-}
-
-function saveData() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(reels));
-}
-
-function engRate(r) {
-  if (!r.views || r.views === 0) return 0;
-  return ((r.likes + r.comments) / r.views) * 100;
-}
-
-function fmt(n) {
-  if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-  if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
-  return n.toString();
-}
-
-function updateAnalytics() {
-  document.getElementById('statTotal').textContent = reels.length;
-  if (reels.length === 0) {
-    document.getElementById('statAvgViews').textContent = '—';
-    document.getElementById('statAvgEng').textContent = '—';
-    document.getElementById('statTopViews').textContent = '—';
-    document.getElementById('statTopTitle').textContent = 'most views';
-    return;
+  // Strip % from avgWatchTime if present
+  let avgWtPct = 0;
+  if (r.avgWatchTime != null) {
+    const s = String(r.avgWatchTime).replace('%','');
+    const n = parseFloat(s);
+    if (!isNaN(n)) avgWtPct = n;
   }
-  const avgV = Math.round(reels.reduce((a, r) => a + r.views, 0) / reels.length);
-  const avgE = reels.reduce((a, r) => a + engRate(r), 0) / reels.length;
-  const top = reels.reduce((a, b) => a.views > b.views ? a : b);
-  document.getElementById('statAvgViews').textContent = fmt(avgV);
-  document.getElementById('statAvgEng').textContent = avgE.toFixed(2) + '%';
-  document.getElementById('statTopViews').textContent = fmt(top.views);
-  document.getElementById('statTopTitle').textContent = top.title;
+  return {
+    id: Date.now() + Math.floor(Math.random()*100000),
+    reelName: r.title || '',
+    instagramUrl: '',
+    text: r.hook || '',
+    hookNeeded: !r.hook,
+    type: '',
+    category: r.type || '',
+    date,
+    score: 0,
+    followers: r.follows || 0,
+    views: r.views || 0,
+    retention3s: r.threeSecRTR || 0,
+    skipRate: r.skipPct || 0,
+    likes: r.likes || 0,
+    comments: r.comments || 0,
+    shares: r.shares || 0,
+    length: r.length || '',
+    avgWtSec: '',
+    avgWtPct,
+    followsMultiplier: 0,
+    viewsMultiplier: 0,
+    likesMultiplier: 0,
+    sharesMultiplier: 0,
+    notes: r.notes || '',
+  };
 }
 
-// ── SORT ──
-function sortBy(col) {
-  if (currentSort.col === col) {
-    currentSort.dir = currentSort.dir === 'desc' ? 'asc' : 'desc';
-  } else {
-    currentSort.col = col;
-    const textCols = ['date', 'title', 'hook', 'type', 'length'];
-    currentSort.dir = textCols.includes(col) ? 'asc' : 'desc';
-  }
-  updateSortHeaders();
-  renderTable();
-}
-
-function updateSortHeaders() {
-  document.querySelectorAll('.data-table th.sortable').forEach(th => {
-    th.classList.remove('sort-active');
-    const ind = th.querySelector('.sort-indicator');
-    if (ind) ind.textContent = '⇅';
+function runMigration() {
+  const raw = localStorage.getItem(OLD_DB_KEY);
+  if (!raw) { dismissMigration(); return; }
+  let old;
+  try { old = JSON.parse(raw); } catch(e) { dismissMigration(); return; }
+  if (!Array.isArray(old)) { dismissMigration(); return; }
+  const existingNames = new Set(hooks.map(h => (h.reelName||'').toLowerCase().trim()));
+  let added = 0;
+  // Add categories first
+  const catsToAdd = new Set();
+  old.forEach(r => { if (r.type) catsToAdd.add(r.type); });
+  catsToAdd.forEach(c => { if (!hookCategories.includes(c)) hookCategories.push(c); });
+  saveCats();
+  // Smart merge by reel name (case-insensitive)
+  old.forEach(r => {
+    const name = (r.title || '').toLowerCase().trim();
+    if (!name || existingNames.has(name)) return;
+    hooks.push(mapOldRecord(r));
+    existingNames.add(name);
+    added++;
   });
-  const active = document.getElementById('th-' + currentSort.col);
-  if (active) {
-    active.classList.add('sort-active');
-    const ind = active.querySelector('.sort-indicator');
-    if (ind) ind.textContent = currentSort.dir === 'asc' ? ' ▲' : ' ▼';
+  saveData();
+  localStorage.setItem(MIGRATED_FLAG, '1');
+  document.getElementById('migrationBanner').classList.remove('open');
+  populateFilterSelects();
+  updateStats();
+  applyFilters();
+  alert(`Imported ${added} new reel${added!==1?'s':''} from your old content database. ${old.length - added} already existed and were skipped.`);
+}
+
+function dismissMigration() {
+  localStorage.setItem(MIGRATED_FLAG, '1');
+  document.getElementById('migrationBanner').classList.remove('open');
+}
+
+/* ══════════════════════════════════════════════
+   SUGGEST-ARCHETYPE TOAST
+   Uses the shared classifier from js/hook-archetypes.js
+══════════════════════════════════════════════ */
+function showToast({ title, msgHtml, actionLabel, actionHref, durationMs = 8000 }) {
+  const stack = document.getElementById('toastStack');
+  if (!stack) return;
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `
+    <div class="toast-icon">💡</div>
+    <div class="toast-body">
+      <div class="toast-title">${escHtml(title)}</div>
+      <div class="toast-msg">${msgHtml}</div>
+      ${actionHref ? `<a class="toast-action" href="${escHtml(actionHref)}">${escHtml(actionLabel)}</a>` : ''}
+    </div>
+    <button class="toast-close" aria-label="Close">&#x2715;</button>
+  `;
+  stack.appendChild(el);
+  requestAnimationFrame(() => el.classList.add('open'));
+  const remove = () => { el.classList.remove('open'); setTimeout(() => el.remove(), 250); };
+  el.querySelector('.toast-close').onclick = remove;
+  setTimeout(remove, durationMs);
+}
+function suggestArchetypeForHook(hookText) {
+  if (!hookText || hookText.trim().split(/\s+/).length < 3) return;
+  if (!window.HookArchetypes) return;
+  // Include user's custom archetypes in the search
+  let customs = [];
+  try {
+    const s = JSON.parse(localStorage.getItem('uhf_hook_archetype_state') || '{}');
+    customs = s.customArchetypes || [];
+  } catch(e) {}
+  const all = window.HookArchetypes.ARCHETYPES.concat(customs);
+  const match = window.HookArchetypes.findBestArchetype(hookText, all);
+  if (match) {
+    showToast({
+      title: 'Hook archetype detected',
+      msgHtml: `This hook reads as <em>${escHtml(match.archetype.name)}</em> <small style="color:var(--text-dim);">(score ${match.score})</small>.`,
+      actionLabel: 'View archetype →',
+      actionHref: `hook-library.html?archetype=${encodeURIComponent(match.archetype.id)}`,
+    });
+  } else {
+    showToast({
+      title: 'No archetype match',
+      msgHtml: `This hook didn't fit any existing archetype. Want to build a custom one from it?`,
+      actionLabel: 'Create archetype →',
+      actionHref: `hook-library.html?newFromHook=${encodeURIComponent(hookText)}`,
+    });
   }
 }
 
+/* ══════════════════════════════════════════════
+   SCORING ENGINE
+══════════════════════════════════════════════ */
+function computeScore(h) {
+  const ret     = h.retention3s || 0;
+  const follows = h.followers   || 0;
+  const skip    = h.skipRate    || 0;
+
+  // If no real data, fall back to manual score
+  if (!ret && !follows) return h.score || 0;
+
+  // Retention component (0–5)
+  let retScore = 0;
+  if      (ret >= 60) retScore = 5;
+  else if (ret >= 55) retScore = 4;
+  else if (ret >= 50) retScore = 3;
+  else if (ret >= 45) retScore = 2;
+  else if (ret >= 40) retScore = 1;
+  else if (ret >   0) retScore = 0.5;
+
+  // Follows component (0–5)
+  let followScore = 0;
+  if      (follows >= 20) followScore = 5;
+  else if (follows >= 10) followScore = 3.5;
+  else if (follows >=  5) followScore = 2;
+  else if (follows >=  1) followScore = 1;
+
+  // Skip rate adjustment (minor)
+  let skipAdj = 0;
+  if (skip > 65 && skip > 0)    skipAdj = -0.5;
+  else if (skip > 0 && skip < 50) skipAdj =  0.5;
+
+  const raw = retScore + followScore + skipAdj;
+  return Math.round(Math.min(10, Math.max(0, raw)) * 10) / 10;
+}
+
+function getOutlier(h) {
+  const f = h.followers || 0;
+  if (f >= 10) return 'outlier';
+  if (f >= 6)  return 'near-outlier';
+  return null;
+}
+
+function scoreInfo(score) {
+  if (score >= 8)  return { label: 'Great',    color: 'var(--green)' };
+  if (score >= 6)  return { label: 'Solid',    color: 'var(--blue)' };
+  if (score >= 4)  return { label: 'Mid',      color: 'var(--orange)' };
+  if (score >= 2)  return { label: 'Bad',      color: 'var(--text-muted)' };
+  return                   { label: 'Terrible', color: 'var(--red)' };
+}
+
+function retInfo(ret) {
+  if (!ret) return { color: 'var(--text-dim)', label: '—' };
+  if (ret >= 60) return { color: 'var(--green)',  label: 'Great' };
+  if (ret >= 50) return { color: 'var(--blue)',   label: 'Solid' };
+  if (ret >= 45) return { color: 'var(--orange)', label: 'Below Avg' };
+  return              { color: 'var(--red)',    label: 'Weak' };
+}
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function escHtml(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmt(n) {
+  if (!n && n !== 0) return '—'; n = Number(n);
+  if (n >= 1e6) return (n/1e6).toFixed(1)+'M';
+  if (n >= 1e3) return (n/1e3).toFixed(1)+'K';
+  return n.toLocaleString();
+}
+function fmtPct(n) { return (!n && n !== 0) ? '—' : Number(n).toFixed(1)+'%'; }
+function fmtScore(n) { return (!n) ? '—' : Number(n).toFixed(1); }
+function getTypeClass(type) {
+  return 'type-c' + (Math.max(hookTypes.indexOf(type), 0) % TYPE_COLOR_COUNT);
+}
+function parseDate(s) {
+  if (!s) return new Date(0);
+  const p = s.split('/');
+  return p.length === 3 ? new Date(+p[2], +p[0]-1, +p[1]) : new Date(s);
+}
+function libAvg(key) {
+  const vals = hooks.map(h => h[key] || 0).filter(v => v > 0);
+  return vals.length ? vals.reduce((a,b) => a+b, 0) / vals.length : 0;
+}
+
+/* ── STATS ── */
+function updateStats() {
+  document.getElementById('statTotal').textContent = hooks.length || '—';
+  const needed = hooks.filter(h => h.hookNeeded).length;
+  document.getElementById('statHooksNeeded').textContent = needed || '—';
+  const withRet = hooks.filter(h => h.retention3s);
+  document.getElementById('statAvgRet').textContent = withRet.length
+    ? (withRet.reduce((a,h) => a+h.retention3s, 0)/withRet.length).toFixed(1)+'%' : '—';
+  const outliers = hooks.filter(h => (h.followers||0) >= 10).length;
+  document.getElementById('statOutliers').textContent = outliers || '—';
+}
+
+/* ── SELECTS ── */
+function populateFilterSelects() {
+  const catEl = document.getElementById('filterCat'), prevCat = catEl.value;
+  const typEl = document.getElementById('filterType'), prevTyp = typEl.value;
+  catEl.innerHTML  = '<option value="">All Categories</option>' +
+    hookCategories.map(c => `<option${prevCat===c?' selected':''}>${escHtml(c)}</option>`).join('');
+  typEl.innerHTML  = '<option value="">All Hook Types</option>' +
+    hookTypes.map(t => `<option${prevTyp===t?' selected':''}>${escHtml(t)}</option>`).join('');
+}
+function populateModalSelects(hook) {
+  document.getElementById('fType').innerHTML = '<option value="">— None —</option>' +
+    hookTypes.map(t => `<option>${escHtml(t)}</option>`).join('');
+  document.getElementById('fCat').innerHTML  =
+    hookCategories.map(c => `<option>${escHtml(c)}</option>`).join('');
+  if (hook) { document.getElementById('fType').value = hook.type||''; document.getElementById('fCat').value = hook.category||''; }
+}
+
+/* ══════════════════════════════════════════════
+   FILTER + SORT
+══════════════════════════════════════════════ */
 function getFiltered() {
   const search = document.getElementById('searchInput').value.toLowerCase();
-  const typeF = document.getElementById('filterType').value;
-
-  let filtered = reels.filter(r => {
-    const matchSearch = !search ||
-      r.title.toLowerCase().includes(search) ||
-      (r.hook || '').toLowerCase().includes(search) ||
-      r.type.toLowerCase().includes(search);
-    const matchType = !typeF || r.type === typeF;
-    return matchSearch && matchType;
-  });
-
-  const col = currentSort.col;
-  const dir = currentSort.dir;
-  const numericCols = ['follows', 'views', 'threeSecRTR', 'skipPct', 'likes', 'comments', 'shares', 'eng'];
-
-  filtered.sort((a, b) => {
-    let va, vb;
-    if (col === 'eng') { va = engRate(a); vb = engRate(b); }
-    else if (col === 'threeSecRTR' || col === 'skipPct') {
-      va = a[col]; vb = b[col];
-      if (va === null && vb === null) return 0;
-      if (va === null) return 1;
-      if (vb === null) return -1;
-    } else {
-      va = a[col] !== undefined ? a[col] : '';
-      vb = b[col] !== undefined ? b[col] : '';
+  const catF   = document.getElementById('filterCat').value;
+  const typeF  = document.getElementById('filterType').value;
+  const f = advFilters;
+  return hooks.filter(h => {
+    if (filterHookNeededOnly && !h.hookNeeded) return false;
+    const matchS = !search ||
+      (h.reelName||'').toLowerCase().includes(search) ||
+      (h.text||'').toLowerCase().includes(search) ||
+      (h.notes||'').toLowerCase().includes(search) ||
+      (h.category||'').toLowerCase().includes(search);
+    if (!matchS) return false;
+    if (catF && h.category !== catF) return false;
+    if (typeF && h.type !== typeF) return false;
+    // Advanced numeric filters
+    const follows = h.followers || 0, views = h.views || 0;
+    const ret = h.retention3s || 0, skip = h.skipRate || 0;
+    const score = computeScore(h);
+    if (f.followsMin !== '' && follows < +f.followsMin) return false;
+    if (f.followsMax !== '' && follows > +f.followsMax) return false;
+    if (f.viewsMin   !== '' && views   < +f.viewsMin)   return false;
+    if (f.viewsMax   !== '' && views   > +f.viewsMax)   return false;
+    if (f.retMin     !== '' && ret     < +f.retMin)     return false;
+    if (f.retMax     !== '' && ret     > +f.retMax)     return false;
+    if (f.skipMin    !== '' && skip    < +f.skipMin)    return false;
+    if (f.skipMax    !== '' && skip    > +f.skipMax)    return false;
+    if (f.scoreMin   !== '' && score   < +f.scoreMin)   return false;
+    if (f.scoreMax   !== '' && score   > +f.scoreMax)   return false;
+    if (f.hasIg && !h.instagramUrl) return false;
+    if (f.outlier) {
+      const o = getOutlier(h);
+      if (f.outlier === 'outlier'      && o !== 'outlier')      return false;
+      if (f.outlier === 'near-outlier' && o !== 'near-outlier') return false;
+      if (f.outlier === 'any-outlier'  && !o)                   return false;
+      if (f.outlier === 'none'         && o)                    return false;
     }
-    if (numericCols.includes(col)) { va = Number(va) || 0; vb = Number(vb) || 0; }
-    if (dir === 'asc') return va > vb ? 1 : va < vb ? -1 : 0;
-    return va < vb ? 1 : va > vb ? -1 : 0;
+    if (f.dateFrom) {
+      const hd = parseDate(h.date), fd = new Date(f.dateFrom + 'T00:00:00');
+      if (!isNaN(fd) && hd < fd) return false;
+    }
+    if (f.dateTo) {
+      const hd = parseDate(h.date), td = new Date(f.dateTo + 'T23:59:59');
+      if (!isNaN(td) && hd > td) return false;
+    }
+    return true;
   });
-
-  return filtered;
 }
 
-function renderTable() {
-  const filtered = getFiltered();
-  const tbody = document.getElementById('tableBody');
-  document.getElementById('resultsCount').textContent = `Showing ${filtered.length} of ${reels.length} reels`;
-
-  if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="15"><div class="empty-state">
-      <svg viewBox="0 0 24 24"><path d="M19 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2zm-7 14H7v-2h5v2zm5-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
-      <h3>No reels found</h3>
-      <p>Try adjusting your search or filters.</p>
-    </div></td></tr>`;
-    return;
-  }
-
-  const maxFollows = Math.max(...reels.map(r => r.follows || 0), 1);
-  const maxViews   = Math.max(...reels.map(r => r.views || 0), 1);
-  const maxRTR     = Math.max(...reels.filter(r => r.threeSecRTR !== null).map(r => r.threeSecRTR), 1);
-  const maxSkip    = Math.max(...reels.filter(r => r.skipPct !== null).map(r => r.skipPct), 1);
-
-  tbody.innerHTML = filtered.map((r, i) => {
-    const eng = engRate(r).toFixed(2);
-    const rtrDisplay  = r.threeSecRTR !== null ? r.threeSecRTR.toFixed(1) + '%' : '—';
-    const skipDisplay = r.skipPct !== null ? r.skipPct.toFixed(1) + '%' : '—';
-    const skipColor   = (r.skipPct !== null && r.skipPct > 65) ? 'var(--pink)' : 'var(--text-muted)';
-    const ratio       = r.follows > 0 ? Math.round(r.views / r.follows).toLocaleString() : 'N/A';
-    const fPct        = Math.round((r.follows || 0) / maxFollows * 100);
-    const vPct        = Math.round((r.views   || 0) / maxViews   * 100);
-    const rtrPct      = r.threeSecRTR !== null ? Math.round(r.threeSecRTR / maxRTR * 100) : 0;
-    const skipPctBar  = r.skipPct     !== null ? Math.round((maxSkip - r.skipPct) / maxSkip * 100) : 0;
-
-    return `<tr onclick="toggleRowChart(${r.id})" style="cursor:pointer;">
-      <td class="col-num">${i + 1}</td>
-      <td class="col-date">${r.date}</td>
-      <td class="col-title"><strong>${escHtml(r.title)}</strong></td>
-      <td class="col-hook"><span class="col-hook-text">${escHtml(r.hook || '')}</span></td>
-      <td><span class="type-badge">${escHtml(r.type)}</span></td>
-      <td class="col-num-val" style="color:var(--orange);">${r.follows != null ? r.follows : 0}</td>
-      <td class="col-num-val">${fmt(r.views)}</td>
-      <td class="col-num-val" style="color:var(--blue);">${rtrDisplay}</td>
-      <td class="col-num-val" style="color:${skipColor};">${skipDisplay}</td>
-      <td class="col-num-val" style="color:var(--pink);">${fmt(r.likes)}</td>
-      <td class="col-num-val" style="color:var(--blue);">${r.comments}</td>
-      <td class="col-num-val" style="color:var(--green);">${fmt(r.shares || 0)}</td>
-      <td style="text-align:center;color:var(--text-muted);font-size:12px;">${r.length || '—'}</td>
-      <td class="col-eng" style="color:var(--text-muted);">${eng}%</td>
-      <td class="col-actions" onclick="event.stopPropagation()">
-        <button class="action-btn" onclick="editReel(${r.id})" title="Edit">
-          <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-        </button>
-        <button class="action-btn delete" onclick="requestDelete(${r.id})" title="Delete">
-          <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-        </button>
-      </td>
-    </tr>
-    <tr class="detail-row" id="detail-${r.id}" style="display:none;">
-      <td colspan="15">
-        <div class="detail-grid">
-          <div class="ratio-display">
-            <div class="ratio-num">${ratio}</div>
-            <div class="ratio-label">Views per Follower</div>
-          </div>
-          <div>
-            <div class="stat-pills">
-              <div class="stat-pill"><strong style="color:var(--orange);">${r.follows != null ? r.follows : 0}</strong>Follows</div>
-              <div class="stat-pill"><strong>${fmt(r.views)}</strong>Views</div>
-              <div class="stat-pill"><strong style="color:var(--blue);">${rtrDisplay}</strong>3 Sec RTR</div>
-              <div class="stat-pill"><strong style="color:${skipColor};">${skipDisplay}</strong>Skip%</div>
-            </div>
-            <div class="mini-bar-wrap">
-              <span class="mini-bar-label">Follows</span>
-              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${fPct}%;background:var(--orange);"></div></div>
-              <span class="mini-bar-val">${r.follows != null ? r.follows : 0}</span>
-            </div>
-            <div class="mini-bar-wrap">
-              <span class="mini-bar-label">Views</span>
-              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${vPct}%;background:var(--blue);"></div></div>
-              <span class="mini-bar-val">${fmt(r.views)}</span>
-            </div>
-            <div class="mini-bar-wrap">
-              <span class="mini-bar-label">3 Sec RTR</span>
-              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${rtrPct}%;background:var(--green);"></div></div>
-              <span class="mini-bar-val">${rtrDisplay}</span>
-            </div>
-            <div class="mini-bar-wrap">
-              <span class="mini-bar-label">Skip% (inv)</span>
-              <div class="mini-bar-track"><div class="mini-bar-fill" style="width:${skipPctBar}%;background:var(--pink);"></div></div>
-              <span class="mini-bar-val">${skipDisplay}</span>
-            </div>
-          </div>
-        </div>
-      </td>
-    </tr>`;
-  }).join('');
-
-  if (chartBuilt) buildChart();
+function getSorted(list) {
+  return [...list].sort((a, b) => {
+    let va, vb;
+    switch (sortKey) {
+      case 'date':     va = parseDate(a.date); vb = parseDate(b.date); break;
+      case 'score':    va = computeScore(a);   vb = computeScore(b);   break;
+      case 'follows':  va = a.followers||0;    vb = b.followers||0;    break;
+      case 'views':    va = a.views||0;        vb = b.views||0;        break;
+      case 'ret3s':    va = a.retention3s||0;  vb = b.retention3s||0;  break;
+      case 'skip':     va = a.skipRate||0;     vb = b.skipRate||0;     break;
+      case 'likes':    va = a.likes||0;        vb = b.likes||0;        break;
+      case 'shares':   va = a.shares||0;       vb = b.shares||0;       break;
+      case 'name':     va = (a.reelName||'').toLowerCase(); vb = (b.reelName||'').toLowerCase(); break;
+      case 'category': va = (a.category||'').toLowerCase(); vb = (b.category||'').toLowerCase(); break;
+      default: return 0;
+    }
+    if (va < vb) return sortDir === 'asc' ? -1 : 1;
+    if (va > vb) return sortDir === 'asc' ?  1 : -1;
+    return 0;
+  });
 }
 
-function toggleRowChart(id) {
-  const detailRow = document.getElementById('detail-' + id);
-  if (!detailRow) return;
-  if (expandedRowId !== null && expandedRowId !== id) {
-    const prev = document.getElementById('detail-' + expandedRowId);
-    if (prev) prev.style.display = 'none';
-  }
-  if (detailRow.style.display === 'none') {
-    detailRow.style.display = '';
-    expandedRowId = id;
+function handleSortChange() {
+  const val = document.getElementById('sortKey').value;
+  const parts = val.split('-');
+  const dir = parts[parts.length - 1];
+  if (dir === 'asc' || dir === 'desc') {
+    sortDir = dir;
+    sortKey = parts.slice(0, -1).join('-');
   } else {
-    detailRow.style.display = 'none';
-    expandedRowId = null;
+    sortKey = val;
   }
+  document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
+  applyFilters();
+}
+function toggleSortDir() {
+  sortDir = sortDir === 'desc' ? 'asc' : 'desc';
+  document.getElementById('sortDirBtn').textContent = sortDir === 'desc' ? '↓' : '↑';
+  applyFilters();
+}
+function toggleHookNeeded() {
+  filterHookNeededOnly = !filterHookNeededOnly;
+  document.getElementById('btnHookNeeded').classList.toggle('active-red', filterHookNeededOnly);
+  applyFilters();
+}
+
+/* ── ADVANCED FILTER PANEL ── */
+function toggleAdvFilters() {
+  advFiltersOpen = !advFiltersOpen;
+  document.getElementById('advFiltersPanel').classList.toggle('open', advFiltersOpen);
+  document.getElementById('btnAdvFilters').classList.toggle('active', advFiltersOpen);
+}
+function countActiveFilters() {
+  const f = advFilters; let n = 0;
+  if (f.followsMin !== '') n++; if (f.followsMax !== '') n++;
+  if (f.viewsMin   !== '') n++; if (f.viewsMax   !== '') n++;
+  if (f.retMin     !== '') n++; if (f.retMax     !== '') n++;
+  if (f.skipMin    !== '') n++; if (f.skipMax    !== '') n++;
+  if (f.scoreMin   !== '') n++; if (f.scoreMax   !== '') n++;
+  if (f.dateFrom)  n++; if (f.dateTo)   n++;
+  if (f.outlier)   n++; if (f.hasIg)   n++;
+  return n;
+}
+function updateFilterBadge() {
+  const n = countActiveFilters();
+  const badge = document.getElementById('filterBadge');
+  badge.style.display = n > 0 ? 'inline-flex' : 'none';
+  badge.textContent = n;
+  const cnt = document.getElementById('advActiveCount');
+  const num = document.getElementById('advActiveNum');
+  if (cnt) { cnt.style.display = n > 0 ? 'inline' : 'none'; if (num) num.textContent = n; }
+}
+function readAdvFilters() {
+  const g = id => document.getElementById(id);
+  advFilters.followsMin = g('advFollowsMin').value;
+  advFilters.followsMax = g('advFollowsMax').value;
+  advFilters.viewsMin   = g('advViewsMin').value;
+  advFilters.viewsMax   = g('advViewsMax').value;
+  advFilters.retMin     = g('advRetMin').value;
+  advFilters.retMax     = g('advRetMax').value;
+  advFilters.skipMin    = g('advSkipMin').value;
+  advFilters.skipMax    = g('advSkipMax').value;
+  advFilters.scoreMin   = g('advScoreMin').value;
+  advFilters.scoreMax   = g('advScoreMax').value;
+  advFilters.dateFrom   = g('advDateFrom').value;
+  advFilters.dateTo     = g('advDateTo').value;
+  advFilters.outlier    = g('advOutlier').value;
+  advFilters.hasIg      = g('advHasIg').checked;
+  updateFilterBadge();
+  applyFilters();
+}
+function clearAdvFilters() {
+  advFilters = { followsMin:'', followsMax:'', viewsMin:'', viewsMax:'', retMin:'', retMax:'', skipMin:'', skipMax:'', scoreMin:'', scoreMax:'', dateFrom:'', dateTo:'', outlier:'', hasIg:false };
+  ['advFollowsMin','advFollowsMax','advViewsMin','advViewsMax','advRetMin','advRetMax','advSkipMin','advSkipMax','advScoreMin','advScoreMax','advDateFrom','advDateTo'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+  const ov = document.getElementById('advOutlier'); if(ov) ov.value='';
+  const ig = document.getElementById('advHasIg'); if(ig) ig.checked=false;
+  updateFilterBadge();
+  applyFilters();
+}
+
+/* ══════════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════════ */
+const ICONS = {
+  copy:  `<svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`,
+  edit:  `<svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>`,
+  del:   `<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`,
+  check: `<svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>`,
+};
+
+function actionBtns(id) {
+  return `<div class="hook-actions" onclick="event.stopPropagation()">
+    <button class="action-btn copy" onclick="copyHook(${id},this)" title="Copy hook">${ICONS.copy}</button>
+    <button class="action-btn" onclick="openModal(hooks.find(h=>h.id===${id}))" title="Edit">${ICONS.edit}</button>
+    <button class="action-btn delete" onclick="requestDelete(${id})" title="Delete">${ICONS.del}</button>
+  </div>`;
+}
+
+function outlierBadgeHtml(h) {
+  const o = getOutlier(h);
+  if (o === 'outlier')      return `<span class="outlier-badge outlier-star">⭐ Outlier</span>`;
+  if (o === 'near-outlier') return `<span class="outlier-badge outlier-near">~ Near Outlier</span>`;
+  return '';
+}
+
+function scoreBadgeHtml(score) {
+  const si = scoreInfo(score);
+  return score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>${si.label}</span>` : '';
+}
+
+function typeBadgeHtml(t) { return t ? `<span class="type-badge ${getTypeClass(t)}">${escHtml(t)}</span>` : ''; }
+function catBadgeHtml(c)  { return c ? `<span class="cat-badge">${escHtml(c)}</span>` : ''; }
+function dateBadgeHtml(d) { return d ? `<span class="date-badge">${escHtml(d)}</span>` : ''; }
+function reelLinkHtml(h)  {
+  const name = escHtml(h.reelName || h.text || 'Untitled');
+  return h.instagramUrl
+    ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${name} ↗</a>`
+    : name;
+}
+
+function renderGrid(filtered) {
+  if (!filtered.length) return emptyHtml();
+  return `<div class="hooks-grid">${filtered.map(h => {
+    const score = computeScore(h);
+    const si    = scoreInfo(score);
+    const sel   = selectedIds.has(h.id);
+    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
+    return `<div class="hook-card${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="card-${h.id}" ${clickHandler}>
+      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
+      ${selectMode ? `<div class="card-checkbox-wrap"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
+      <div class="hook-card-top">
+        ${catBadgeHtml(h.category)} ${typeBadgeHtml(h.type)} ${dateBadgeHtml(h.date)}
+        ${outlierBadgeHtml(h)}
+      </div>
+      <div class="reel-name">${reelLinkHtml(h)}</div>
+      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-text">"${escHtml(h.text)}"</div>` : '')}
+      <div class="hook-card-metrics">
+        <div class="metric-item"><span class="metric-label">Follows</span><span class="metric-value orange">${fmt(h.followers)}</span></div>
+        <div class="metric-item"><span class="metric-label">Views</span><span class="metric-value">${fmt(h.views)}</span></div>
+        <div class="metric-item"><span class="metric-label">3-Sec Ret</span><span class="metric-value blue">${fmtPct(h.retention3s)}</span></div>
+        <div class="metric-item"><span class="metric-label">Skip Rate</span><span class="metric-value pink">${fmtPct(h.skipRate)}</span></div>
+      </div>
+      <div class="hook-card-secondary">
+        <div class="sec-item"><span class="sec-label">Likes</span><span class="sec-value">${fmt(h.likes)}</span></div>
+        <div class="sec-item"><span class="sec-label">Shares</span><span class="sec-value">${fmt(h.shares)}</span></div>
+        <div class="sec-item"><span class="sec-label">Comments</span><span class="sec-value">${fmt(h.comments)}</span></div>
+        <div class="sec-item"><span class="sec-label">Length</span><span class="sec-value">${escHtml(h.length||'—')}</span></div>
+      </div>
+      <div class="hook-card-footer">
+        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+          ${score ? `<span class="score-badge" style="color:${si.color}"><span class="score-num">${fmtScore(score)}</span>&nbsp;${si.label}</span>` : ''}
+          ${h.instagramUrl ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
+        </div>
+        ${!selectMode ? actionBtns(h.id) : ''}
+      </div>
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function renderList(filtered) {
+  if (!filtered.length) return emptyHtml();
+  return `<div class="hooks-list">${filtered.map(h => {
+    const score = computeScore(h);
+    const si    = scoreInfo(score);
+    const sel   = selectedIds.has(h.id);
+    const clickHandler = selectMode ? '' : `onclick="openDetail(${h.id})"`;
+    return `<div class="hook-list-item${h.hookNeeded?' hook-needed':''}${selectMode?' select-mode':''}${sel?' selected':''}" id="listitem-${h.id}" style="position:relative;" ${clickHandler}>
+      ${selectMode ? `<div class="select-overlay" onclick="toggleSelect(${h.id})"></div>` : ''}
+      ${selectMode ? `<div class="list-checkbox-wrap" style="position:relative;z-index:10;"><input type="checkbox" class="card-checkbox" ${sel?'checked':''} onchange="toggleSelect(${h.id})" onclick="event.stopPropagation()"></div>` : ''}
+      <div>
+        <div class="hook-list-reel">${reelLinkHtml(h)} ${outlierBadgeHtml(h)}</div>
+        ${h.hookNeeded ? '<span class="hook-needed-badge" style="font-size:9px;padding:2px 7px;">⚠ Hook Needed</span>' : (h.text ? `<div class="hook-list-hook">"${escHtml(h.text.slice(0,80))}${h.text.length>80?'…':''}"</div>` : '')}
+        <div class="hook-list-badges">${catBadgeHtml(h.category)}${typeBadgeHtml(h.type)}${dateBadgeHtml(h.date)}</div>
+      </div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--orange);">${fmt(h.followers)}</span><span class="hook-list-stat-lbl">Follows</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val">${fmt(h.views)}</span><span class="hook-list-stat-lbl">Views</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:var(--blue);">${fmtPct(h.retention3s)}</span><span class="hook-list-stat-lbl">3-Sec Ret</span></div>
+      <div class="hook-list-stat"><span class="hook-list-stat-val" style="color:${si.color};">${fmtScore(score)}</span><span class="hook-list-stat-lbl">Score</span></div>
+      ${h.instagramUrl && !selectMode ? `<a class="ig-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" style="width:11px;height:11px;fill:currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>IG</a>` : ''}
+      ${!selectMode ? actionBtns(h.id) : ''}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function emptyHtml() {
+  return `<div class="empty-state">
+    <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+    <h3>No reels found</h3>
+    <p>Import a CSV from your Analytics Sheet, or add a reel manually.</p>
+  </div>`;
 }
 
 function applyFilters() {
-  expandedRowId = null;
-  renderTable();
-  if (chartBuilt) buildChart();
+  const filtered = getSorted(getFiltered());
+  document.getElementById('resultsCount').textContent = `${filtered.length} reel${filtered.length!==1?'s':''}`;
+  document.getElementById('hooksContainer').innerHTML =
+    currentView === 'grid' ? renderGrid(filtered) : renderList(filtered);
+}
+function setView(v) {
+  currentView = v;
+  document.getElementById('btnGrid').classList.toggle('active', v==='grid');
+  document.getElementById('btnList').classList.toggle('active', v==='list');
+  applyFilters();
 }
 
-function escHtml(str) {
-  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+/* ══════════════════════════════════════════════
+   DETAIL MODAL
+══════════════════════════════════════════════ */
+function openDetail(id) {
+  if (selectMode) { toggleSelect(id); return; }
+  const h = hooks.find(x => x.id === id);
+  if (!h) return;
+  currentDetailId = id;
+
+  const score  = computeScore(h);
+  const si     = scoreInfo(score);
+  const ri     = retInfo(h.retention3s);
+  const outlier = getOutlier(h);
+  const avgRet  = libAvg('retention3s');
+  const avgSkip = libAvg('skipRate');
+  const avgFollows = libAvg('followers');
+
+  // Header
+  document.getElementById('detailTitle').textContent = h.reelName || h.text || 'Untitled';
+  document.getElementById('detailMeta').innerHTML =
+    catBadgeHtml(h.category) + typeBadgeHtml(h.type) + dateBadgeHtml(h.date) +
+    (outlier==='outlier' ? '<span class="outlier-badge outlier-star">⭐ Outlier</span>' :
+     outlier==='near-outlier' ? '<span class="outlier-badge outlier-near">~ Near Outlier</span>' : '');
+  // Instagram button in header
+  const igBtn = document.getElementById('detailIgBtn');
+  if (h.instagramUrl) { igBtn.href = h.instagramUrl; igBtn.style.display = 'inline-flex'; }
+  else { igBtn.style.display = 'none'; }
+
+  // Retention score breakdown for display
+  const ret = h.retention3s||0, follows = h.followers||0, skip = h.skipRate||0;
+  let retPts = 0;
+  if(ret>=60)retPts=5; else if(ret>=55)retPts=4; else if(ret>=50)retPts=3; else if(ret>=45)retPts=2; else if(ret>=40)retPts=1; else if(ret>0)retPts=0.5;
+  let followPts = 0;
+  if(follows>=20)followPts=5; else if(follows>=10)followPts=3.5; else if(follows>=5)followPts=2; else if(follows>=1)followPts=1;
+  let skipAdj = skip>65&&skip>0?-0.5:skip>0&&skip<50?0.5:0;
+
+  // Body HTML
+  document.getElementById('detailBody').innerHTML = `
+    <div class="detail-score-row">
+      <div class="detail-score-main">
+        <div class="detail-score-num" style="color:${si.color}">${fmtScore(score)}</div>
+        <div class="detail-score-label" style="color:${si.color}">${si.label}</div>
+      </div>
+      <div class="detail-score-gauge-wrap">
+        <div class="detail-score-gauge-label">Performance Score</div>
+        <div class="detail-score-gauge">
+          <div class="detail-score-gauge-fill" style="width:${score*10}%;background:${si.color}"></div>
+        </div>
+        <div class="detail-score-breakdown">
+          <span>Retention: +${retPts}</span>
+          <span>Follows: +${followPts}</span>
+          ${skipAdj ? `<span>Skip adj: ${skipAdj>0?'+':''}${skipAdj}</span>` : ''}
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-metrics-grid">
+      <div class="detail-metric"><div class="detail-metric-lbl">Followers Gained</div><div class="detail-metric-val" style="color:var(--orange)">${fmt(h.followers)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Views</div><div class="detail-metric-val">${fmt(h.views)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">3-Sec Retention</div><div class="detail-metric-val" style="color:${ri.color}">${fmtPct(h.retention3s)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Skip Rate</div><div class="detail-metric-val" style="color:var(--pink)">${fmtPct(h.skipRate)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Likes</div><div class="detail-metric-val">${fmt(h.likes)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Shares</div><div class="detail-metric-val">${fmt(h.shares)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Comments</div><div class="detail-metric-val">${fmt(h.comments)}</div></div>
+      <div class="detail-metric"><div class="detail-metric-lbl">Length</div><div class="detail-metric-val" style="font-size:18px">${escHtml(h.length||'—')}</div></div>
+    </div>
+
+    <div class="detail-section-title">Retention vs Skip Rate</div>
+    <div class="detail-bars">
+      <div class="detail-bar-row">
+        <div class="detail-bar-header">
+          <span class="detail-bar-name">3-Sec Retention</span>
+          <span class="detail-bar-val" style="color:${ri.color}">${fmtPct(h.retention3s)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgRet.toFixed(1)}%)</small></span>
+        </div>
+        <div class="detail-bar-track">
+          <div class="detail-bar-fill" style="width:${Math.min(h.retention3s||0,100)}%;background:${ri.color}"></div>
+          <div class="detail-bar-bench" style="left:${Math.min(avgRet,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
+          <div class="detail-bar-bench" style="left:50%;background:rgba(255,215,0,0.5);" title="50% benchmark"></div>
+        </div>
+      </div>
+      <div class="detail-bar-row" style="margin-top:14px;">
+        <div class="detail-bar-header">
+          <span class="detail-bar-name">Skip Rate <small style="color:var(--text-dim);font-size:10px;">(lower = better)</small></span>
+          <span class="detail-bar-val" style="color:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}">${fmtPct(h.skipRate)} <small style="color:var(--text-dim);font-size:10px;">(lib avg ${avgSkip.toFixed(1)}%)</small></span>
+        </div>
+        <div class="detail-bar-track">
+          <div class="detail-bar-fill" style="width:${Math.min(h.skipRate||0,100)}%;background:${(h.skipRate||0)<55?'var(--green)':'var(--pink)'}"></div>
+          <div class="detail-bar-bench" style="left:${Math.min(avgSkip,100)}%;background:rgba(255,255,255,0.3);" title="Library avg"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="detail-section-title">vs Library Average</div>
+    <div class="detail-chart-wrap"><canvas id="detailChart" height="140"></canvas></div>
+
+    ${h.text || h.hookNeeded ? `
+    <div class="detail-section-title">Hook</div>
+    <div class="detail-hook-box">
+      ${h.hookNeeded ? '<span class="hook-needed-badge">⚠ Hook Needed — no hook text recorded</span>' : `"${escHtml(h.text)}"` }
+    </div>` : ''}
+
+    ${h.instagramUrl ? `
+    <div class="detail-section-title">Instagram Reel</div>
+    <a class="ig-card-link" href="${escHtml(h.instagramUrl)}" target="_blank" rel="noopener">
+      <div class="ig-card-icon">
+        <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+      </div>
+      <div class="ig-card-text">
+        <div class="ig-card-label">View on Instagram</div>
+        <div class="ig-card-url">${escHtml(h.instagramUrl)}</div>
+      </div>
+      <div class="ig-card-arrow">↗</div>
+    </a>` : ''}
+
+    <div class="detail-section-title">Secondary Data</div>
+    <div class="detail-secondary">
+      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT%</div><div class="detail-sec-val">${fmtPct(h.avgWtPct)}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Avg WT Sec</div><div class="detail-sec-val">${escHtml(h.avgWtSec||'—')}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Follows ?x</div><div class="detail-sec-val">${h.followsMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Views ?x</div><div class="detail-sec-val">${h.viewsMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Likes ?x</div><div class="detail-sec-val">${h.likesMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Shares ?x</div><div class="detail-sec-val">${h.sharesMultiplier||0}x</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">IG Link</div><div class="detail-sec-val">${h.instagramUrl ? `<a href="${escHtml(h.instagramUrl)}" target="_blank" style="color:var(--blue);">View ↗</a>` : '—'}</div></div>
+      <div class="detail-sec"><div class="detail-sec-lbl">Hook Type</div><div class="detail-sec-val">${escHtml(h.type||'—')}</div></div>
+    </div>
+
+    ${h.notes ? `<div class="detail-section-title">Notes</div><div class="detail-notes">${escHtml(h.notes)}</div>` : ''}
+  `;
+
+  document.getElementById('detailOverlay').classList.add('open');
+
+  // Init comparison chart after DOM is ready
+  setTimeout(() => {
+    if (detailChartInst) detailChartInst.destroy();
+    const ctx = document.getElementById('detailChart');
+    if (!ctx) return;
+    detailChartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['3-Sec Ret %', 'Skip Rate %', 'Follows', 'Score /10'],
+        datasets: [
+          {
+            label: 'This Reel',
+            data: [h.retention3s||0, h.skipRate||0, h.followers||0, score],
+            backgroundColor: ['rgba(51,154,233,0.7)','rgba(237,10,115,0.7)','rgba(255,107,53,0.7)','rgba(62,207,106,0.7)'],
+            borderRadius: 4,
+          },
+          {
+            label: 'Library Avg',
+            data: [avgRet, avgSkip, avgFollows, (() => {const s=hooks.map(x=>computeScore(x)).filter(Boolean);return s.length?(s.reduce((a,b)=>a+b,0)/s.length):0;})()],
+            backgroundColor: 'rgba(255,255,255,0.08)',
+            borderColor: 'rgba(255,255,255,0.2)',
+            borderWidth: 1,
+            borderRadius: 4,
+          }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: true,
+        plugins: { legend: { labels: { font: { size: 11 } } } },
+        scales: {
+          x: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } } },
+          y: { grid: { color: '#1a3a5c' }, ticks: { font: { size: 10 } }, beginAtZero: true }
+        }
+      }
+    });
+  }, 80);
 }
 
-// ── CHART ──
-function toggleChart() {
-  const container = document.getElementById('chartContainer');
-  const icon      = document.getElementById('chartToggleIcon');
-  const toggle    = document.getElementById('chartToggle');
-  const isOpen    = container.style.display !== 'none';
-  container.style.display = isOpen ? 'none' : '';
-  icon.textContent = isOpen ? '▼' : '▲';
-  toggle.classList.toggle('open', !isOpen);
-  if (!isOpen && !chartBuilt) { buildChart(); chartBuilt = true; }
+function closeDetail() {
+  document.getElementById('detailOverlay').classList.remove('open');
+  currentDetailId = null;
+  if (detailChartInst) { detailChartInst.destroy(); detailChartInst = null; }
+}
+function handleDetailOverlayClick(e) { if (e.target === document.getElementById('detailOverlay')) closeDetail(); }
+
+function editFromDetail() {
+  const h = hooks.find(x => x.id === currentDetailId);
+  if (h) { closeDetail(); openModal(h); }
 }
 
-function buildChart() {
-  const filtered = getFiltered();
-  const sorted   = [...filtered].sort((a, b) => a.date.localeCompare(b.date));
-  const labels      = sorted.map(r => r.title.length > 20 ? r.title.slice(0, 20) + '...' : r.title);
-  const followsData = sorted.map(r => r.follows || 0);
-  const viewsScaled = sorted.map(r => (r.views || 0) / 1000);
-  const barColors   = sorted.map(r => (r.follows || 0) > 0 ? 'rgba(255,107,53,0.8)' : 'rgba(45,74,99,0.5)');
+/* ══════════════════════════════════════════════
+   LIBRARY CHARTS
+══════════════════════════════════════════════ */
+function toggleCharts() {
+  chartsOpen = !chartsOpen;
+  document.getElementById('btnCharts').classList.toggle('active-blue', chartsOpen);
+  const panel = document.getElementById('chartsPanel');
+  panel.classList.toggle('open', chartsOpen);
+  if (chartsOpen) initLibCharts();
+}
 
-  if (chartInstance) { chartInstance.destroy(); chartInstance = null; }
-  chartInstance = new Chart(document.getElementById('reelChart'), {
-    type: 'bar',
+function initLibCharts() {
+  const sorted = [...hooks].sort((a,b) => parseDate(a.date) - parseDate(b.date));
+
+  // ── Follows Over Time ──
+  if (libCharts.follows) libCharts.follows.destroy();
+  const ctxF = document.getElementById('chartFollowsTime');
+  libCharts.follows = new Chart(ctxF, {
+    type: 'line',
     data: {
-      labels,
-      datasets: [
-        { label: 'Followers Gained', data: followsData, backgroundColor: barColors, borderRadius: 3, order: 2 },
-        { label: 'Views (÷1000)', data: viewsScaled, type: 'line', borderColor: 'rgba(51,154,233,0.7)', backgroundColor: 'rgba(51,154,233,0.1)', pointBackgroundColor: 'rgba(51,154,233,0.9)', pointRadius: 3, borderWidth: 1.5, tension: 0.3, order: 1, yAxisID: 'y2' }
-      ]
+      labels: sorted.map(h => h.date || ''),
+      datasets: [{
+        label: 'Followers Gained',
+        data: sorted.map(h => h.followers || 0),
+        borderColor: 'rgba(255,107,53,0.9)',
+        backgroundColor: 'rgba(255,107,53,0.1)',
+        fill: true, tension: 0.3, pointRadius: 3,
+        pointBackgroundColor: sorted.map(h => (h.followers||0)>=10 ? '#FFD700' : 'rgba(255,107,53,0.9)'),
+        pointRadius: sorted.map(h => (h.followers||0)>=10 ? 6 : 3),
+      }]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: true,
-      interaction: { mode: 'index', intersect: false },
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:9}, maxTicksLimit: 8, maxRotation: 45 } },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, beginAtZero: true }
+      }
+    }
+  });
+
+  // ── Views vs Follows Scatter ──
+  if (libCharts.scatter) libCharts.scatter.destroy();
+  const ctxS = document.getElementById('chartViewsFollows');
+  const scatterData = hooks.filter(h => h.views && h.followers !== undefined).map(h => ({
+    x: h.views || 0,
+    y: h.followers || 0,
+    label: h.reelName || 'Untitled'
+  }));
+  libCharts.scatter = new Chart(ctxS, {
+    type: 'scatter',
+    data: {
+      datasets: [{
+        label: 'Reels',
+        data: scatterData,
+        backgroundColor: scatterData.map(d => d.y >= 10 ? 'rgba(255,215,0,0.8)' : d.y >= 6 ? 'rgba(255,107,53,0.7)' : 'rgba(51,154,233,0.5)'),
+        pointRadius: scatterData.map(d => d.y >= 10 ? 7 : 4),
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { labels: { color: '#5a8ab0', font: { family: 'Roboto', size: 11 } } },
-        tooltip: { backgroundColor: '#0d2a47', borderColor: '#1a3a5c', borderWidth: 1, titleColor: '#fff', bodyColor: '#5a8ab0' }
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => `${ctx.raw.label}: ${fmt(ctx.raw.x)} views, ${ctx.raw.y} follows` } }
       },
       scales: {
-        x:  { ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 }, maxRotation: 45 }, grid: { color: '#1a3a5c' } },
-        y:  { ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 } }, grid: { color: '#1a3a5c' }, title: { display: true, text: 'Followers', color: '#5a8ab0', font: { size: 10 } } },
-        y2: { position: 'right', ticks: { color: '#5a8ab0', font: { family: 'Roboto', size: 10 } }, grid: { drawOnChartArea: false }, title: { display: true, text: 'Views (K)', color: '#5a8ab0', font: { size: 10 } } }
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10}, callback: v => fmt(v) }, title: { display: true, text: 'Views', color: '#5a8ab0', font:{size:10} } },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, title: { display: true, text: 'Follows', color: '#5a8ab0', font:{size:10} }, beginAtZero: true }
+      }
+    }
+  });
+
+  // ── Avg Retention by Category ──
+  if (libCharts.retCat) libCharts.retCat.destroy();
+  const ctxR = document.getElementById('chartRetCategory');
+  const catMap = {};
+  hooks.forEach(h => {
+    if (!h.category || !h.retention3s) return;
+    if (!catMap[h.category]) catMap[h.category] = [];
+    catMap[h.category].push(h.retention3s);
+  });
+  const cats = Object.keys(catMap).sort();
+  const catAvgs = cats.map(c => catMap[c].reduce((a,b)=>a+b,0)/catMap[c].length);
+  libCharts.retCat = new Chart(ctxR, {
+    type: 'bar',
+    data: {
+      labels: cats,
+      datasets: [{
+        label: 'Avg 3-Sec Retention %',
+        data: catAvgs,
+        backgroundColor: catAvgs.map(v => v>=60?'rgba(62,207,106,0.7)':v>=50?'rgba(51,154,233,0.7)':v>=45?'rgba(255,107,53,0.7)':'rgba(231,76,60,0.7)'),
+        borderRadius: 4,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} }, min: 30, max: 80 },
+        y: { grid: { color: '#1a3a5c' }, ticks: { font:{size:10} } }
       }
     }
   });
 }
 
-// ── MODAL ──
-function openModal(reel) {
-  document.getElementById('editId').value = reel ? reel.id : '';
-  document.getElementById('modalTitle').textContent = reel ? 'Edit Reel' : 'Add Reel';
-  document.getElementById('fDate').value = reel ? reel.date : new Date().toISOString().split('T')[0];
-  document.getElementById('fTitle').value = reel ? reel.title : '';
-  document.getElementById('fHook').value = reel ? (reel.hook || '') : '';
-  document.getElementById('fType').value = reel ? reel.type : 'Breakdown';
-  document.getElementById('fViews').value = reel ? reel.views : '';
-  document.getElementById('fFollows').value = reel && reel.follows != null ? reel.follows : '';
-  document.getElementById('fLikes').value = reel ? reel.likes : '';
-  document.getElementById('fComments').value = reel ? reel.comments : '';
-  document.getElementById('fThreeSecRTR').value = reel && reel.threeSecRTR != null ? reel.threeSecRTR : '';
-  document.getElementById('fSkipPct').value = reel && reel.skipPct != null ? reel.skipPct : '';
-  document.getElementById('fNotes').value = reel ? (reel.notes || '') : '';
-  calcEng();
+/* ══════════════════════════════════════════════
+   HOOK MODAL (ADD / EDIT)
+══════════════════════════════════════════════ */
+function openModal(hook) {
+  if (typeof hook === 'number') hook = hooks.find(h => h.id === hook);
+  populateModalSelects(hook);
+  document.getElementById('editId').value        = hook ? hook.id : '';
+  document.getElementById('modalTitle').textContent = hook ? 'Edit Reel' : 'Add Reel';
+  document.getElementById('fReelName').value     = hook ? (hook.reelName||'') : '';
+  document.getElementById('fInstagramUrl').value = hook ? (hook.instagramUrl||'') : '';
+  document.getElementById('fDate').value         = hook ? (hook.date||'') : '';
+  document.getElementById('fText').value         = hook ? (hook.text||'') : '';
+  document.getElementById('fScore').value        = hook ? (hook.score||'') : '';
+  document.getElementById('fFollowers').value    = hook ? (hook.followers||'') : '';
+  document.getElementById('fViews').value        = hook ? (hook.views||'') : '';
+  document.getElementById('fRetention3s').value  = hook ? (hook.retention3s||'') : '';
+  document.getElementById('fSkipRate').value     = hook ? (hook.skipRate||'') : '';
+  document.getElementById('fLikes').value        = hook ? (hook.likes||'') : '';
+  document.getElementById('fComments').value     = hook ? (hook.comments||'') : '';
+  document.getElementById('fShares').value       = hook ? (hook.shares||'') : '';
+  document.getElementById('fLength').value       = hook ? (hook.length||'') : '';
+  document.getElementById('fAvgWtSec').value     = hook ? (hook.avgWtSec||'') : '';
+  document.getElementById('fAvgWtPct').value     = hook ? (hook.avgWtPct||'') : '';
+  document.getElementById('fFollowsX').value     = hook ? (hook.followsMultiplier||'') : '';
+  document.getElementById('fViewsX').value       = hook ? (hook.viewsMultiplier||'') : '';
+  document.getElementById('fLikesX').value       = hook ? (hook.likesMultiplier||'') : '';
+  document.getElementById('fSharesX').value      = hook ? (hook.sharesMultiplier||'') : '';
+  document.getElementById('fNotes').value        = hook ? (hook.notes||'') : '';
   document.getElementById('modalOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('fReelName').focus(), 100);
 }
+function closeModal() { document.getElementById('modalOverlay').classList.remove('open'); }
+function handleOverlayClick(e) { if (e.target===document.getElementById('modalOverlay')) closeModal(); }
 
-function closeModal() {
-  document.getElementById('modalOverlay').classList.remove('open');
-}
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById('modalOverlay')) closeModal();
-}
-
-function calcEng() {
-  const v = parseFloat(document.getElementById('fViews').value) || 0;
-  const l = parseFloat(document.getElementById('fLikes').value) || 0;
-  const c = parseFloat(document.getElementById('fComments').value) || 0;
-  const eng = v > 0 ? (((l + c) / v) * 100).toFixed(2) : '0.00';
-  document.getElementById('engDisplay').textContent = eng + '%';
-}
-
-function saveReel() {
-  const id = document.getElementById('editId').value;
-  const threeSecRTRVal = document.getElementById('fThreeSecRTR').value;
-  const skipPctVal     = document.getElementById('fSkipPct').value;
-  const reel = {
-    id: id ? parseInt(id) : Date.now(),
-    date: document.getElementById('fDate').value,
-    title: document.getElementById('fTitle').value.trim(),
-    hook: document.getElementById('fHook').value.trim(),
-    type: document.getElementById('fType').value,
-    views:       parseInt(document.getElementById('fViews').value)    || 0,
-    follows:     parseInt(document.getElementById('fFollows').value)  || 0,
-    likes:       parseInt(document.getElementById('fLikes').value)    || 0,
-    comments:    parseInt(document.getElementById('fComments').value) || 0,
-    threeSecRTR: threeSecRTRVal !== '' ? parseFloat(threeSecRTRVal) : null,
-    skipPct:     skipPctVal     !== '' ? parseFloat(skipPctVal)     : null,
-    notes: document.getElementById('fNotes').value.trim(),
+function saveHook() {
+  const id       = document.getElementById('editId').value;
+  const reelName = document.getElementById('fReelName').value.trim();
+  const text     = document.getElementById('fText').value.trim();
+  if (!reelName && !text) { alert('Enter a reel name or hook text.'); return; }
+  const hook = {
+    id:               id ? parseInt(id) : Date.now(),
+    reelName,
+    instagramUrl:     document.getElementById('fInstagramUrl').value.trim(),
+    text, hookNeeded: !text,
+    type:             document.getElementById('fType').value,
+    category:         document.getElementById('fCat').value,
+    date:             document.getElementById('fDate').value.trim(),
+    score:            parseFloat(document.getElementById('fScore').value)||0,
+    followers:        parseInt(document.getElementById('fFollowers').value)||0,
+    views:            parseInt(document.getElementById('fViews').value)||0,
+    retention3s:      parseFloat(document.getElementById('fRetention3s').value)||0,
+    skipRate:         parseFloat(document.getElementById('fSkipRate').value)||0,
+    likes:            parseInt(document.getElementById('fLikes').value)||0,
+    comments:         parseInt(document.getElementById('fComments').value)||0,
+    shares:           parseInt(document.getElementById('fShares').value)||0,
+    length:           document.getElementById('fLength').value.trim(),
+    avgWtSec:         document.getElementById('fAvgWtSec').value.trim(),
+    avgWtPct:         parseFloat(document.getElementById('fAvgWtPct').value)||0,
+    followsMultiplier:parseFloat(document.getElementById('fFollowsX').value)||0,
+    viewsMultiplier:  parseFloat(document.getElementById('fViewsX').value)||0,
+    likesMultiplier:  parseFloat(document.getElementById('fLikesX').value)||0,
+    sharesMultiplier: parseFloat(document.getElementById('fSharesX').value)||0,
+    notes:            document.getElementById('fNotes').value.trim(),
   };
-  if (!reel.title) { alert('Title is required.'); return; }
-  if (id) {
-    const idx = reels.findIndex(r => r.id === parseInt(id));
-    if (idx >= 0) reels[idx] = { ...reels[idx], ...reel };
-  } else {
-    reels.push(reel);
-  }
-  saveData();
-  updateAnalytics();
-  renderTable();
-  closeModal();
-  if (chartBuilt) buildChart();
+  const isNew = !id;
+  if (id) { const idx=hooks.findIndex(h=>h.id===parseInt(id)); if(idx>=0) hooks[idx]=hook; }
+  else hooks.push(hook);
+  saveData(); updateStats(); applyFilters(); closeModal();
+  if (isNew && hook.text) suggestArchetypeForHook(hook.text);
 }
 
-function editReel(id) {
-  const reel = reels.find(r => r.id === id);
-  if (reel) openModal(reel);
+/* ══════════════════════════════════════════════
+   COPY
+══════════════════════════════════════════════ */
+function copyHook(id, btn) {
+  const h = hooks.find(x => x.id===id);
+  if (!h?.text) return;
+  navigator.clipboard.writeText(h.text).then(() => {
+    btn.classList.add('copied'); const orig=btn.innerHTML; btn.innerHTML=ICONS.check;
+    setTimeout(() => { btn.classList.remove('copied'); btn.innerHTML=orig; }, 1800);
+  }).catch(() => prompt('Copy hook:', h.text));
 }
 
-// ── DELETE ──
+/* ══════════════════════════════════════════════
+   DELETE
+══════════════════════════════════════════════ */
 function requestDelete(id) {
-  deleteTargetId = id;
+  isBulkDelete = false; deleteTargetId = id;
+  const h = hooks.find(x=>x.id===id);
+  const name = h?(h.reelName||h.text||'this entry'):'this entry';
+  document.getElementById('confirmTitle').textContent   = 'Delete Reel?';
+  document.getElementById('confirmMsg').textContent     = `"${name}" will be permanently removed.`;
+  document.getElementById('confirmWarning').style.display = 'none';
+  document.getElementById('confirmDeleteBtn').textContent = 'Delete';
   document.getElementById('confirmOverlay').classList.add('open');
 }
-
-function closeConfirm() {
-  deleteTargetId = null;
-  document.getElementById('confirmOverlay').classList.remove('open');
+function requestBulkDelete() {
+  const count = selectedIds.size; if (!count) return;
+  isBulkDelete = true; deleteTargetId = null;
+  document.getElementById('confirmTitle').textContent   = `Delete ${count} Reel${count!==1?'s':''}?`;
+  document.getElementById('confirmMsg').textContent     = `You are about to permanently delete ${count} reel${count!==1?'s':''} from your library.`;
+  const warn = document.getElementById('confirmWarning');
+  warn.textContent = '⚠ This cannot be undone. All selected entries will be removed.';
+  warn.style.display = 'block';
+  document.getElementById('confirmDeleteBtn').textContent = `Delete ${count}`;
+  document.getElementById('confirmOverlay').classList.add('open');
 }
-
+function closeConfirm() { deleteTargetId=null; isBulkDelete=false; document.getElementById('confirmOverlay').classList.remove('open'); }
 function confirmDelete() {
-  if (deleteTargetId !== null) {
-    reels = reels.filter(r => r.id !== deleteTargetId);
-    saveData();
-    updateAnalytics();
-    renderTable();
-    if (chartBuilt) buildChart();
-  }
-  closeConfirm();
+  if (isBulkDelete) { hooks=hooks.filter(h=>!selectedIds.has(h.id)); selectedIds.clear(); exitSelectMode(); }
+  else if (deleteTargetId!==null) hooks=hooks.filter(h=>h.id!==deleteTargetId);
+  saveData(); updateStats(); applyFilters(); closeConfirm();
 }
 
-// ── KEYBOARD ──
-document.addEventListener('keydown', e => {
-  if (e.key === 'Escape') { closeModal(); closeConfirm(); }
-});
+/* ══════════════════════════════════════════════
+   SELECT MODE
+══════════════════════════════════════════════ */
+function toggleSelectMode() { selectMode ? exitSelectMode() : enterSelectMode(); }
+function enterSelectMode() {
+  selectMode=true; selectedIds.clear();
+  document.getElementById('btnSelectMode').classList.add('active');
+  document.getElementById('bulkBar').classList.add('open');
+  document.body.style.paddingBottom='60px';
+  updateBulkBar(); applyFilters();
+}
+function exitSelectMode() {
+  selectMode=false; selectedIds.clear();
+  document.getElementById('btnSelectMode').classList.remove('active');
+  document.getElementById('bulkBar').classList.remove('open');
+  document.body.style.paddingBottom='';
+  applyFilters();
+}
+function toggleSelect(id) {
+  selectedIds.has(id) ? selectedIds.delete(id) : selectedIds.add(id);
+  updateBulkBar();
+  const sel = selectedIds.has(id);
+  ['card-','listitem-'].forEach(pfx => {
+    const el = document.getElementById(pfx+id); if(!el) return;
+    el.classList.toggle('selected', sel);
+    const cb = el.querySelector('.card-checkbox'); if(cb) cb.checked=sel;
+  });
+}
+function selectAll()   { getSorted(getFiltered()).forEach(h=>selectedIds.add(h.id)); updateBulkBar(); applyFilters(); }
+function deselectAll() { selectedIds.clear(); updateBulkBar(); applyFilters(); }
+function updateBulkBar() {
+  const count = selectedIds.size;
+  document.getElementById('bulkSelectedCount').textContent = count;
+  const btn = document.getElementById('btnBulkDelete');
+  btn.disabled = count===0;
+  btn.textContent = count>0 ? `🗑 Delete ${count} Selected` : '🗑 Delete Selected';
+}
 
-// ── INIT ──
+/* ══════════════════════════════════════════════
+   CSV IMPORT
+══════════════════════════════════════════════ */
+function parseCSV(text) {
+  const rows=[]; let row=[],field='',inQ=false,i=0;
+  while(i<text.length){
+    const ch=text[i];
+    if(inQ){if(ch==='"'&&text[i+1]==='"'){field+='"';i+=2;}else if(ch==='"'){inQ=false;i++;}else{field+=ch;i++;}}
+    else{
+      if(ch==='"'){inQ=true;i++;}
+      else if(ch===','){row.push(field);field='';i++;}
+      else if(ch==='\n'||ch==='\r'){
+        row.push(field);field='';
+        if(row.some(c=>c!==''))rows.push(row);
+        row=[];i+=(ch==='\r'&&text[i+1]==='\n')?2:1;
+      }else{field+=ch;i++;}
+    }
+  }
+  if(field!==''||row.length){row.push(field);if(row.some(c=>c!==''))rows.push(row);}
+  return rows;
+}
+const parseN   = s => { if(!s)return 0; const n=parseInt(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
+const parsePF  = s => { if(!s)return 0; const n=parseFloat(String(s).replace(/,/g,'').replace(/[^0-9.-]/g,'')); return isNaN(n)?0:n; };
+const parsePct = s => { if(!s||String(s).includes('#'))return 0; const n=parseFloat(String(s).replace('%','')); return isNaN(n)?0:n; };
+const parseMx  = s => { if(!s)return 0; return parsePF(String(s).replace('x','')); };
+
+function handleCSVFile(input) {
+  const file=input.files[0]; if(!file){return;} input.value='';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const rows=parseCSV(e.target.result);
+    if(rows.length<2){alert('No data rows found.');return;}
+    const header=rows[0].map(h=>h.trim()), col={};
+    header.forEach((h,i)=>col[h]=i);
+    const now=Date.now(); pendingImportData=[]; let hnCount=0;
+    const catsToAdd=new Set();
+    rows.slice(1).forEach((cols,idx)=>{
+      const reelName=(cols[col['Reel']]||'').trim(); if(!reelName)return;
+      const rawCat=(cols[col['Category']]||'').trim(); if(rawCat)catsToAdd.add(rawCat);
+      const hookText=(cols[col['Hook']]||'').trim(); const hookNeeded=!hookText;
+      if(hookNeeded)hnCount++;
+      pendingImportData.push({
+        id:now+idx, reelName, instagramUrl:(cols[col['Instagram URL']]||'').trim(), text:hookText, hookNeeded,
+        type:'', category:rawCat, date:cols[col['Date']]||'',
+        followsMultiplier:parseMx(cols[col['Follows (?x)']]),
+        followers:parseN(cols[col['Follows']]),
+        views:parseN(cols[col['Views']]),
+        likes:parseN(cols[col['Likes']]),
+        comments:parseN(cols[col['Comments']]),
+        shares:parseN(cols[col['Shares']]),
+        avgWtPct:parsePct(cols[col['AVG WT%']]),
+        avgWtSec:cols[col['AVG WT Sec']]||'',
+        length:cols[col['Length']]||'',
+        retention3s:parsePct(cols[col['3 Sec RTR']]),
+        skipRate:parsePct(cols[col['Skip']]),
+        viewsMultiplier:parseMx(cols[col['Views (?x)']]),
+        likesMultiplier:parseMx(cols[col['Likes (?x)']]),
+        sharesMultiplier:parseMx(cols[col['Shares (?x)']]),
+        score:0, notes:'',
+      });
+    });
+    catsToAdd.forEach(c=>{if(!hookCategories.includes(c))hookCategories.push(c);});
+    saveCats(); populateFilterSelects();
+    // Compute new vs duplicate by reel name (case-insensitive)
+    const existingNames = new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
+    const newCount = pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim())).length;
+    const dupCount = pendingImportData.length - newCount;
+    document.getElementById('importCount').textContent=pendingImportData.length;
+    document.getElementById('importSub').textContent=`reels found in CSV`;
+    document.getElementById('importNewCount').textContent=newCount;
+    document.getElementById('importDupCount').textContent=dupCount;
+    document.getElementById('importBreakdown').style.display='flex';
+    const warn=document.getElementById('importWarning');
+    if(hnCount>0){warn.style.display='flex';document.getElementById('importWarningText').textContent=`${hnCount} reel${hnCount!==1?'s':''} will be flagged as Hook Needed`;}
+    else warn.style.display='none';
+    document.querySelector('input[name="importMode"][value="merge"]').checked=true;
+    document.getElementById('importOverlay').classList.add('open');
+  };
+  reader.readAsText(file);
+}
+function closeImport(){document.getElementById('importOverlay').classList.remove('open');pendingImportData=[];}
+function handleImportOverlayClick(e){if(e.target===document.getElementById('importOverlay'))closeImport();}
+function confirmImport(){
+  const mode=document.querySelector('input[name="importMode"]:checked').value;
+  if(mode==='replace'){
+    hooks=pendingImportData;
+  } else if(mode==='merge'){
+    const existingNames=new Set(hooks.map(h=>(h.reelName||'').toLowerCase().trim()));
+    const toAdd=pendingImportData.filter(h=>!existingNames.has((h.reelName||'').toLowerCase().trim()));
+    hooks=hooks.concat(toAdd);
+  } else {
+    hooks=hooks.concat(pendingImportData);
+  }
+  saveData();updateStats();applyFilters();closeImport();
+  if(chartsOpen)initLibCharts();
+}
+
+/* ══════════════════════════════════════════════
+   MANAGE LISTS
+══════════════════════════════════════════════ */
+function openManage(){renderManageLists();document.getElementById('manageOverlay').classList.add('open');}
+function closeManage(){document.getElementById('manageOverlay').classList.remove('open');}
+function handleManageOverlayClick(e){if(e.target===document.getElementById('manageOverlay'))closeManage();}
+function renderManageLists(){
+  const dI=`<svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>`;
+  document.getElementById('manageTypesList').innerHTML=hookTypes.length
+    ?hookTypes.map((t,i)=>`<div class="manage-item"><span>${escHtml(t)}</span><button class="action-btn delete" onclick="removeType(${i})">${dI}</button></div>`).join('')
+    :'<div class="manage-empty">No types yet</div>';
+  document.getElementById('manageCatsList').innerHTML=hookCategories.length
+    ?hookCategories.map((c,i)=>`<div class="manage-item"><span>${escHtml(c)}</span><button class="action-btn delete" onclick="removeCategory(${i})">${dI}</button></div>`).join('')
+    :'<div class="manage-empty">No categories yet</div>';
+}
+function addType(){const i=document.getElementById('newTypeInput'),v=i.value.trim();if(!v||hookTypes.includes(v)){i.focus();return;}hookTypes.push(v);saveTypes();i.value='';renderManageLists();populateFilterSelects();updateStats();}
+function removeType(i){hookTypes.splice(i,1);saveTypes();renderManageLists();populateFilterSelects();updateStats();}
+function addCategory(){const i=document.getElementById('newCatInput'),v=i.value.trim();if(!v||hookCategories.includes(v)){i.focus();return;}hookCategories.push(v);saveCats();i.value='';renderManageLists();populateFilterSelects();}
+function removeCategory(i){hookCategories.splice(i,1);saveCats();renderManageLists();populateFilterSelects();}
+
+/* ══════════════════════════════════════════════
+   KEYBOARD
+══════════════════════════════════════════════ */
+document.addEventListener('keydown', e => {
+  if (e.key==='Escape') {
+    closeModal(); closeConfirm(); closeManage(); closeImport(); closeDetail();
+    if (selectMode) exitSelectMode();
+  }
+});
+document.getElementById('newTypeInput').addEventListener('keydown',e=>{if(e.key==='Enter')addType();});
+document.getElementById('newCatInput').addEventListener('keydown',e=>{if(e.key==='Enter')addCategory();});
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
 loadData();
-updateAnalytics();
-updateSortHeaders();
-renderTable();
+populateFilterSelects();
+updateStats();
+applyFilters();
+checkMigration();
 </script>
 </body>
 </html>
