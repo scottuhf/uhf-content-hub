@@ -9,8 +9,9 @@
 //                           (e.g. https://USER.github.io). Defaults to "*".
 //
 // Notion property names must match the database exactly:
-//   Title, Status, Topic, Topic Categories, Idea/Concept, 70/20/10 Rule,
-//   CCN Considered?, Notes, Pre-Validated?, TAM, Format, Recording Style
+//   Title, Status, Topic, Topic Categories, Question Answered, Problem Solved,
+//   Viewer Action, 70/20/10 Rule, CCN Considered?, Notes, Pre-Validated?,
+//   TAM, Format, Recording Style
 
 const NOTION_VERSION = '2022-06-28';
 
@@ -49,7 +50,9 @@ export default {
       'Topic Categories': multiSelect(body.topicCategories),
 
       // Step 2 — Idea
-      'Idea/Concept': richText(body.idea),
+      'Question Answered': richText(body.question),
+      'Problem Solved': richText(body.problem),
+      'Viewer Action': richText(body.action),
       '70/20/10 Rule': body.contentMix ? { select: { name: body.contentMix } } : { select: null },
       'CCN Considered?': { checkbox: !!body.ccnConsidered },
       'Notes': richText(body.notes),

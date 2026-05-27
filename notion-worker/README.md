@@ -24,14 +24,16 @@ Open the test card and ensure these properties exist with these exact names + ty
 | Status             | Status         | Must have a `Content Ideas` option              |
 | Topic              | Text           |                                                 |
 | Topic Categories   | Multi-select   | Options are created on the fly                  |
-| Idea/Concept       | Text           |                                                 |
+| Question Answered  | Text           | What viewer question this reel resolves         |
+| Problem Solved     | Text           | The pain, gap, or confusion the viewer feels    |
+| Viewer Action      | Text           | What the viewer should do after watching        |
 | 70/20/10 Rule      | Select         | Options: `Proven (70%)`, `Iteration (20%)`, `Experimental (10%)` |
 | CCN Considered?    | Checkbox       |                                                 |
 | Notes              | Text           |                                                 |
 | Pre-Validated?     | URL            |                                                 |
 | TAM                | Number         |                                                 |
 | Format             | Multi-select   |                                                 |
-| Recording Style    | Multi-select   |                                                 |
+| Recording Style    | Multi-select   | Includes `Pointer` — pointing at on-screen player layouts |
 
 Property names are case-sensitive and must match exactly. If you rename anything,
 update the matching key in `worker.js`.

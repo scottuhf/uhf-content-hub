@@ -886,8 +886,18 @@ textarea { min-height: 88px; }
         <div class="split-col-header idea-header">💡 Idea</div>
 
         <div class="field-group">
-          <label class="field-label">Your Reel / Concept</label>
-          <textarea id="s1-idea" placeholder="Write your raw idea — a hot take, a question your audience keeps asking, a trend you want to react to…&#10;&#10;Example: Cam Skattebo's injury and whether the Giants should draft an RB high." rows="4"></textarea>
+          <label class="field-label">Question we're answering <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(what the viewer is wondering)</span></label>
+          <textarea id="s1-question" placeholder="The specific question this reel resolves.&#10;&#10;Example: Should the Giants draft an RB high after the Cam Skattebo injury?" rows="3"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Problem we're solving <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(what's missing, confusing, or costing them)</span></label>
+          <textarea id="s1-problem" placeholder="The pain, gap, or confusion the viewer feels right now.&#10;&#10;Example: Managers don't know how to value the Giants backfield for waivers and trades this week." rows="3"></textarea>
+        </div>
+
+        <div class="field-group">
+          <label class="field-label">Action for the viewer <span style="color:var(--muted);font-size:0.65rem;font-weight:400;letter-spacing:0;">(what they should do after watching)</span></label>
+          <textarea id="s1-action" placeholder="The concrete next step — pick up X off waivers, drop Y, comment your take, etc.&#10;&#10;Example: Pick up Tracy Jr. before tonight's waiver run and bench Skattebo." rows="3"></textarea>
         </div>
 
         <div class="field-group">
@@ -1013,6 +1023,7 @@ textarea { min-height: 88px; }
       <div class="option-card" onclick="toggleOpt('recording',this,'Interview')"><div class="check">✓</div><div class="opt-name">🎙️ Interview</div><div class="opt-desc">Guest-style or reporter setup. Multi-perspective or solo Q&A format.</div></div>
       <div class="option-card" onclick="toggleOpt('recording',this,'Entertainment')"><div class="check">✓</div><div class="opt-name">🎭 Entertainment</div><div class="opt-desc">Skits, characters, performance-based. Higher energy and production value.</div></div>
       <div class="option-card" onclick="toggleOpt('recording',this,'Green Screen')"><div class="check">✓</div><div class="opt-name">🟩 Green Screen</div><div class="opt-desc">Virtual background — stats, highlights, or custom imagery behind you.</div></div>
+      <div class="option-card" onclick="toggleOpt('recording',this,'Pointer')"><div class="check">✓</div><div class="opt-name">👉 Pointer</div><div class="opt-desc">Point at on-screen elements — usually players sorted, ranked, or categorized in a visual layout.</div></div>
       <div class="custom-add-row">
         <input type="text" class="custom-add-input" id="recording-custom-input" placeholder="Add custom recording style… press Enter to save permanently" onkeydown="if(event.key==='Enter'){event.preventDefault();handleCustomAdd('recording',this)}" />
         <button class="custom-add-btn" onclick="handleCustomAdd('recording',document.getElementById('recording-custom-input'))" title="Add permanently">+</button>
@@ -1062,7 +1073,7 @@ const state = {
   // Step 1 — Topic
   topic:'', topics:[],
   // Step 2 — Idea
-  idea:'',
+  question:'', problem:'', action:'',
   ccnConsidered:false,
   contentMix: 0,
   pvcChecked: false, pvcLink:'', pvcReason:'',
@@ -1130,7 +1141,9 @@ function updateProgress() {
 function syncTextFields() {
   const grab = (id, key) => { const el = document.getElementById(id); if (el) state[key] = el.value.trim(); };
   grab('s1-topic','topic');
-  grab('s1-idea','idea');
+  grab('s1-question','question');
+  grab('s1-problem','problem');
+  grab('s1-action','action');
   grab('s1-pvc-link','pvcLink'); grab('s1-pvc-reason','pvcReason');
   grab('s1-notes','s1notes');
   grab('doc-name','docName');
@@ -1243,7 +1256,9 @@ function buildReview() {
     </div>
     <div class="review-card">
       <div class="rc-step">💡 Step 2 — Idea</div>
-      <div class="rc-row"><div class="rc-label">Reel Concept</div>${valHTML(state.idea)}</div>
+      <div class="rc-row"><div class="rc-label">Question Answered</div>${valHTML(state.question)}</div>
+      <div class="rc-row"><div class="rc-label">Problem Solved</div>${valHTML(state.problem)}</div>
+      <div class="rc-row"><div class="rc-label">Viewer Action</div>${valHTML(state.action)}</div>
       <div class="rc-row"><div class="rc-label">CCN Fit Considered</div>${state.ccnConsidered ? '<div class="rc-value">Yes</div>' : '<span class="rc-value empty">— not checked —</span>'}</div>
       <div class="rc-row"><div class="rc-label">Content Mix</div>${mixHTML}</div>
       <div class="rc-row"><div class="rc-label">Pre-validated Content</div>${pvcHTML}</div>
@@ -1352,7 +1367,9 @@ async function buildDocxBlob() {
     tagsField('Categories', state.topics, '', BLUE),
     gap(160),
     sectionHeader(2, 'Idea', PINK),
-    field('Concept', state.idea, PINK),
+    field('Question', state.question, PINK),
+    field('Problem', state.problem, PINK),
+    field('Action', state.action, PINK),
     field('CCN Fit', state.ccnConsidered ? 'Yes — considered' : null, PINK),
     field('Content Mix', mixLabelStr, PINK),
     field('Pre-validated', pvcStr, PINK),
@@ -1437,7 +1454,9 @@ function buildNotionPayload() {
     title,
     topic: state.topic || '',
     topicCategories: cleanList(state.topics),
-    idea: state.idea || '',
+    question: state.question || '',
+    problem: state.problem || '',
+    action: state.action || '',
     contentMix: mixLabel,
     ccnConsidered: !!state.ccnConsidered,
     notes: notesParts.join('\n\n'),
